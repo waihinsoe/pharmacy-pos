@@ -1,16 +1,8 @@
-import Button from "antd/es/button";
 import "./App.css";
-import { MyTable } from "./components/MyTable";
 import ConfigProvider from "antd/es/config-provider";
-import axios from "axios";
-import { config } from "./config";
+import { Router } from "./routes/Router";
 
 function App() {
-  const fetchData = async () => {
-    const res = await axios.get(`${config.apiBaseUrl}`);
-    console.log(res.data);
-  };
-
   return (
     <ConfigProvider
       theme={{
@@ -24,14 +16,7 @@ function App() {
         },
       }}
     >
-      <div>
-        <Button onClick={fetchData} type="primary">
-          fetch data
-        </Button>
-        <div>
-          <MyTable />
-        </div>
-      </div>
+      <Router />
     </ConfigProvider>
   );
 }
