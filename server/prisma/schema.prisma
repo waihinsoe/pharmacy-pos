@@ -8,8 +8,113 @@ datasource db {
 }
 
 model Roles {
-  id Int @id @default(autoincrement())
-  name String 
+  id         Int         @id @default(autoincrement())
+  name       String
+  created_at DateTime    @default(now())
+  updated_at DateTime    @default(now()) @updatedAt
+  Employees  Employees[]
+}
+
+model Employees {
+  id             Int      @id @default(autoincrement())
+  name           String
+  contact_number String
+  role_id        Int
+  hire_date      DateTime @default(now())
+  created_at     DateTime @default(now())
+  updated_at     DateTime @default(now()) @updatedAt
+  Roles          Roles    @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Users          Users[]
+  Sales          Sales[]
+}
+
+model Users {
+  id          Int       @id @default(autoincrement())
+  name        String
+  password    String
+  employee_id Int
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @default(now()) @updatedAt
+  Employees   Employees @relation(fields: [employee_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Customers {
+  id             Int      @id @default(autoincrement())
+  name           String
+  contact_number String
+  email          String
+  loyalty_points Int
+  created_at     DateTime @default(now())
+  updated_at     DateTime @default(now()) @updatedAt
+  Sales          Sales[]
+}
+
+model Sales {
+  id             Int            @id @default(autoincrement())
+  customer_id    Int
+  employee_id    Int
+  sale_date      DateTime       @default(now())
+  total_amount   Int
+  payment_method String
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @default(now()) @updatedAt
+  Customers      Customers      @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Employees      Employees      @relation(fields: [employee_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Sale_details   Sale_details[]
+}
+
+model Categories {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @default(now()) @updatedAt
+  Products    Products[]
+}
+
+model Products {
+  id                 Int                  @id @default(autoincrement())
+  category_id        Int
+  name               String
+  description        String
+  price              Int
+  quantity           Int
+  expriy_date        DateTime             @default(now())
+  created_at         DateTime             @default(now())
+  updated_at         DateTime             @default(now()) @updatedAt
+  Categories         Categories           @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Products_Suppliers Products_Suppliers[]
+  Sale_details       Sale_details[]
+}
+
+model Suppliers {
+  id                 Int                  @id @default(autoincrement())
+  name               String
+  contact_number     String
+  address            String
+  created_at         DateTime             @default(now())
+  updated_at         DateTime             @default(now()) @updatedAt
+  Products_Suppliers Products_Suppliers[]
+}
+
+model Products_Suppliers {
+  id          Int       @id @default(autoincrement())
+  product_id  Int
+  supplier_id Int
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @default(now()) @updatedAt
+  Products    Products  @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Suppliers   Suppliers @relation(fields: [supplier_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Sale_details {
+  id         Int      @id @default(autoincrement())
+  sale_id    Int
+  product_id Int
+  quantity   Int
+  price      Int
   created_at DateTime @default(now())
   updated_at DateTime @default(now()) @updatedAt
+  Sales      Sales    @relation(fields: [sale_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Products   Products @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
