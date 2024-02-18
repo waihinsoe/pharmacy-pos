@@ -9,7 +9,6 @@ function App() {
         token: {
           // Seed Token
           colorPrimary: "#28A745 ",
-          borderRadius: 2,
 
           // Alias Token
           // colorBgContainer: "#f6ffed",
