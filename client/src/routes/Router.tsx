@@ -16,12 +16,14 @@ import { NewSale } from "../pages/sales/NewSale";
 import { SalesHistory } from "../pages/sales/SalesHistory";
 import { AddSupplier } from "../pages/suppliers/AddSupplier";
 import { SupplierList } from "../pages/suppliers/SupplierList";
+import { Register } from "../pages/auth/Register";
 export const Router = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/" element={<Layout />}>
             <Route element={<ProtectedRoute />}>
               <Route index element={<Dashboard />} />
