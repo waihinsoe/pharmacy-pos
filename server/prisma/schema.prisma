@@ -7,35 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Roles {
-  id         Int         @id @default(autoincrement())
-  name       String
-  created_at DateTime    @default(now())
-  updated_at DateTime    @default(now()) @updatedAt
-  Employees  Employees[]
-}
-
-model Employees {
+model Users {
   id             Int      @id @default(autoincrement())
   name           String
+  password       String
   contact_number String
-  role_id        Int
+  email          String
+  role           Role     @default(CASHIER)
   hire_date      DateTime @default(now())
   created_at     DateTime @default(now())
   updated_at     DateTime @default(now()) @updatedAt
-  Roles          Roles    @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Users          Users[]
   Sales          Sales[]
-}
-
-model Users {
-  id          Int       @id @default(autoincrement())
-  name        String
-  password    String
-  employee_id Int
-  created_at  DateTime  @default(now())
-  updated_at  DateTime  @default(now()) @updatedAt
-  Employees   Employees @relation(fields: [employee_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Tokens Tokens[]
 }
 
 model Customers {
@@ -52,14 +35,14 @@ model Customers {
 model Sales {
   id             Int            @id @default(autoincrement())
   customer_id    Int
-  employee_id    Int
+  user_id        Int
   sale_date      DateTime       @default(now())
   total_amount   Int
   payment_method String
   created_at     DateTime       @default(now())
   updated_at     DateTime       @default(now()) @updatedAt
   Customers      Customers      @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Employees      Employees      @relation(fields: [employee_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Users          Users          @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Sale_details   Sale_details[]
 }
 
@@ -117,4 +100,19 @@ model Sale_details {
   updated_at DateTime @default(now()) @updatedAt
   Sales      Sales    @relation(fields: [sale_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Products   Products @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Tokens {
+  id Int @id @default(autoincrement())
+  refresh_token String
+  expiration_time Int
+  user_id Int 
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+  Users Users @relation(fields: [user_id], references: [id], onDelete: NoAction,onUpdate: NoAction)
+}
+
+enum Role {
+  CASHIER
+  ADMIN
 }

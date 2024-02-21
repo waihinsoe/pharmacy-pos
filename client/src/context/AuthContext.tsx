@@ -1,68 +1,32 @@
-import { ReactNode, createContext, useContext, useState } from "react";
-import {
-  User,
-  LoginUserCredentials,
-  AuthContextType,
-  RegisterUserCredentials,
-} from "../types/AuthTypes";
-import axios from "axios";
-import { config } from "../config";
+import { ReactNode, createContext, useContext } from "react";
 
-const defaultAuthContext = {
-  isLoading: true,
+import { AUTH_STATUS, AuthContextType } from "../types/AuthTypes";
+
+const initialState: AuthContextType = {
   user: null,
-  fetchAuthData: () => {},
+  token: null,
+  expiresAt: null,
+  isAuthenticated: false,
+  status: AUTH_STATUS.PENDING,
   login: () => {},
-  register: () => {},
   logout: () => {},
+  updateUser: () => {},
+  setAuthenticationStatus: () => {},
 };
 
-const AuthContext = createContext<AuthContextType>(defaultAuthContext);
+const AuthContext = createContext<AuthContextType>(initialState);
+
+const authReducer = (state: any, action: any) => {
+  switch (action.type) {
+    case "login": {
+      return {
+        user: action.payload.user,
+      };
+    }
+  }
+};
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [authData, setAuthData] = useState(defaultAuthContext);
-  const accessToken = localStorage.getItem("accessToken");
-
-  const fetchAuthData = async () => {
-    const response = await axios.get(`${config.apiBaseUrl}/auth`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-  };
-
-  const login = (userCredentials: LoginUserCredentials) => {
-    const { email, password } = userCredentials;
-    const isValid = email && password;
-    if (!isValid) return alert("please fill all input!");
-    console.log(userCredentials);
-  };
-
-  const register = async (userCredentials: RegisterUserCredentials) => {
-    const { name, email, password } = userCredentials;
-    const isValid = name && email && password;
-    if (!isValid) return alert("please fill all input!");
-    const response = await axios.post(
-      `${config.apiBaseUrl}/auth/register`,
-      userCredentials,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (response.status) {
-      console.log(response.data);
-    }
-  };
-
-  const logout = () => {
-    localStorage.removeItem("user");
-    console.log("calling");
-    // setUser(null);
-  };
-
   return (
     <AuthContext.Provider value={{ ...authData, login, logout, register }}>
       {children}

@@ -11,23 +11,31 @@ export interface User {
 }
 
 export interface AuthContextType {
-  isLoading: boolean;
   user: User | null;
-  fetchAuthData: () => void;
-  login: (userCredentials: LoginUserCredentials) => void;
-  register: (userCredentials: RegisterUserCredentials) => void;
+  token: string | null;
+  expiresAt: Date | null;
+  isAuthenticated: boolean;
+  status: AUTH_STATUS;
+  login: (user: User | null, token: string, expiresAt: Date | null) => void;
   logout: () => void;
+  updateUser: () => void;
+  setAuthenticationStatus: () => void;
 }
 
-export interface LoginUserCredentials extends User {
-  remember: boolean;
-}
-
-export interface RegisterUserCredentials extends User {
-  agreement: boolean;
-}
+type AuthAction =
+  | { type: "login"; payload: { user: User; token: string; expiresAt: string } }
+  | { type: "logout" }
+  | { type: "updateUser"; payload: { user: User } }
+  | { type: "status"; payload: { status: AUTH_STATUS } };
 
 enum Role {
-  CASHIER,
-  ADMIN,
+  CASHIER = "CASHIER",
+  ADMIN = "ADMIN",
+}
+
+export enum AUTH_STATUS {
+  PENDING = "PENDING",
+  IDLE = "IDLE",
+  SUCCEEDED = "SUCCEEDED",
+  FAILED = "FAILED",
 }

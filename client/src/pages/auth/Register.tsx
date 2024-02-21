@@ -2,6 +2,7 @@ import { Flex, Form, Input, Checkbox, Button, Select } from "antd";
 import { RegisterUserCredentials } from "../../types/AuthTypes";
 import { useAuth } from "../../context/AuthContext";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 const { Option } = Select;
 export const Register = () => {
   const auth = useAuth();
@@ -19,13 +20,17 @@ export const Register = () => {
   );
 
   return (
-    <Flex justify="center" align="center" style={{ height: "100vh" }}>
+    <Flex
+      justify="center"
+      align="center"
+      style={{ height: "100vh", padding: 8 }}
+    >
       <Form
         name="normal_login"
         className="login-form"
         initialValues={{ remember: true }}
         onFinish={onFinish}
-        style={{ maxWidth: 400 }}
+        style={{ width: "100%", maxWidth: 300 }}
       >
         <Form.Item
           name="name"
@@ -95,7 +100,7 @@ export const Register = () => {
           >
             Register
           </Button>
-          Or <a href="">Login here!</a>
+          Or <Link to="/login">Login here!</Link>
         </Form.Item>
       </Form>
     </Flex>

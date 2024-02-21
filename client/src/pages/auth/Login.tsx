@@ -2,6 +2,7 @@ import { useAuth } from "../../context/AuthContext";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Flex, Form, Input } from "antd";
 import { LoginUserCredentials } from "../../types/AuthTypes";
+import { Link } from "react-router-dom";
 export const Login = () => {
   const auth = useAuth();
 
@@ -10,13 +11,17 @@ export const Login = () => {
   };
 
   return (
-    <Flex justify="center" align="center" style={{ height: "100vh" }}>
+    <Flex
+      justify="center"
+      align="center"
+      style={{ height: "100vh", padding: 8 }}
+    >
       <Form
         name="normal_login"
         className="login-form"
         initialValues={{ remember: true }}
         onFinish={onFinish}
-        style={{ maxWidth: 400 }}
+        style={{ width: "100%", maxWidth: 300 }}
       >
         <Form.Item
           name="email"
@@ -62,7 +67,7 @@ export const Login = () => {
           >
             Log in
           </Button>
-          Or <a href="">register now!</a>
+          Or <Link to="/register">register now!</Link>
         </Form.Item>
       </Form>
     </Flex>
