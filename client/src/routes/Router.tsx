@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { AuthProvider } from "../context/AuthContext";
+import { AuthProvider, useAuth } from "../context/AuthContext";
 import { Login } from "../pages/auth/Login";
 import { Layout } from "../layout/Layout";
 import { ProtectedRoute } from "./ProtectedRoute";
@@ -18,34 +18,31 @@ import { AddSupplier } from "../pages/suppliers/AddSupplier";
 import { SupplierList } from "../pages/suppliers/SupplierList";
 import { Register } from "../pages/auth/Register";
 export const Router = () => {
+  const auth = useAuth();
+  console.log(auth);
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Layout />}>
-            <Route element={<ProtectedRoute />}>
-              <Route index element={<Dashboard />} />
-              <Route path="sales/new" element={<NewSale />} />
-              <Route path="sales/history" element={<SalesHistory />} />
-              <Route path="inventory" element={<InventoryList />} />
-              <Route path="inventory/add" element={<AddProduct />} />
-              <Route
-                path="inventory/edit/:productId"
-                element={<EditProduct />}
-              />
-              <Route path="customers" element={<CustomerList />} />
-              <Route path="customers/add" element={<AddCustomer />} />
-              <Route path="suppliers" element={<SupplierList />} />
-              <Route path="suppliers/add" element={<AddSupplier />} />
-              <Route path="reports/sales" element={<SalesReport />} />
-              <Route path="reports/inventory" element={<InventoryReport />} />
-            </Route>
+            <Route index element={<Dashboard />} />
+            <Route path="sales/new" element={<NewSale />} />
+            <Route path="sales/history" element={<SalesHistory />} />
+            <Route path="inventory" element={<InventoryList />} />
+            <Route path="inventory/add" element={<AddProduct />} />
+            <Route path="inventory/edit/:productId" element={<EditProduct />} />
+            <Route path="customers" element={<CustomerList />} />
+            <Route path="customers/add" element={<AddCustomer />} />
+            <Route path="suppliers" element={<SupplierList />} />
+            <Route path="suppliers/add" element={<AddSupplier />} />
+            <Route path="reports/sales" element={<SalesReport />} />
+            <Route path="reports/inventory" element={<InventoryReport />} />
             <Route path="*" element={<NotFound />} />
           </Route>
-        </Routes>
-      </AuthProvider>
+        </Route>
+      </Routes>
     </BrowserRouter>
   );
 };

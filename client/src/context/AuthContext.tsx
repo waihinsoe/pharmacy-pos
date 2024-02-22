@@ -1,37 +1,104 @@
-import { ReactNode, createContext, useContext } from "react";
+import {
+  ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useReducer,
+} from "react";
 
-import { AUTH_STATUS, AuthContextType } from "../types/AuthTypes";
+import {
+  AUTH_STATUS,
+  AuthContextType,
+  AuthReducerAction,
+  InitialStateType,
+  User,
+} from "../types/AuthTypes";
 
-const initialState: AuthContextType = {
+const initialState: InitialStateType = {
   user: null,
   token: null,
   expiresAt: null,
   isAuthenticated: false,
   status: AUTH_STATUS.PENDING,
-  login: () => {},
-  logout: () => {},
-  updateUser: () => {},
-  setAuthenticationStatus: () => {},
 };
 
-const AuthContext = createContext<AuthContextType>(initialState);
+const AuthContext = createContext<AuthContextType>({
+  ...initialState,
+  login: () => {},
+  logout: () => {},
+  setAuthenticationStatus: () => {},
+});
 
-const authReducer = (state: any, action: any) => {
+const authReducer = (state: InitialStateType, action: AuthReducerAction) => {
   switch (action.type) {
     case "login": {
       return {
         user: action.payload.user,
+        token: action.payload.token,
+        expiresAt: action.payload.expiresAt,
+        isAuthenticated: true,
+        status: AUTH_STATUS.SUCCEEDED,
       };
+    }
+
+    case "logout": {
+      return {
+        ...initialState,
+        status: AUTH_STATUS.IDLE,
+      };
+    }
+
+    case "status": {
+      return {
+        ...state,
+        status: action.payload.status,
+      };
+    }
+
+    default: {
+      throw new Error(`Unhandled action type: ${action.type}`);
     }
   }
 };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  return (
-    <AuthContext.Provider value={{ ...authData, login, logout, register }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  const [state, dispatch] = useReducer(authReducer, initialState);
+
+  console.log("context state : ", state);
+
+  const login = useCallback((user: User, token: string, expiresAt: Date) => {
+    console.log("login");
+    dispatch({
+      type: "login",
+      payload: {
+        user,
+        token,
+        expiresAt,
+      },
+    });
+  }, []);
+
+  const logout = useCallback(() => {
+    dispatch({
+      type: "logout",
+    });
+  }, []);
+
+  const setAuthenticationStatus = useCallback((status: AUTH_STATUS) => {
+    dispatch({
+      type: "status",
+      payload: {
+        status,
+      },
+    });
+  }, []);
+
+  const value = useMemo(() => {
+    return { ...state, login, logout, setAuthenticationStatus };
+  }, [state, setAuthenticationStatus, login, logout]);
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {

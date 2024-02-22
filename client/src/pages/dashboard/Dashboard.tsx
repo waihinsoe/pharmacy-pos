@@ -1,18 +1,10 @@
-import { Button, Flex } from "antd";
-import { useAuth } from "../../context/AuthContext";
+import { Flex } from "antd";
+import { Logout } from "../auth/Logout";
 
 export const Dashboard = () => {
-  const { logout } = useAuth();
   return (
     <Flex vertical>
-      <Button
-        onClick={() => {
-          console.log("click");
-          logout();
-        }}
-      >
-        logout
-      </Button>
+      <Logout />
     </Flex>
   );
 };

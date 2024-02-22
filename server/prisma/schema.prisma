@@ -105,7 +105,7 @@ model Sale_details {
 model Tokens {
   id Int @id @default(autoincrement())
   refresh_token String
-  expiration_time Int
+  expiration_time BigInt
   user_id Int 
   created_at DateTime @default(now())
   updated_at DateTime @default(now()) @updatedAt

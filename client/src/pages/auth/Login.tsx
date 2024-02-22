@@ -1,13 +1,33 @@
 import { useAuth } from "../../context/AuthContext";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Flex, Form, Input } from "antd";
-import { LoginUserCredentials } from "../../types/AuthTypes";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { AUTH_STATUS } from "../../types/AuthTypes";
+import axios from "axios";
+import { config } from "../../config";
 export const Login = () => {
-  const auth = useAuth();
+  const { login, setAuthenticationStatus } = useAuth();
+  const navigate = useNavigate();
+  const onFinish = async (values: any) => {
+    const userData = {
+      email: values.email,
+      password: values.password,
+    };
 
-  const onFinish = (values: LoginUserCredentials) => {
-    auth.login(values);
+    try {
+      setAuthenticationStatus(AUTH_STATUS.PENDING);
+      const response = await axios.post(
+        `${config.apiBaseUrl}/auth/login`,
+        userData,
+        { withCredentials: true }
+      );
+      setAuthenticationStatus(AUTH_STATUS.SUCCEEDED);
+      const { user, token, expiresAt } = response.data;
+      login(user, token, expiresAt);
+      navigate("/");
+    } catch (error) {
+      setAuthenticationStatus(AUTH_STATUS.FAILED);
+    }
   };
 
   return (

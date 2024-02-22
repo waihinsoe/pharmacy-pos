@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../utils/db";
-import { generateJWT } from "../utils/auth";
+import { generateJWT } from "../utils/authFunctions";
 import { config } from "../config";
 import ms from "ms";
+import jwt from "jsonwebtoken";
 const {
   refreshTokenLife,
   refreshTokenSecret,
@@ -59,6 +60,53 @@ export const generateAuthTokens = async (
       token: accessToken,
       expiresAt,
     });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const isAuthenticated = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const authToken = req.get("Authorization");
+    const accessToken = authToken?.split("Bearer ")[1];
+    if (!accessToken) {
+      return res.status(401).json({ message: "accessToken Unauthorized" });
+    }
+
+    const { signedCookies = {} } = req;
+
+    const { refreshToken } = signedCookies;
+    if (!refreshToken) {
+      return res.status(401).json({ message: "refreshToken Unauthorized" });
+    }
+
+    const refreshTokenInDB = await prisma.tokens.findFirst({
+      where: { refresh_token: refreshToken },
+    });
+    console.log(refreshTokenInDB);
+    if (!refreshTokenInDB) {
+      return res.status(401).json({ message: "refreshTokenInDB Unauthorized" });
+    }
+
+    let decodedToken: any;
+    try {
+      decodedToken = jwt.verify(accessToken, accessTokenSecret);
+    } catch (err) {
+      return res.status(401).json({ message: "decodedToken Unauthorized" });
+    }
+    const { userId } = decodedToken;
+    const user = await prisma.users.findFirst({ where: { id: userId } });
+    if (!user) {
+      return res.status(401).json({ message: "user Unauthorized" });
+    }
+
+    //@ts-ignore
+    req.userId = user.id;
+    return next();
   } catch (error) {
     return next(error);
   }
