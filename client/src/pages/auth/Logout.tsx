@@ -26,5 +26,9 @@ export const Logout = () => {
       console.log("something went wrong. ", error);
     }
   };
-  return <Button onClick={logOutHandler}>logout</Button>;
+  return (
+    <Button type="primary" onClick={logOutHandler}>
+      logout
+    </Button>
+  );
 };

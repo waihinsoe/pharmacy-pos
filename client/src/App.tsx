@@ -56,8 +56,9 @@ function App() {
       theme={{
         token: {
           // Seed Token
-          colorPrimary: "#28A745 ",
-
+          colorPrimary: " #008080", //#28A745
+          borderRadius: 3,
+          motion: false,
           // Alias Token
           // colorBgContainer: "#f6ffed",
         },
