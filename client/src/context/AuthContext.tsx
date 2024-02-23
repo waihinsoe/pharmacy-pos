@@ -1,73 +1,104 @@
-import { ReactNode, createContext, useContext, useState } from "react";
 import {
-  User,
-  LoginUserCredentials,
-  AuthContextType,
-  RegisterUserCredentials,
-} from "../types/AuthTypes";
-import axios from "axios";
-import { config } from "../config";
+  ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useReducer,
+} from "react";
 
-const defaultAuthContext = {
-  isLoading: true,
+import {
+  AUTH_STATUS,
+  AuthContextType,
+  AuthReducerAction,
+  InitialStateType,
+  User,
+} from "../types/AuthTypes";
+
+const initialState: InitialStateType = {
   user: null,
-  fetchAuthData: () => {},
-  login: () => {},
-  register: () => {},
-  logout: () => {},
+  token: null,
+  expiresAt: null,
+  isAuthenticated: false,
+  status: AUTH_STATUS.PENDING,
 };
 
-const AuthContext = createContext<AuthContextType>(defaultAuthContext);
+const AuthContext = createContext<AuthContextType>({
+  ...initialState,
+  login: () => {},
+  logout: () => {},
+  setAuthenticationStatus: () => {},
+});
+
+const authReducer = (state: InitialStateType, action: AuthReducerAction) => {
+  switch (action.type) {
+    case "login": {
+      return {
+        user: action.payload.user,
+        token: action.payload.token,
+        expiresAt: action.payload.expiresAt,
+        isAuthenticated: true,
+        status: AUTH_STATUS.SUCCEEDED,
+      };
+    }
+
+    case "logout": {
+      return {
+        ...initialState,
+        status: AUTH_STATUS.IDLE,
+      };
+    }
+
+    case "status": {
+      return {
+        ...state,
+        status: action.payload.status,
+      };
+    }
+
+    default: {
+      throw new Error(`Unhandled action type: ${action.type}`);
+    }
+  }
+};
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [authData, setAuthData] = useState(defaultAuthContext);
-  const accessToken = localStorage.getItem("accessToken");
+  const [state, dispatch] = useReducer(authReducer, initialState);
 
-  const fetchAuthData = async () => {
-    const response = await axios.get(`${config.apiBaseUrl}/auth`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
+  console.log("context state : ", state);
+
+  const login = useCallback((user: User, token: string, expiresAt: Date) => {
+    console.log("login");
+    dispatch({
+      type: "login",
+      payload: {
+        user,
+        token,
+        expiresAt,
       },
     });
-  };
+  }, []);
 
-  const login = (userCredentials: LoginUserCredentials) => {
-    const { email, password } = userCredentials;
-    const isValid = email && password;
-    if (!isValid) return alert("please fill all input!");
-    console.log(userCredentials);
-  };
+  const logout = useCallback(() => {
+    dispatch({
+      type: "logout",
+    });
+  }, []);
 
-  const register = async (userCredentials: RegisterUserCredentials) => {
-    const { name, email, password } = userCredentials;
-    const isValid = name && email && password;
-    if (!isValid) return alert("please fill all input!");
-    const response = await axios.post(
-      `${config.apiBaseUrl}/auth/register`,
-      userCredentials,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (response.status) {
-      console.log(response.data);
-    }
-  };
+  const setAuthenticationStatus = useCallback((status: AUTH_STATUS) => {
+    dispatch({
+      type: "status",
+      payload: {
+        status,
+      },
+    });
+  }, []);
 
-  const logout = () => {
-    localStorage.removeItem("user");
-    console.log("calling");
-    // setUser(null);
-  };
+  const value = useMemo(() => {
+    return { ...state, login, logout, setAuthenticationStatus };
+  }, [state, setAuthenticationStatus, login, logout]);
 
-  return (
-    <AuthContext.Provider value={{ ...authData, login, logout, register }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {

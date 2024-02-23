@@ -1,22 +1,47 @@
 import { useAuth } from "../../context/AuthContext";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Flex, Form, Input } from "antd";
-import { LoginUserCredentials } from "../../types/AuthTypes";
+import { Link, useNavigate } from "react-router-dom";
+import { AUTH_STATUS } from "../../types/AuthTypes";
+import axios from "axios";
+import { config } from "../../config";
 export const Login = () => {
-  const auth = useAuth();
+  const { login, setAuthenticationStatus } = useAuth();
+  const navigate = useNavigate();
+  const onFinish = async (values: any) => {
+    const userData = {
+      email: values.email,
+      password: values.password,
+    };
 
-  const onFinish = (values: LoginUserCredentials) => {
-    auth.login(values);
+    try {
+      setAuthenticationStatus(AUTH_STATUS.PENDING);
+      const response = await axios.post(
+        `${config.apiBaseUrl}/auth/login`,
+        userData,
+        { withCredentials: true }
+      );
+      setAuthenticationStatus(AUTH_STATUS.SUCCEEDED);
+      const { user, token, expiresAt } = response.data;
+      login(user, token, expiresAt);
+      navigate("/");
+    } catch (error) {
+      setAuthenticationStatus(AUTH_STATUS.FAILED);
+    }
   };
 
   return (
-    <Flex justify="center" align="center" style={{ height: "100vh" }}>
+    <Flex
+      justify="center"
+      align="center"
+      style={{ height: "100vh", padding: 8 }}
+    >
       <Form
         name="normal_login"
         className="login-form"
         initialValues={{ remember: true }}
         onFinish={onFinish}
-        style={{ maxWidth: 400 }}
+        style={{ width: "100%", maxWidth: 300 }}
       >
         <Form.Item
           name="email"
@@ -62,7 +87,7 @@ export const Login = () => {
           >
             Log in
           </Button>
-          Or <a href="">register now!</a>
+          Or <Link to="/register">register now!</Link>
         </Form.Item>
       </Form>
     </Flex>

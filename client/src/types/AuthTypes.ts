@@ -10,24 +10,41 @@ export interface User {
   updated_at: Date;
 }
 
-export interface AuthContextType {
-  isLoading: boolean;
+export interface InitialStateType {
   user: User | null;
-  fetchAuthData: () => void;
-  login: (userCredentials: LoginUserCredentials) => void;
-  register: (userCredentials: RegisterUserCredentials) => void;
+  token: string | null;
+  expiresAt: Date | null;
+  isAuthenticated: boolean;
+  status: AUTH_STATUS;
+}
+
+export interface AuthContextType extends InitialStateType {
+  login: (user: User, token: string, expiresAt: Date) => void;
   logout: () => void;
+  setAuthenticationStatus: (status: AUTH_STATUS) => void;
 }
 
-export interface LoginUserCredentials extends User {
-  remember: boolean;
-}
-
-export interface RegisterUserCredentials extends User {
-  agreement: boolean;
-}
+export type AuthReducerAction =
+  | {
+      type: "login";
+      payload: {
+        user: User;
+        token: string;
+        expiresAt: Date;
+      };
+    }
+  | { type: "logout" }
+  | { type: "updateUser"; payload: { user: User } }
+  | { type: "status"; payload: { status: AUTH_STATUS } };
 
 enum Role {
-  CASHIER,
-  ADMIN,
+  CASHIER = "CASHIER",
+  ADMIN = "ADMIN",
+}
+
+export enum AUTH_STATUS {
+  PENDING = "PENDING",
+  IDLE = "IDLE",
+  SUCCEEDED = "SUCCEEDED",
+  FAILED = "FAILED",
 }
