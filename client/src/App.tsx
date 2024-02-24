@@ -10,7 +10,6 @@ function App() {
   const { login, logout, isAuthenticated, expiresAt } = useAuth();
 
   const refreshAccessToken = useCallback(async () => {
-    console.log("refetch");
     try {
       const response = await axios.post(
         `${config.apiBaseUrl}/auth/refresh`,
@@ -23,8 +22,6 @@ function App() {
       if (response.status === 204) {
         logout();
       } else {
-        console.log("refetch login");
-        console.log(response.data);
         login(user, accessToken, expiresAt);
       }
     } catch (error) {

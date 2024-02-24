@@ -18,8 +18,6 @@ import { AddSupplier } from "../pages/suppliers/AddSupplier";
 import { SupplierList } from "../pages/suppliers/SupplierList";
 import { Register } from "../pages/auth/Register";
 export const Router = () => {
-  const auth = useAuth();
-  console.log(auth);
   return (
     <BrowserRouter>
       <Routes>
