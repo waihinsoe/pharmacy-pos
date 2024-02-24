@@ -1,103 +1,58 @@
 import { useRef, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import type { GetRef, TableColumnsType, TableColumnType } from "antd";
-import { Button, Input, Space, Table } from "antd";
+import { Button, Input, Popconfirm, Space, Table } from "antd";
 import type {
   FilterDropdownProps,
   TableRowSelection,
 } from "antd/es/table/interface";
 import Highlighter from "react-highlight-words";
+import {
+  useCategories,
+  useDeleteCategory,
+} from "../../hooks/categories/useCategories";
+import { useAuth } from "../../context/AuthContext";
+import { PaginationAndSearchQuery } from "../../types";
 
 type InputRef = GetRef<typeof Input>;
 
 interface DataType {
-  key: string;
+  id: number;
   name: string;
-  age: number;
-  address: string;
+  description: string;
 }
 
 type DataIndex = keyof DataType;
 
-let data: DataType[] = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-  },
-  {
-    key: "2",
-    name: "Joe Black",
-    age: 42,
-    address: "London No. 1 Lake Park",
-  },
-  {
-    key: "3",
-    name: "Jim Green",
-    age: 32,
-    address: "Sydney No. 1 Lake Park",
-  },
-  {
-    key: "4",
-    name: "Jim Red",
-    age: 32,
-    address: "London No. 2 Lake Park",
-  },
-  {
-    key: "5",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-  },
-  {
-    key: "6",
-    name: "Joe Black",
-    age: 42,
-    address: "London No. 1 Lake Park",
-  },
-  {
-    key: "7",
-    name: "Jim Green",
-    age: 32,
-    address: "Sydney No. 1 Lake Park",
-  },
-  {
-    key: "8",
-    name: "Jim Red",
-    age: 32,
-    address: "London No. 2 Lake Park",
-  },
-  {
-    key: "9",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-  },
-  {
-    key: "10",
-    name: "Joe Black",
-    age: 42,
-    address: "London No. 1 Lake Park",
-  },
-  {
-    key: "11",
-    name: "Jim Green",
-    age: 32,
-    address: "Sydney No. 1 Lake Park",
-  },
-  {
-    key: "12",
-    name: "Jim Red",
-    age: 32,
-    address: "London No. 2 Lake Park",
-  },
-];
-
-export const MyTable = () => {
+export const CategoryListTable = () => {
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
+  const { mutate: deleteCategory } = useDeleteCategory();
+  const { token } = useAuth();
+  console.log("render");
+  const query: PaginationAndSearchQuery = {
+    page,
+    limit,
+    searchTerm: searchText,
+  };
+  const { data, isLoading, isError } = useCategories(query, token || "");
+  console.log(data);
+  const handleTableChange = (pagination, filters, sorter) => {
+    // Adjust page and limit based on table pagination
+    console.log(pagination.current);
+    setPage(pagination.current);
+    setLimit(pagination.pageSize);
+    // Implement search or filters handling if necessary
+  };
+
+  const handleDelete = (key: React.Key) => {
+    if (key) {
+      deleteCategory({ id: Number(key), accessToken: token || "" });
+    }
+  };
 
   const rowSelection: TableRowSelection<DataType> = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -114,6 +69,7 @@ export const MyTable = () => {
       console.log(selected, selectedRows, changeRows);
     },
   };
+
   const handleSearch = (
     selectedKeys: string[],
     confirm: FilterDropdownProps["confirm"],
@@ -225,35 +181,42 @@ export const MyTable = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      width: "30%",
       ...getColumnSearchProps("name"),
-      sorter: (a, b) => a.address.length - b.address.length,
+      sorter: (a, b) => a.name.length - b.name.length,
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
-      width: "20%",
-      ...getColumnSearchProps("age"),
-      sorter: (a, b) => a.address.length - b.address.length,
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+      ...getColumnSearchProps("description"),
+      sorter: (a, b) => a.description.length - b.description.length,
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
-      ...getColumnSearchProps("address"),
-      sorter: (a, b) => a.address.length - b.address.length,
-      sortDirections: ["descend", "ascend"],
+      title: "operation",
+      dataIndex: "operation",
+      render: (_, record: { id: React.Key }) =>
+        data.data.length >= 1 ? (
+          <Popconfirm
+            title="Sure to delete?"
+            onConfirm={() => handleDelete(record.id)}
+          >
+            <a>Delete</a>
+          </Popconfirm>
+        ) : null,
     },
   ];
 
+  if (isLoading) return <div>...loading</div>;
   return (
     <Table
       rowSelection={{ ...rowSelection }}
       columns={columns}
-      dataSource={data}
+      dataSource={data.data}
+      rowKey={"id"}
+      pagination={{ current: page, pageSize: limit, total: data.total }}
+      onChange={handleTableChange}
     />
   );
 };
