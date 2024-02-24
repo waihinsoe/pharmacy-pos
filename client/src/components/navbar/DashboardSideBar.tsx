@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { ContainerOutlined, MailOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
 import { RxDashboard } from "react-icons/rx";
@@ -9,6 +8,7 @@ import { MdOutlineInventory } from "react-icons/md";
 import { RiCustomerService2Line } from "react-icons/ri";
 import { FaTruckLoading } from "react-icons/fa";
 import { HiOutlineDocumentReport } from "react-icons/hi";
+import { MdOutlineCategory } from "react-icons/md";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -30,14 +30,15 @@ function getItem(
 
 const items: MenuItem[] = [
   getItem("Dashboard", "/", <RxDashboard />),
+  getItem("Categories", "/categories", <MdOutlineCategory />),
+  getItem("Products", "/products", <MdOutlineInventory />),
   getItem("Sale-history", "/sales/history", <GrHistory />),
-  getItem("Inventory", "/inventory", <MdOutlineInventory />),
   getItem("Customers", "/customers", <RiCustomerService2Line />),
   getItem("Suppliers", "/suppliers", <FaTruckLoading />),
 
   getItem("Reports", "reports", <HiOutlineDocumentReport />, [
     getItem("Sales", "/reports/sales"),
-    getItem("Inventory", "/reports/inventory"),
+    getItem("Products", "/reports/products"),
   ]),
 ];
 
