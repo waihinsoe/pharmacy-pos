@@ -1,186 +1,259 @@
-import React, { useState } from "react";
-import { Form, Input, InputNumber, Popconfirm, Table, Typography } from "antd";
+import { useRef, useState } from "react";
+import { SearchOutlined } from "@ant-design/icons";
+import type { GetRef, TableColumnsType, TableColumnType } from "antd";
+import { Button, Input, Space, Table } from "antd";
+import type {
+  FilterDropdownProps,
+  TableRowSelection,
+} from "antd/es/table/interface";
+import Highlighter from "react-highlight-words";
 
-interface Item {
+type InputRef = GetRef<typeof Input>;
+
+interface DataType {
   key: string;
   name: string;
   age: number;
   address: string;
 }
 
-const originData: Item[] = [];
-for (let i = 0; i < 100; i++) {
-  originData.push({
-    key: i.toString(),
-    name: `Edward ${i}`,
+type DataIndex = keyof DataType;
+
+let data: DataType[] = [
+  {
+    key: "1",
+    name: "John Brown",
     age: 32,
-    address: `London Park no. ${i}`,
-  });
-}
-interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
-  editing: boolean;
-  dataIndex: string;
-  title: any;
-  inputType: "number" | "text";
-  record: Item;
-  index: number;
-  children: React.ReactNode;
-}
-
-const EditableCell: React.FC<EditableCellProps> = ({
-  editing,
-  dataIndex,
-  title,
-  inputType,
-  record,
-  index,
-  children,
-  ...restProps
-}) => {
-  const inputNode = inputType === "number" ? <InputNumber /> : <Input />;
-
-  return (
-    <td {...restProps}>
-      {editing ? (
-        <Form.Item
-          name={dataIndex}
-          style={{ margin: 0 }}
-          rules={[
-            {
-              required: true,
-              message: `Please Input ${title}!`,
-            },
-          ]}
-        >
-          {inputNode}
-        </Form.Item>
-      ) : (
-        children
-      )}
-    </td>
-  );
-};
+    address: "New York No. 1 Lake Park",
+  },
+  {
+    key: "2",
+    name: "Joe Black",
+    age: 42,
+    address: "London No. 1 Lake Park",
+  },
+  {
+    key: "3",
+    name: "Jim Green",
+    age: 32,
+    address: "Sydney No. 1 Lake Park",
+  },
+  {
+    key: "4",
+    name: "Jim Red",
+    age: 32,
+    address: "London No. 2 Lake Park",
+  },
+  {
+    key: "5",
+    name: "John Brown",
+    age: 32,
+    address: "New York No. 1 Lake Park",
+  },
+  {
+    key: "6",
+    name: "Joe Black",
+    age: 42,
+    address: "London No. 1 Lake Park",
+  },
+  {
+    key: "7",
+    name: "Jim Green",
+    age: 32,
+    address: "Sydney No. 1 Lake Park",
+  },
+  {
+    key: "8",
+    name: "Jim Red",
+    age: 32,
+    address: "London No. 2 Lake Park",
+  },
+  {
+    key: "9",
+    name: "John Brown",
+    age: 32,
+    address: "New York No. 1 Lake Park",
+  },
+  {
+    key: "10",
+    name: "Joe Black",
+    age: 42,
+    address: "London No. 1 Lake Park",
+  },
+  {
+    key: "11",
+    name: "Jim Green",
+    age: 32,
+    address: "Sydney No. 1 Lake Park",
+  },
+  {
+    key: "12",
+    name: "Jim Red",
+    age: 32,
+    address: "London No. 2 Lake Park",
+  },
+];
 
 export const MyTable = () => {
-  const [form] = Form.useForm();
-  const [data, setData] = useState(originData);
-  const [editingKey, setEditingKey] = useState("");
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
+  const searchInput = useRef<InputRef>(null);
 
-  const isEditing = (record: Item) => record.key === editingKey;
-
-  const edit = (record: Partial<Item> & { key: React.Key }) => {
-    form.setFieldsValue({ name: "", age: "", address: "", ...record });
-    setEditingKey(record.key);
+  const rowSelection: TableRowSelection<DataType> = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(
+        `selectedRowKeys: ${selectedRowKeys}`,
+        "selectedRows: ",
+        selectedRows
+      );
+    },
+    onSelect: (record, selected, selectedRows) => {
+      console.log("onSelect", record, selected, selectedRows);
+    },
+    onSelectAll: (selected, selectedRows, changeRows) => {
+      console.log(selected, selectedRows, changeRows);
+    },
+  };
+  const handleSearch = (
+    selectedKeys: string[],
+    confirm: FilterDropdownProps["confirm"],
+    dataIndex: DataIndex
+  ) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
   };
 
-  const cancel = () => {
-    setEditingKey("");
+  const handleReset = (clearFilters: () => void) => {
+    clearFilters();
+    setSearchText("");
   };
 
-  const save = async (key: React.Key) => {
-    try {
-      const row = (await form.validateFields()) as Item;
-
-      const newData = [...data];
-      const index = newData.findIndex((item) => key === item.key);
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          ...row,
-        });
-        setData(newData);
-        setEditingKey("");
-      } else {
-        newData.push(row);
-        setData(newData);
-        setEditingKey("");
-      }
-    } catch (errInfo) {
-      console.log("Validate Failed:", errInfo);
-    }
-  };
-
-  const columns = [
-    {
-      title: "name",
-      dataIndex: "name",
-      width: "25%",
-      editable: true,
-    },
-    {
-      title: "age",
-      dataIndex: "age",
-      width: "15%",
-      editable: true,
-    },
-    {
-      title: "address",
-      dataIndex: "address",
-      width: "40%",
-      editable: true,
-    },
-    {
-      title: "operation",
-      dataIndex: "operation",
-      render: (_: any, record: Item) => {
-        const editable = isEditing(record);
-        return editable ? (
-          <span>
-            <Typography.Link
-              onClick={() => save(record.key)}
-              style={{ marginRight: 8 }}
-            >
-              Save
-            </Typography.Link>
-            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-              <a>Cancel</a>
-            </Popconfirm>
-          </span>
-        ) : (
-          <Typography.Link
-            disabled={editingKey !== ""}
-            onClick={() => edit(record)}
+  const getColumnSearchProps = (
+    dataIndex: DataIndex
+  ): TableColumnType<DataType> => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
+      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() =>
+            handleSearch(selectedKeys as string[], confirm, dataIndex)
+          }
+          style={{ marginBottom: 8, display: "block" }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() =>
+              handleSearch(selectedKeys as string[], confirm, dataIndex)
+            }
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90 }}
           >
-            Edit
-          </Typography.Link>
-        );
-      },
+            Search
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({ closeDropdown: false });
+              setSearchText((selectedKeys as string[])[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            close
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]
+        .toString()
+        .toLowerCase()
+        .includes((value as string).toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
+      ) : (
+        text
+      ),
+  });
+
+  const columns: TableColumnsType<DataType> = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      width: "30%",
+      ...getColumnSearchProps("name"),
+      sorter: (a, b) => a.address.length - b.address.length,
+      sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Age",
+      dataIndex: "age",
+      key: "age",
+      width: "20%",
+      ...getColumnSearchProps("age"),
+      sorter: (a, b) => a.address.length - b.address.length,
+      sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Address",
+      dataIndex: "address",
+      key: "address",
+      ...getColumnSearchProps("address"),
+      sorter: (a, b) => a.address.length - b.address.length,
+      sortDirections: ["descend", "ascend"],
     },
   ];
 
-  const mergedColumns = columns.map((col) => {
-    if (!col.editable) {
-      return col;
-    }
-    return {
-      ...col,
-      onCell: (record: Item) => ({
-        record,
-        inputType: col.dataIndex === "age" ? "number" : "text",
-        dataIndex: col.dataIndex,
-        title: col.title,
-        editing: isEditing(record),
-      }),
-    };
-  });
-
   return (
-    <Form form={form} component={false}>
-      <Table
-        components={{
-          body: {
-            cell: EditableCell,
-          },
-        }}
-        bordered
-        dataSource={data}
-        columns={mergedColumns}
-        rowClassName="editable-row"
-        pagination={{
-          onChange: cancel,
-        }}
-      />
-    </Form>
+    <Table
+      rowSelection={{ ...rowSelection }}
+      columns={columns}
+      dataSource={data}
+    />
   );
 };

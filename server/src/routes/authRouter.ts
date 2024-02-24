@@ -1,9 +1,10 @@
 import express from "express";
 import { register } from "../controllers/auth/register";
-import { generateAuthTokens, isAuthenticated } from "../middlewares/auth";
 import { login } from "../controllers/auth/login";
 import { logout } from "../controllers/auth/logout";
 import { refreshAccessToken } from "../controllers/auth/refreshAccessToken";
+import { generateAuthTokens } from "../middlewares/auth/generateAuthTokens";
+import { isAuthenticated } from "../middlewares/auth/isAuthenticated";
 export const authRouter = express.Router();
 
 //                   register acts like middileware

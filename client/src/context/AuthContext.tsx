@@ -65,10 +65,7 @@ const authReducer = (state: InitialStateType, action: AuthReducerAction) => {
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  console.log("context state : ", state);
-
   const login = useCallback((user: User, token: string, expiresAt: Date) => {
-    console.log("login");
     dispatch({
       type: "login",
       payload: {

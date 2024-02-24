@@ -1,3 +1,9 @@
+import { MyTable } from "../../components/MyTable";
+
 export const InventoryList = () => {
-  return <div>InventoryList</div>;
+  return (
+    <div>
+      <MyTable />
+    </div>
+  );
 };

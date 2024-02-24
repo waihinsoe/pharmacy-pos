@@ -45,8 +45,6 @@ export const refreshAccessToken = async (
         accessTokenLife
       );
 
-      console.log("refresh");
-
       return res.status(200).json({
         user,
         accessToken,
