@@ -12,7 +12,7 @@ export const Layout = () => {
       <DashboardNavBar collapsed={collapsed} setCollapsed={setCollapsed} />
       <Flex flex={1}>
         <DashboardSideBar collapsed={collapsed} />
-        <main style={{ padding: 12, flex: 1 }}>
+        <main style={{ padding: 16, flex: 1 }}>
           <Outlet />
         </main>
       </Flex>

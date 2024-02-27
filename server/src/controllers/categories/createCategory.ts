@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../../utils/db";
 
-export const createCategories = async (req: Request, res: Response) => {
+export const createCategory = async (req: Request, res: Response) => {
   try {
     const { name, description } = req.body;
     const isValid = name && description;

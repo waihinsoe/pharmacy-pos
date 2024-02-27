@@ -18,7 +18,6 @@ export const categoryService = {
       ...getAxiosConfig(accessToken),
       params: { ...query },
     });
-    console.log(data);
     return data;
   },
 
@@ -51,6 +50,14 @@ export const categoryService = {
   delete: async (id: number, accessToken: string) => {
     const { data: resData } = await axios.delete(
       `${API_URL}/${id}`,
+      getAxiosConfig(accessToken)
+    );
+    return resData;
+  },
+
+  deleteMany: async (ids: number[], accessToken: string) => {
+    const { data: resData } = await axios.delete(
+      `${API_URL}/deleteMany/${ids}`,
       getAxiosConfig(accessToken)
     );
     return resData;

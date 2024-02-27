@@ -27,7 +27,7 @@ export const Logout = () => {
     }
   };
   return (
-    <Button type="primary" onClick={logOutHandler}>
+    <Button type="default" onClick={logOutHandler}>
       logout
     </Button>
   );
