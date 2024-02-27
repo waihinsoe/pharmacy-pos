@@ -16,7 +16,7 @@ export const DashboardNavBar = ({ collapsed, setCollapsed }: Props) => {
       justify="space-between"
       align="center"
     >
-      <Button type="primary" onClick={toggleCollapsed}>
+      <Button type="default" onClick={toggleCollapsed}>
         {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
       </Button>
       <Logout />
