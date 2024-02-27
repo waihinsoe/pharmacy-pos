@@ -43,3 +43,17 @@ export const useDeleteCategory = () => {
     }
   );
 };
+
+export const useDeleteManyCategory = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    ({ ids, accessToken }: { ids: number[]; accessToken: string }) =>
+      categoryService.deleteMany(ids, accessToken),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(queryKeys.categories);
+      },
+    }
+  );
+};

@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import type { GetRef, TableColumnsType, TableColumnType } from "antd";
-import { Button, Input, Popconfirm, Space, Table } from "antd";
+import { Button, Flex, Input, Popconfirm, Space, Table } from "antd";
 import type {
   FilterDropdownProps,
   TableRowSelection,
@@ -10,9 +10,13 @@ import Highlighter from "react-highlight-words";
 import {
   useCategories,
   useDeleteCategory,
+  useDeleteManyCategory,
 } from "../../hooks/categories/useCategories";
 import { useAuth } from "../../context/AuthContext";
 import { PaginationAndSearchQuery } from "../../types";
+import { FaPlus } from "react-icons/fa6";
+import { FaRegTrashAlt } from "react-icons/fa";
+import { MdCancelPresentation } from "react-icons/md";
 
 type InputRef = GetRef<typeof Input>;
 
@@ -29,23 +33,22 @@ export const CategoryListTable = () => {
   const [limit, setLimit] = useState(10);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
   const searchInput = useRef<InputRef>(null);
   const { mutate: deleteCategory } = useDeleteCategory();
+  const { mutate: deleteManyCategory } = useDeleteManyCategory();
   const { token } = useAuth();
-  console.log("render");
+
   const query: PaginationAndSearchQuery = {
     page,
     limit,
     searchTerm: searchText,
   };
-  const { data, isLoading, isError } = useCategories(query, token || "");
-  console.log(data);
-  const handleTableChange = (pagination, filters, sorter) => {
-    // Adjust page and limit based on table pagination
-    console.log(pagination.current);
+  const { data, isLoading } = useCategories(query, token || "");
+  const handleTableChange = (pagination: any) => {
     setPage(pagination.current);
     setLimit(pagination.pageSize);
-    // Implement search or filters handling if necessary
   };
 
   const handleDelete = (key: React.Key) => {
@@ -54,19 +57,20 @@ export const CategoryListTable = () => {
     }
   };
 
+  const handleDeleteMany = () => {
+    if (selectedRowKeys) {
+      const ids = selectedRowKeys as number[];
+      deleteManyCategory({ ids, accessToken: token || "" });
+    }
+  };
+
+  const handleCancel = () => {
+    setSelectedRowKeys([]);
+  };
   const rowSelection: TableRowSelection<DataType> = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        "selectedRows: ",
-        selectedRows
-      );
-    },
-    onSelect: (record, selected, selectedRows) => {
-      console.log("onSelect", record, selected, selectedRows);
-    },
-    onSelectAll: (selected, selectedRows, changeRows) => {
-      console.log(selected, selectedRows, changeRows);
+    selectedRowKeys,
+    onChange: (newSelectedRowKeys) => {
+      setSelectedRowKeys(newSelectedRowKeys);
     },
   };
 
@@ -202,7 +206,7 @@ export const CategoryListTable = () => {
             title="Sure to delete?"
             onConfirm={() => handleDelete(record.id)}
           >
-            <a>Delete</a>
+            <a style={{ color: "red" }}>Delete</a>
           </Popconfirm>
         ) : null,
     },
@@ -210,13 +214,56 @@ export const CategoryListTable = () => {
 
   if (isLoading) return <div>...loading</div>;
   return (
-    <Table
-      rowSelection={{ ...rowSelection }}
-      columns={columns}
-      dataSource={data.data}
-      rowKey={"id"}
-      pagination={{ current: page, pageSize: limit, total: data.total }}
-      onChange={handleTableChange}
-    />
+    <Flex vertical gap={16}>
+      <Flex justify="space-between">
+        {selectedRowKeys.length ? (
+          <Flex gap={16}>
+            <Button
+              onClick={handleDeleteMany}
+              type="default"
+              danger
+              icon={<FaRegTrashAlt />}
+              style={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              delete
+            </Button>
+            <Button
+              onClick={handleCancel}
+              type="default"
+              icon={<MdCancelPresentation />}
+              style={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              cancel
+            </Button>
+          </Flex>
+        ) : (
+          <div></div>
+        )}
+        <Button
+          type="primary"
+          icon={<FaPlus />}
+          style={{
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          create category
+        </Button>
+      </Flex>
+      <Table
+        rowSelection={{ ...rowSelection }}
+        columns={columns}
+        dataSource={data.data}
+        rowKey={"id"}
+        pagination={{ current: page, pageSize: limit, total: data.total }}
+        onChange={handleTableChange}
+      />
+    </Flex>
   );
 };
