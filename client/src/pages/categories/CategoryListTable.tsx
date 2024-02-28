@@ -17,6 +17,7 @@ import { PaginationAndSearchQuery } from "../../types";
 import { FaPlus } from "react-icons/fa6";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { MdCancelPresentation } from "react-icons/md";
+import { Link, useNavigate } from "react-router-dom";
 
 type InputRef = GetRef<typeof Input>;
 
@@ -29,6 +30,7 @@ interface DataType {
 type DataIndex = keyof DataType;
 
 export const CategoryListTable = () => {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [searchText, setSearchText] = useState("");
@@ -61,6 +63,7 @@ export const CategoryListTable = () => {
     if (selectedRowKeys) {
       const ids = selectedRowKeys as number[];
       deleteManyCategory({ ids, accessToken: token || "" });
+      setSelectedRowKeys([]);
     }
   };
 
@@ -202,12 +205,15 @@ export const CategoryListTable = () => {
       dataIndex: "operation",
       render: (_, record: { id: React.Key }) =>
         data.data.length >= 1 ? (
-          <Popconfirm
-            title="Sure to delete?"
-            onConfirm={() => handleDelete(record.id)}
-          >
-            <a style={{ color: "red" }}>Delete</a>
-          </Popconfirm>
+          <Flex gap={16}>
+            <Popconfirm
+              title="Sure to delete?"
+              onConfirm={() => handleDelete(record.id)}
+            >
+              <a style={{ color: "red" }}>Delete</a>
+            </Popconfirm>
+            <Link to={`edit/${record.id}`}>Edit</Link>
+          </Flex>
         ) : null,
     },
   ];
@@ -218,18 +224,19 @@ export const CategoryListTable = () => {
       <Flex justify="space-between">
         {selectedRowKeys.length ? (
           <Flex gap={16}>
-            <Button
-              onClick={handleDeleteMany}
-              type="default"
-              danger
-              icon={<FaRegTrashAlt />}
-              style={{
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              delete
-            </Button>
+            <Popconfirm title="Sure to delete?" onConfirm={handleDeleteMany}>
+              <Button
+                type="default"
+                danger
+                icon={<FaRegTrashAlt />}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                delete
+              </Button>
+            </Popconfirm>
             <Button
               onClick={handleCancel}
               type="default"
@@ -246,6 +253,9 @@ export const CategoryListTable = () => {
           <div></div>
         )}
         <Button
+          onClick={() => {
+            navigate("create");
+          }}
           type="primary"
           icon={<FaPlus />}
           style={{
