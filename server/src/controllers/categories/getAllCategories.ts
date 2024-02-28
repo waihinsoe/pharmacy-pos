@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { prisma } from "../../utils/db";
 
 export const getAllCategories = async (req: Request, res: Response) => {
-  console.log(req.query);
   try {
     const { page = 1, limit = 10, searchTerm = "" } = req.query;
     const pageNumber = parseInt(page as string);

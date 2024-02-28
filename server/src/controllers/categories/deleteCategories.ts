@@ -1,27 +1,20 @@
 import { Request, Response } from "express";
+import { prisma } from "../../utils/db";
 
 export const deleteCategories = async (req: Request, res: Response) => {
-  //   console.log(req.query);
-  //   try {
-  //     const { id } = req.params;
-  //     if (!id)
-  //       return res.status(404).json({ error: "Missing id. Please try again. " });
+  try {
+    const { ids } = req.params;
+    const categoryIds = ids.split(",").map((id) => Number(id));
 
-  //     const cateogry = await prisma.categories.findFirst({
-  //       where: { id: Number(id) },
-  //     });
-  //     if (!cateogry) {
-  //       return res
-  //         .status(404)
-  //         .json({ error: "Category not found. Please try again" });
-  //     }
+    if (!ids.length)
+      return res.status(400).json({ error: "messing Ids , Please try again" });
 
-  //     await prisma.categories.delete({ where: { id: Number(id) } });
-  //     return res.status(200).json({
-  //       message: "deleted category successfully",
-  //     });
-  //   } catch (error) {
-  //     return res.status(500).json({ error: error });
-  //   }
-  return res.send({ message: "hello" });
+    await prisma.categories.deleteMany({ where: { id: { in: categoryIds } } });
+
+    return res.status(200).json({
+      message: "deleted category successfully",
+    });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
 };
