@@ -1,6 +1,6 @@
 import axios from "axios";
 import { config } from "../../config";
-import { Categories } from "../../types/categoryTypes";
+import { Category } from "../../types/categoryTypes";
 import { PaginationAndSearchQuery } from "../../types";
 
 const API_URL = `${config.apiBaseUrl}/categories`;
@@ -29,7 +29,7 @@ export const categoryService = {
     return data;
   },
 
-  create: async (data: Categories, accessToken: string) => {
+  create: async (data: Category, accessToken: string) => {
     const { data: resData } = await axios.post(
       `${API_URL}`,
       data,
@@ -38,7 +38,7 @@ export const categoryService = {
     return resData;
   },
 
-  update: async (id: number, data: Categories, accessToken: string) => {
+  update: async (id: number, data: Category, accessToken: string) => {
     const { data: resData } = await axios.put(
       `${API_URL}/${id}`,
       data,
