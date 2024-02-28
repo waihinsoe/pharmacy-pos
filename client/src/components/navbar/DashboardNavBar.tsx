@@ -12,11 +12,9 @@ export const DashboardNavBar = ({ collapsed, setCollapsed }: Props) => {
   const [items, setItems] = useState<any>([]);
   const location = useLocation();
   const pathname = location.pathname;
-  console.log(pathname);
 
   useEffect(() => {
     const newItems = createArrayForBreadcrumb(pathname);
-    console.log(newItems);
     return setItems(newItems);
   }, [location]);
 

@@ -55,7 +55,7 @@ function App() {
           // Seed Token
           colorPrimary: " #008080", //#28A745
           borderRadius: 3,
-          motion: false,
+          // motion: false,
           // Alias Token
           // colorBgContainer: "#f6ffed",
         },
