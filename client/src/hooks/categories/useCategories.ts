@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { queryKeys } from "../../query/constants/queryKeys";
 import { categoryService } from "../../services/api/categoryService";
-import { Categories } from "../../types/categoryTypes";
+import { Category } from "../../types/categoryTypes";
 import { PaginationAndSearchQuery } from "../../types";
 
 export const useCategories = (
@@ -16,12 +16,37 @@ export const useCategories = (
     }
   );
 
+export const useCategory = (id: number, accessToken: string) =>
+  useQuery([queryKeys.category(id)], () =>
+    categoryService.get(id, accessToken)
+  );
+
 export const useCreateCategory = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    ({ data, accessToken }: { data: Categories; accessToken: string }) =>
+    ({ data, accessToken }: { data: Category; accessToken: string }) =>
       categoryService.create(data, accessToken),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(queryKeys.categories);
+      },
+    }
+  );
+};
+
+interface UpdateCategoryMutationDataType {
+  id: number;
+  data: Category;
+  accessToken: string;
+}
+export const useUpdateCategory = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    ({ id, data, accessToken }: UpdateCategoryMutationDataType) =>
+      categoryService.update(id, data, accessToken),
+
     {
       onSuccess: () => {
         queryClient.invalidateQueries(queryKeys.categories);
