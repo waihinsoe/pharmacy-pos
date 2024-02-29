@@ -1,12 +1,64 @@
 import axios from "axios";
 import { config } from "../../config";
+import { PaginationAndSearchQuery, Product } from "../../types";
 
 const API_URL = `${config.apiBaseUrl}/products`;
 
+const getAxiosConfig = (accessToken: string) => ({
+  headers: {
+    Authorization: `Bearer ${accessToken}`,
+  },
+  withCredentials: true,
+});
+
 export const productService = {
-  list: () => axios.get(API_URL),
-  get: (id: number) => axios.get(`${API_URL}/${id}`),
-  create: (data: any) => axios.post(API_URL, data),
-  update: (id: number, data: any) => axios.put(`${API_URL}/${id}`, data),
-  delete: (id: number) => axios.delete(`${API_URL}/${id}`),
+  list: async (query: PaginationAndSearchQuery, accessToken: string) => {
+    const { data } = await axios.get(API_URL, {
+      ...getAxiosConfig(accessToken),
+      params: { ...query },
+    });
+    return data;
+  },
+
+  get: async (id: number, accessToken: string) => {
+    const { data } = await axios.get(
+      `${API_URL}/${id}`,
+      getAxiosConfig(accessToken)
+    );
+    return data;
+  },
+
+  create: async (data: Product, accessToken: string) => {
+    const { data: resData } = await axios.post(
+      `${API_URL}`,
+      data,
+      getAxiosConfig(accessToken)
+    );
+    return resData;
+  },
+
+  update: async (id: number, data: Product, accessToken: string) => {
+    const { data: resData } = await axios.put(
+      `${API_URL}/${id}`,
+      data,
+      getAxiosConfig(accessToken)
+    );
+    return resData;
+  },
+
+  delete: async (id: number, accessToken: string) => {
+    const { data: resData } = await axios.delete(
+      `${API_URL}/${id}`,
+      getAxiosConfig(accessToken)
+    );
+    return resData;
+  },
+
+  deleteMany: async (ids: number[], accessToken: string) => {
+    const { data: resData } = await axios.delete(
+      `${API_URL}/deleteMany/${ids}`,
+      getAxiosConfig(accessToken)
+    );
+    return resData;
+  },
 };

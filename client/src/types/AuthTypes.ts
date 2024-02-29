@@ -1,14 +1,4 @@
-export interface User {
-  id: number;
-  name: string;
-  password: string;
-  contact_number: string;
-  email: string;
-  role: Role;
-  hire_date: Date;
-  created_at: Date;
-  updated_at: Date;
-}
+import { User } from ".";
 
 export interface InitialStateType {
   user: User | null;
@@ -36,11 +26,6 @@ export type AuthReducerAction =
   | { type: "logout" }
   | { type: "updateUser"; payload: { user: User } }
   | { type: "status"; payload: { status: AUTH_STATUS } };
-
-enum Role {
-  CASHIER = "CASHIER",
-  ADMIN = "ADMIN",
-}
 
 export enum AUTH_STATUS {
   PENDING = "PENDING",

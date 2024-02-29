@@ -1,7 +1,6 @@
 import axios from "axios";
 import { config } from "../../config";
-import { Category } from "../../types/categoryTypes";
-import { PaginationAndSearchQuery } from "../../types";
+import { Category, PaginationAndSearchQuery } from "../../types";
 
 const API_URL = `${config.apiBaseUrl}/categories`;
 
@@ -13,12 +12,17 @@ const getAxiosConfig = (accessToken: string) => ({
 });
 
 export const categoryService = {
-  list: async (query: PaginationAndSearchQuery, accessToken: string) => {
-    const { data } = await axios.get(API_URL, {
-      ...getAxiosConfig(accessToken),
-      params: { ...query },
-    });
-    return data;
+  list: async (accessToken: string, query?: PaginationAndSearchQuery) => {
+    if (query) {
+      const { data } = await axios.get(API_URL, {
+        ...getAxiosConfig(accessToken),
+        params: { ...query },
+      });
+      return data;
+    } else {
+      const { data } = await axios.get(API_URL, getAxiosConfig(accessToken));
+      return data;
+    }
   },
 
   get: async (id: number, accessToken: string) => {

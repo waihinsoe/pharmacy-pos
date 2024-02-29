@@ -29,26 +29,26 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
-export const CategoryListTable = () => {
+export const ProductListTable = () => {
+  const { token } = useAuth();
   const navigate = useNavigate();
+
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-
   const searchInput = useRef<InputRef>(null);
+
   const { mutate: deleteCategory } = useDeleteCategory();
   const { mutate: deleteManyCategory } = useDeleteManyCategory();
-  const { token } = useAuth();
 
   const query: PaginationAndSearchQuery = {
     page,
     limit,
     searchTerm: searchText,
   };
-  const { data, isLoading } = useCategories(token || "", query);
-
+  const { data, isLoading } = useCategories(token || "");
   const handleTableChange = (pagination: any) => {
     setPage(pagination.current);
     setLimit(pagination.pageSize);
@@ -265,7 +265,7 @@ export const CategoryListTable = () => {
             alignItems: "center",
           }}
         >
-          create category
+          create product
         </Button>
       </Flex>
       <Table

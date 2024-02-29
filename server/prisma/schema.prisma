@@ -18,7 +18,7 @@ model Users {
   created_at     DateTime @default(now())
   updated_at     DateTime @default(now()) @updatedAt
   Sales          Sales[]
-  Tokens Tokens[]
+  Tokens         Tokens[]
 }
 
 model Customers {
@@ -56,39 +56,40 @@ model Categories {
 }
 
 model Products {
-  id                 Int                  @id @default(autoincrement())
-  category_id        Int
-  name               String
-  description        String
-  price              Int
-  quantity           Int
-  expriy_date        DateTime             @default(now())
-  created_at         DateTime             @default(now())
-  updated_at         DateTime             @default(now()) @updatedAt
-  Categories         Categories           @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Products_Suppliers Products_Suppliers[]
-  Sale_details       Sale_details[]
+  id           Int            @id @default(autoincrement())
+  category_id  Int
+  supplier_id  Int
+  name         String
+  description  String
+  price        Int
+  quantity     Int
+  expriy_date  DateTime       @default(now())
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @default(now()) @updatedAt
+  Categories   Categories     @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Sale_details Sale_details[]
+  Suppliers    Suppliers      @relation(fields: [supplier_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model Suppliers {
-  id                 Int                  @id @default(autoincrement())
-  name               String
-  contact_number     String
-  address            String
-  created_at         DateTime             @default(now())
-  updated_at         DateTime             @default(now()) @updatedAt
-  Products_Suppliers Products_Suppliers[]
+  id             Int        @id @default(autoincrement())
+  name           String
+  contact_number String
+  address        String
+  created_at     DateTime   @default(now())
+  updated_at     DateTime   @default(now()) @updatedAt
+  Products       Products[]
 }
 
-model Products_Suppliers {
-  id          Int       @id @default(autoincrement())
-  product_id  Int
-  supplier_id Int
-  created_at  DateTime  @default(now())
-  updated_at  DateTime  @default(now()) @updatedAt
-  Products    Products  @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Suppliers   Suppliers @relation(fields: [supplier_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
+// model Products_Suppliers {
+// id          Int       @id @default(autoincrement())
+// product_id  Int
+// supplier_id Int
+// created_at  DateTime  @default(now())
+// updated_at  DateTime  @default(now()) @updatedAt
+// Products    Products  @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+// Suppliers   Suppliers @relation(fields: [supplier_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+// }
 
 model Sale_details {
   id         Int      @id @default(autoincrement())
@@ -103,13 +104,13 @@ model Sale_details {
 }
 
 model Tokens {
-  id Int @id @default(autoincrement())
-  refresh_token String
+  id              Int      @id @default(autoincrement())
+  refresh_token   String
   expiration_time BigInt
-  user_id Int 
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now()) @updatedAt
-  Users Users @relation(fields: [user_id], references: [id], onDelete: NoAction,onUpdate: NoAction)
+  user_id         Int
+  created_at      DateTime @default(now())
+  updated_at      DateTime @default(now()) @updatedAt
+  Users           Users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum Role {
