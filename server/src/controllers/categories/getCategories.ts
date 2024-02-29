@@ -1,7 +1,23 @@
 import { Request, Response } from "express";
 import { prisma } from "../../utils/db";
 
-export const getAllCategories = async (req: Request, res: Response) => {
+export const getCategories = async (req: Request, res: Response) => {
+  const isPaginateFetch = req.query.hasOwnProperty("page");
+  console.log(isPaginateFetch);
+  if (!isPaginateFetch) {
+    try {
+      const categories = await prisma.categories.findMany();
+
+      if (!categories) {
+        return res.status(200).json({ message: "Categories not found." });
+      }
+
+      return res.status(200).json(categories);
+    } catch (error) {
+      return res.status(500).json({ error });
+    }
+  }
+
   try {
     const { page = 1, limit = 10, searchTerm = "" } = req.query;
     const pageNumber = parseInt(page as string);

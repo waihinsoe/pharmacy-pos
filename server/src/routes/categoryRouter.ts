@@ -1,16 +1,16 @@
 import express from "express";
-import { getAllCategories } from "../controllers/categories/getAllCategories";
+import { getCategories } from "../controllers/categories/getCategories";
 import { createCategory } from "../controllers/categories/createCategory";
 import { isAuthenticated } from "../middlewares/auth/isAuthenticated";
 import { deleteCategory } from "../controllers/categories/deleteCategory";
 import { deleteCategories } from "../controllers/categories/deleteCategories";
-import { getCategory } from "../controllers/categories/getCategory";
 import { updateCategory } from "../controllers/categories/updateCategory";
+import { getCategory } from "../controllers/categories/getCategory";
 
 export const categoryRouter = express.Router();
 
+categoryRouter.get("/", getCategories);
 categoryRouter.get("/:id", isAuthenticated, getCategory);
-categoryRouter.get("/", isAuthenticated, getAllCategories);
 
 categoryRouter.post("/", isAuthenticated, createCategory);
 
