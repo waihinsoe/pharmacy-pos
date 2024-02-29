@@ -13,7 +13,6 @@ import { useNavigate, useParams } from "react-router-dom";
 
 export const EditCategory = () => {
   const { categoryId } = useParams();
-  const navigate = useNavigate();
   const { token } = useAuth();
   const { mutate: updateCategory, isLoading, isSuccess } = useUpdateCategory();
   const { data: currentCategory } = useCategory(

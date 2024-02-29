@@ -1,20 +1,33 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { queryKeys } from "../../query/constants/queryKeys";
 import { categoryService } from "../../services/api/categoryService";
-import { Category } from "../../types/categoryTypes";
-import { PaginationAndSearchQuery } from "../../types";
+
+import { Category, PaginationAndSearchQuery } from "../../types";
 
 export const useCategories = (
-  query: PaginationAndSearchQuery,
-  accessToken: string
-) =>
-  useQuery(
-    [queryKeys.categories, query],
-    () => categoryService.list(query, accessToken),
-    {
-      keepPreviousData: true, // Enables smoother pagination
-    }
-  );
+  accessToken: string,
+  query?: PaginationAndSearchQuery
+) => {
+
+  if(query) {
+    return useQuery(
+      [queryKeys.categories, query],
+      () => categoryService.list(accessToken, query),
+      {
+        keepPreviousData: true, // Enables smoother pagination
+      }
+    );
+  }else{
+    return useQuery(
+      [queryKeys.categories],
+      () => categoryService.list(accessToken),
+      {
+        keepPreviousData: true, // Enables smoother pagination
+      }
+    );
+  }
+ 
+};
 
 export const useCategory = (id: number, accessToken: string) =>
   useQuery([queryKeys.category(id)], () =>
