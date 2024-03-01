@@ -1,8 +1,8 @@
 import axios from "axios";
 import { config } from "../../config";
-import { PaginationAndSearchQuery, Product } from "../../types";
+import { PaginationAndSearchQuery, Supplier } from "../../types";
 
-const API_URL = `${config.apiBaseUrl}/products`;
+const API_URL = `${config.apiBaseUrl}/suppliers`;
 
 const getAxiosConfig = (accessToken: string) => ({
   headers: {
@@ -11,7 +11,7 @@ const getAxiosConfig = (accessToken: string) => ({
   withCredentials: true,
 });
 
-export const productService = {
+export const supplierService = {
   list: async (accessToken: string, query?: PaginationAndSearchQuery) => {
     if (query) {
       const { data } = await axios.get(API_URL, {
@@ -33,7 +33,7 @@ export const productService = {
     return data;
   },
 
-  create: async (data: Product, accessToken: string) => {
+  create: async (data: Supplier, accessToken: string) => {
     const { data: resData } = await axios.post(
       `${API_URL}`,
       data,
@@ -42,7 +42,7 @@ export const productService = {
     return resData;
   },
 
-  update: async (id: number, data: Product, accessToken: string) => {
+  update: async (id: number, data: Supplier, accessToken: string) => {
     const { data: resData } = await axios.put(
       `${API_URL}/${id}`,
       data,

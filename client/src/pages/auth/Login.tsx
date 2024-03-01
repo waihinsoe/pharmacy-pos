@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AUTH_STATUS } from "../../types/AuthTypes";
 import axios from "axios";
 import { config } from "../../config";
+import { MdOutlineEmail } from "react-icons/md";
 export const Login = () => {
   const { login, setAuthenticationStatus } = useAuth();
   const navigate = useNavigate();
@@ -53,10 +54,7 @@ export const Login = () => {
             },
           ]}
         >
-          <Input
-            prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Email"
-          />
+          <Input prefix={<MdOutlineEmail />} placeholder="Email" />
         </Form.Item>
         <Form.Item
           name="password"

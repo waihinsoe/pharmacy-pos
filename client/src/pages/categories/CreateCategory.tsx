@@ -39,21 +39,59 @@ export const CreateCategory = () => {
       {contextHolder}
       <Flex vertical gap={16} align="start">
         <Title level={3}>Create Category</Title>
-        <Input
-          placeholder="Enter category name"
-          allowClear
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <TextArea
-          placeholder="Enter description...."
-          allowClear
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <Button loading={isLoading} type="primary" onClick={handleCreate}>
-          Create
-        </Button>
+
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 800,
+            display: "grid",
+            gridTemplateColumns: "1fr 3fr",
+          }}
+        >
+          <Title level={5}>Name</Title>
+          <Input
+            placeholder="Enter category name"
+            allowClear
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 800,
+            display: "grid",
+            gridTemplateColumns: "1fr 3fr",
+          }}
+        >
+          <Title level={5}>Description</Title>
+          <TextArea
+            placeholder="Enter description...."
+            allowClear
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 800,
+            display: "grid",
+            gridTemplateColumns: "1fr 3fr",
+          }}
+        >
+          <div></div>
+          <Button
+            loading={isLoading}
+            type="primary"
+            style={{ width: "fit-content" }}
+            onClick={handleCreate}
+          >
+            Create
+          </Button>
+        </div>
       </Flex>
     </>
   );

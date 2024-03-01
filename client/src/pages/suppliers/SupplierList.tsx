@@ -1,5 +1,10 @@
 import React from "react";
+import { SupplierListTable } from "./SupplierListTable";
 
 export const SupplierList = () => {
-  return <div>SupplierList</div>;
+  return (
+    <div>
+      <SupplierListTable />
+    </div>
+  );
 };

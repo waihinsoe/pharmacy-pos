@@ -1,17 +1,27 @@
 import { Button, Flex, Form, Input, Select, message } from "antd";
 import Title from "antd/es/typography/Title";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { useCreateSupplier } from "../../hooks/suppliers/useSuppliers";
+import { useParams } from "react-router-dom";
+import {
+  useSupplier,
+  useUpdateSupplier,
+} from "../../hooks/suppliers/useSuppliers";
 import { Supplier } from "../../types";
+
 const { Option } = Select;
 // name description
 
-export const CreateSupplier = () => {
-  const navigate = useNavigate();
+export const EditSupplier = () => {
+  const { supplierId } = useParams();
   const { token } = useAuth();
-  const { mutate: createNewSupplier, isLoading } = useCreateSupplier();
+  const { mutate: updateSupplier, isLoading, isSuccess } = useUpdateSupplier();
+  const { data: currentSupplier } = useSupplier(
+    Number(supplierId),
+    token || ""
+  );
+  console.log(currentSupplier);
   const [supplierData, setSupplierData] = useState<Supplier>({
     name: "",
     contact_number: "",
@@ -19,17 +29,13 @@ export const CreateSupplier = () => {
   });
   const [messageApi, contextHolder] = message.useMessage();
 
-  const handleCreate = () => {
+  const handleUpdate = () => {
     const { name, contact_number, address } = supplierData;
-    const isValid = name && contact_number && address && token;
+    const isValid = supplierId && name && contact_number && address && token;
     if (!isValid) return warning();
+    const id = Number(supplierId);
     const data = supplierData;
-    createNewSupplier({
-      data,
-      accessToken: token,
-    });
-    // route back
-    navigate(-1);
+    updateSupplier({ id, data, accessToken: token });
   };
 
   const warning = () => {
@@ -38,12 +44,29 @@ export const CreateSupplier = () => {
       content: "Please fill all input!",
     });
   };
+  const success = () => {
+    messageApi.open({
+      type: "success",
+      content: "updated successfully!",
+    });
+  };
 
+  useEffect(() => {
+    if (currentSupplier) {
+      setSupplierData(currentSupplier);
+    }
+  }, [currentSupplier]);
+
+  useEffect(() => {
+    if (!isLoading && isSuccess) {
+      return success();
+    }
+  }, [isLoading, isSuccess]);
   return (
     <>
       {contextHolder}
       <Flex vertical gap={16} align="start">
-        <Title level={3}>Create Supplier</Title>
+        <Title level={3}>Edit Supplier</Title>
 
         <div
           style={{
@@ -74,6 +97,7 @@ export const CreateSupplier = () => {
         >
           <Title level={5}>Contact-number</Title>
           <Input
+            value={supplierData.contact_number}
             onChange={(e) =>
               setSupplierData({
                 ...supplierData,
@@ -118,9 +142,9 @@ export const CreateSupplier = () => {
             loading={isLoading}
             type="primary"
             style={{ width: "fit-content" }}
-            onClick={handleCreate}
+            onClick={handleUpdate}
           >
-            Create
+            Update
           </Button>
         </div>
       </Flex>

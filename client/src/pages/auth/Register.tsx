@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { AUTH_STATUS } from "../../types/AuthTypes";
 import axios from "axios";
 import { config } from "../../config";
+import { MdOutlineEmail } from "react-icons/md";
+
 const { Option } = Select;
 
 export const Register = () => {
@@ -70,10 +72,7 @@ export const Register = () => {
             },
           ]}
         >
-          <Input
-            prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Email"
-          />
+          <Input prefix={<MdOutlineEmail />} placeholder="Email" />
         </Form.Item>
         <Form.Item
           name="contact_number"

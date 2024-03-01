@@ -4,12 +4,10 @@ import Title from "antd/es/typography/Title";
 import { useEffect, useState } from "react";
 import {
   useCategory,
-  useCreateCategory,
   useUpdateCategory,
 } from "../../hooks/categories/useCategories";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate, useParams } from "react-router-dom";
-// name description
+import { useParams } from "react-router-dom";
 
 export const EditCategory = () => {
   const { categoryId } = useParams();
@@ -61,21 +59,59 @@ export const EditCategory = () => {
       {contextHolder}
       <Flex vertical gap={16} align="start">
         <Title level={3}>Create Category</Title>
-        <Input
-          placeholder="Enter category name"
-          allowClear
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <TextArea
-          placeholder="Enter description...."
-          allowClear
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <Button loading={isLoading} type="primary" onClick={handleUpdate}>
-          Update
-        </Button>
+
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 800,
+            display: "grid",
+            gridTemplateColumns: "1fr 3fr",
+          }}
+        >
+          <Title level={5}>Name</Title>
+          <Input
+            placeholder="Enter category name"
+            allowClear
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 800,
+            display: "grid",
+            gridTemplateColumns: "1fr 3fr",
+          }}
+        >
+          <Title level={5}>Description</Title>
+          <TextArea
+            placeholder="Enter description...."
+            allowClear
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 800,
+            display: "grid",
+            gridTemplateColumns: "1fr 3fr",
+          }}
+        >
+          <div></div>
+          <Button
+            loading={isLoading}
+            type="primary"
+            style={{ width: "fit-content" }}
+            onClick={handleUpdate}
+          >
+            Update
+          </Button>
+        </div>
       </Flex>
     </>
   );

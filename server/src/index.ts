@@ -5,6 +5,8 @@ import { authRouter } from "./routes/authRouter";
 import cookieParser from "cookie-parser";
 import { config } from "./config";
 import { categoryRouter } from "./routes/categoryRouter";
+import { supplierRouter } from "./routes/supplierRouter";
+import { productRouter } from "./routes/productRouter";
 dotenv.config();
 
 const app = express();
@@ -25,6 +27,8 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/auth", authRouter);
 app.use("/api/categories", categoryRouter);
+app.use("/api/suppliers", supplierRouter);
+app.use("/api/products", productRouter);
 
 app.listen(3000, () => {
   console.log("server is listening at port 3000");
