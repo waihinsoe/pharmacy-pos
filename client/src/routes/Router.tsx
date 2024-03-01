@@ -19,6 +19,7 @@ import { Register } from "../pages/auth/Register";
 import { CategoryList } from "../pages/categories/CategoryList";
 import { EditCategory } from "../pages/categories/EditCategory";
 import { CreateCategory } from "../pages/categories/CreateCategory";
+import { EditSupplier } from "../pages/suppliers/EditSupplier";
 export const Router = () => {
   return (
     <BrowserRouter>
@@ -43,6 +44,10 @@ export const Router = () => {
             <Route path="customers/create" element={<CreateCustomer />} />
             <Route path="suppliers" element={<SupplierList />} />
             <Route path="suppliers/create" element={<CreateSupplier />} />
+            <Route
+              path="suppliers/edit/:supplierId"
+              element={<EditSupplier />}
+            />
             <Route path="reports/sales" element={<SalesReport />} />
             <Route path="reports/products" element={<ProdcutReport />} />
             <Route path="*" element={<NotFound />} />

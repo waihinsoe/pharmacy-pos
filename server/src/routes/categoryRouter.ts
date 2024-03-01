@@ -9,7 +9,7 @@ import { getCategory } from "../controllers/categories/getCategory";
 
 export const categoryRouter = express.Router();
 
-categoryRouter.get("/", getCategories);
+categoryRouter.get("/", isAuthenticated, getCategories);
 categoryRouter.get("/:id", isAuthenticated, getCategory);
 
 categoryRouter.post("/", isAuthenticated, createCategory);

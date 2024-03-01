@@ -4,4 +4,7 @@ export const queryKeys = {
 
   categories: "categories",
   category: (id: number) => [`categories`, id],
+
+  suppliers: "suppliers",
+  supplier: (id: number) => [`suppliers`, id],
 };
