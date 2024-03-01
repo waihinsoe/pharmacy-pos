@@ -1,18 +1,18 @@
 import { Request, Response } from "express";
 import { prisma } from "../../utils/db";
 
-export const getCategories = async (req: Request, res: Response) => {
+export const getProducts = async (req: Request, res: Response) => {
   const isPaginateFetch = req.query.hasOwnProperty("page");
   console.log(isPaginateFetch);
   if (!isPaginateFetch) {
     try {
-      const categories = await prisma.categories.findMany();
+      const products = await prisma.products.findMany();
 
-      if (!categories) {
-        return res.status(200).json({ message: "Categories not found." });
+      if (!products) {
+        return res.status(200).json({ message: "Products not found." });
       }
 
-      return res.status(200).json(categories);
+      return res.status(200).json(products);
     } catch (error) {
       return res.status(500).json({ error });
     }
@@ -23,7 +23,7 @@ export const getCategories = async (req: Request, res: Response) => {
     const pageNumber = parseInt(page as string);
     const limitNumber = parseInt(limit as string);
 
-    const filteredCategories = await prisma.categories.findMany({
+    const filteredProducts = await prisma.products.findMany({
       where: {
         OR: [
           { name: { contains: searchTerm as string, mode: "insensitive" } },
@@ -39,7 +39,7 @@ export const getCategories = async (req: Request, res: Response) => {
       take: limitNumber,
     });
 
-    const total = await prisma.categories.count({
+    const total = await prisma.products.count({
       where: {
         OR: [
           { name: { contains: searchTerm as string, mode: "insensitive" } },
@@ -53,12 +53,12 @@ export const getCategories = async (req: Request, res: Response) => {
       },
     });
 
-    if (!filteredCategories) {
-      return res.status(200).json({ message: "Categories not found." });
+    if (!filteredProducts) {
+      return res.status(200).json({ message: "Products not found." });
     }
 
     res.json({
-      data: filteredCategories,
+      data: filteredProducts,
       total: total,
       page: pageNumber,
       limit: limitNumber,

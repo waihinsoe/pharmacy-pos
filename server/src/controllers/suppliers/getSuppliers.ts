@@ -1,18 +1,18 @@
 import { Request, Response } from "express";
 import { prisma } from "../../utils/db";
 
-export const getCategories = async (req: Request, res: Response) => {
+export const getSuppliers = async (req: Request, res: Response) => {
   const isPaginateFetch = req.query.hasOwnProperty("page");
   console.log(isPaginateFetch);
   if (!isPaginateFetch) {
     try {
-      const categories = await prisma.categories.findMany();
+      const suppliers = await prisma.suppliers.findMany();
 
-      if (!categories) {
-        return res.status(200).json({ message: "Categories not found." });
+      if (!suppliers) {
+        return res.status(200).json({ message: "suppliers not found." });
       }
 
-      return res.status(200).json(categories);
+      return res.status(200).json(suppliers);
     } catch (error) {
       return res.status(500).json({ error });
     }
@@ -23,12 +23,18 @@ export const getCategories = async (req: Request, res: Response) => {
     const pageNumber = parseInt(page as string);
     const limitNumber = parseInt(limit as string);
 
-    const filteredCategories = await prisma.categories.findMany({
+    const filteredSuppliers = await prisma.suppliers.findMany({
       where: {
         OR: [
           { name: { contains: searchTerm as string, mode: "insensitive" } },
           {
-            description: {
+            contact_number: {
+              contains: searchTerm as string,
+              mode: "insensitive",
+            },
+          },
+          {
+            address: {
               contains: searchTerm as string,
               mode: "insensitive",
             },
@@ -39,12 +45,18 @@ export const getCategories = async (req: Request, res: Response) => {
       take: limitNumber,
     });
 
-    const total = await prisma.categories.count({
+    const total = await prisma.suppliers.count({
       where: {
         OR: [
           { name: { contains: searchTerm as string, mode: "insensitive" } },
           {
-            description: {
+            contact_number: {
+              contains: searchTerm as string,
+              mode: "insensitive",
+            },
+          },
+          {
+            address: {
               contains: searchTerm as string,
               mode: "insensitive",
             },
@@ -53,12 +65,12 @@ export const getCategories = async (req: Request, res: Response) => {
       },
     });
 
-    if (!filteredCategories) {
-      return res.status(200).json({ message: "Categories not found." });
+    if (!filteredSuppliers) {
+      return res.status(200).json({ message: "suppliers not found." });
     }
 
     res.json({
-      data: filteredCategories,
+      data: filteredSuppliers,
       total: total,
       page: pageNumber,
       limit: limitNumber,

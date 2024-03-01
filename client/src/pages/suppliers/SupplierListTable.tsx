@@ -18,29 +18,25 @@ import { FaPlus } from "react-icons/fa6";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { MdCancelPresentation } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
-import { Dayjs } from "dayjs";
 import {
-  useDeleteManyProduct,
-  useDeleteProduct,
-  useProducts,
-} from "../../hooks/products/useProducts";
+  useDeleteManySupplier,
+  useDeleteSupplier,
+  useSupplier,
+  useSuppliers,
+} from "../../hooks/suppliers/useSuppliers";
 
 type InputRef = GetRef<typeof Input>;
 
 interface DataType {
   id: number;
   name: string;
-  category_name: string;
-  supplier_name: string;
-  description: string;
-  price: number;
-  quantity: number;
-  expriy_date: Dayjs;
+  contact_number: string;
+  address: string;
 }
 
 type DataIndex = keyof DataType;
 
-export const ProductListTable = () => {
+export const SupplierListTable = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
 
@@ -51,15 +47,16 @@ export const ProductListTable = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const searchInput = useRef<InputRef>(null);
 
-  const { mutate: deleteProduct } = useDeleteProduct();
-  const { mutate: deleteManyProduct } = useDeleteManyProduct();
+  const { mutate: deleteSupplier } = useDeleteSupplier();
+  const { mutate: deleteManySupplier } = useDeleteManySupplier();
 
   const query: PaginationAndSearchQuery = {
     page,
     limit,
     searchTerm: searchText,
   };
-  const { data, isLoading } = useProducts(token || "", query);
+  const { data, isLoading } = useSuppliers(token || "", query);
+
   const handleTableChange = (pagination: any) => {
     setPage(pagination.current);
     setLimit(pagination.pageSize);
@@ -67,14 +64,14 @@ export const ProductListTable = () => {
 
   const handleDelete = (key: React.Key) => {
     if (key) {
-      deleteProduct({ id: Number(key), accessToken: token || "" });
+      deleteSupplier({ id: Number(key), accessToken: token || "" });
     }
   };
 
   const handleDeleteMany = () => {
     if (selectedRowKeys) {
       const ids = selectedRowKeys as number[];
-      deleteManyProduct({ ids, accessToken: token || "" });
+      deleteManySupplier({ ids, accessToken: token || "" });
       setSelectedRowKeys([]);
     }
   };
@@ -206,15 +203,23 @@ export const ProductListTable = () => {
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-      ...getColumnSearchProps("description"),
-      sorter: (a, b) => a.description.length - b.description.length,
+      title: "Contact-Number",
+      dataIndex: "contact_number",
+      key: "contact_number",
+      ...getColumnSearchProps("contact_number"),
+      sorter: (a, b) => a.contact_number.length - b.contact_number.length,
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "operation",
+      title: "Address",
+      dataIndex: "address",
+      key: "address",
+      ...getColumnSearchProps("address"),
+      sorter: (a, b) => a.address.length - b.address.length,
+      sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Operation",
       dataIndex: "operation",
       render: (_, record: { id: React.Key }) =>
         data.data.length >= 1 ? (
@@ -276,7 +281,7 @@ export const ProductListTable = () => {
             alignItems: "center",
           }}
         >
-          create product
+          create supplier
         </Button>
       </Flex>
       <Table

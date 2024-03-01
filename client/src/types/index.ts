@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs";
+
 export interface User {
   id: number;
   name: string;
@@ -26,13 +28,13 @@ export interface Product {
   description: string;
   price: number;
   quantity: number;
-  expriy_date: Date;
+  expriy_date: Dayjs;
   img_url: string;
   created_at?: Date;
   updated_at?: Date;
 }
 
-export interface Suppliers {
+export interface Supplier {
   id?: number;
   name: string;
   contact_number: string;
