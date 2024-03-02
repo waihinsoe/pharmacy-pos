@@ -1,5 +1,9 @@
-import React from "react";
+import { CustomerListTable } from "./CustomerListTable";
 
 export const CustomerList = () => {
-  return <div>CustomerList</div>;
+  return (
+    <div>
+      <CustomerListTable />
+    </div>
+  );
 };

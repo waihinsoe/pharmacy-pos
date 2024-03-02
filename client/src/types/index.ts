@@ -43,6 +43,16 @@ export interface Supplier {
   updated_at?: Date;
 }
 
+export interface Customer {
+  id?: number;
+  name: string;
+  contact_number: string;
+  email: string;
+  loyalty_points: number;
+  created_at?: Date;
+  updated_at?: Date;
+}
+
 export interface PaginationAndSearchQuery {
   page: number;
   limit: number;

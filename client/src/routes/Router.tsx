@@ -20,6 +20,7 @@ import { CategoryList } from "../pages/categories/CategoryList";
 import { EditCategory } from "../pages/categories/EditCategory";
 import { CreateCategory } from "../pages/categories/CreateCategory";
 import { EditSupplier } from "../pages/suppliers/EditSupplier";
+import { EditCustomer } from "../pages/customers/EditCustomer";
 export const Router = () => {
   return (
     <BrowserRouter>
@@ -42,6 +43,10 @@ export const Router = () => {
             <Route path="sales/history" element={<SalesHistory />} />
             <Route path="customers" element={<CustomerList />} />
             <Route path="customers/create" element={<CreateCustomer />} />
+            <Route
+              path="customers/edit/:customerId"
+              element={<EditCustomer />}
+            />
             <Route path="suppliers" element={<SupplierList />} />
             <Route path="suppliers/create" element={<CreateSupplier />} />
             <Route
