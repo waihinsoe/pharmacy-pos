@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import  {  useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useCreateProduct } from "../../hooks/products/useProducts";
@@ -6,15 +6,14 @@ import {
   Button,
   DatePicker,
   DatePickerProps,
-  Divider,
   Flex,
   InputNumber,
   Select,
   message,
 } from "antd";
-import { Category, Product } from "../../types";
+import { Category, Product, Supplier } from "../../types";
 import Title from "antd/es/typography/Title";
-import Input, { InputRef } from "antd/es/input/Input";
+import Input from "antd/es/input/Input";
 import TextArea from "antd/es/input/TextArea";
 import { FaPlus } from "react-icons/fa6";
 import { useCategories } from "../../hooks/categories/useCategories";
@@ -40,10 +39,8 @@ export const CreateProduct = () => {
     img_url: "",
   });
   const [messageApi, contextHolder] = message.useMessage();
-  const [name, setName] = useState("");
-  const inputRef = useRef<InputRef>(null);
 
-  const onChange: DatePickerProps["onChange"] = (date, dateString) => {
+  const onChange: DatePickerProps["onChange"] = (date) => {
     setProductData({ ...productData, expriy_date: date });
   };
 
@@ -83,20 +80,6 @@ export const CreateProduct = () => {
     });
   };
 
-  const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
-  };
-
-  const addItem = (
-    e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>
-  ) => {
-    e.preventDefault();
-    setName("");
-    setTimeout(() => {
-      inputRef.current?.focus();
-    }, 0);
-  };
-
   return (
     <>
       {contextHolder}
@@ -130,41 +113,27 @@ export const CreateProduct = () => {
           }}
         >
           <Title level={5}>Select category</Title>
-          <Select
-            placeholder="Select cateogry"
-            onChange={(value) => setSelectedCategoryId(value)}
-            dropdownRender={(menu) => (
-              <>
-                {menu}
-                <Divider style={{ margin: "8px 0" }} />
-                <Flex gap={4}>
-                  <Input
-                    style={{ flex: 1 }}
-                    placeholder="Please enter new category name"
-                    ref={inputRef}
-                    value={name}
-                    onChange={onNameChange}
-                    onKeyDown={(e) => e.stopPropagation()}
-                  />
-                  <Button
-                    type="primary"
-                    icon={<FaPlus />}
-                    onClick={addItem}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    create category
-                  </Button>
-                </Flex>
-              </>
-            )}
-            options={categories?.map((item: Category) => ({
-              label: item.name,
-              value: item.id,
-            }))}
-          />
+          <div style={{ width: "100%", display: "flex", gap: 4 }}>
+            <Select
+              style={{ flex: 1 }}
+              placeholder="select category"
+              onChange={(value) => setSelectedCategoryId(value)}
+              options={categories?.map((item: Category) => {
+                return { label: item.name, value: item.id };
+              })}
+            />
+            <Button
+              type="primary"
+              icon={<FaPlus />}
+              onClick={() => navigate("/categories/create")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              create category
+            </Button>
+          </div>
         </div>
 
         <div
@@ -213,41 +182,27 @@ export const CreateProduct = () => {
           }}
         >
           <Title level={5}>Select supplier</Title>
-          <Select
-            placeholder="Select supplier"
-            onChange={(value) => setSelectedSupplierId(value)}
-            dropdownRender={(menu) => (
-              <>
-                {menu}
-                <Divider style={{ margin: "8px 0" }} />
-                <Flex gap={4}>
-                  <Input
-                    style={{ flex: 1 }}
-                    placeholder="Please enter new supplier name"
-                    ref={inputRef}
-                    value={name}
-                    onChange={onNameChange}
-                    onKeyDown={(e) => e.stopPropagation()}
-                  />
-                  <Button
-                    type="primary"
-                    icon={<FaPlus />}
-                    onClick={addItem}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    create supplier
-                  </Button>
-                </Flex>
-              </>
-            )}
-            options={suppliers?.map((item: Category) => ({
-              label: item.name,
-              value: item.id,
-            }))}
-          />
+          <div style={{ width: "100%", display: "flex", gap: 4 }}>
+            <Select
+              style={{ flex: 1 }}
+              placeholder="select supplier"
+              onChange={(value) => setSelectedSupplierId(value)}
+              options={suppliers?.map((item: Supplier) => {
+                return { label: item.name, value: item.id };
+              })}
+            />
+            <Button
+              onClick={() => navigate("/suppliers/create")}
+              type="primary"
+              icon={<FaPlus />}
+              style={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              create supplier
+            </Button>
+          </div>
         </div>
 
         <div

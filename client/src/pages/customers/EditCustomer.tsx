@@ -1,21 +1,31 @@
 import { Button, Flex, Form, Input, InputNumber, Select, message } from "antd";
 import Title from "antd/es/typography/Title";
 import { useEffect, useState } from "react";
+
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { Customer } from "../../types";
-import { useCreateCustomer } from "../../hooks/customers/useCustomers";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  useSupplier,
+  useUpdateSupplier,
+} from "../../hooks/suppliers/useSuppliers";
+import { Customer, Supplier } from "../../types";
+import {
+  useCustomer,
+  useUpdateCustomer,
+} from "../../hooks/customers/useCustomers";
+
 const { Option } = Select;
 // name description
 
-export const CreateCustomer = () => {
+export const EditCustomer = () => {
   const navigate = useNavigate();
+  const { customerId } = useParams();
   const { token } = useAuth();
-  const {
-    mutate: createNewCustomer,
-    isLoading,
-    isSuccess,
-  } = useCreateCustomer();
+  const { mutate: updateCustomer, isLoading, isSuccess } = useUpdateCustomer();
+  const { data: currentCustomer } = useCustomer(
+    Number(customerId),
+    token || ""
+  );
   const [customerData, setCustomerData] = useState<Customer>({
     name: "",
     contact_number: "",
@@ -24,15 +34,13 @@ export const CreateCustomer = () => {
   });
   const [messageApi, contextHolder] = message.useMessage();
 
-  const handleCreate = () => {
+  const handleUpdate = () => {
     const { name, contact_number, email } = customerData;
-    const isValid = name && contact_number && email && token;
+    const isValid = customerId && name && contact_number && email && token;
     if (!isValid) return warning();
+    const id = Number(customerId);
     const data = customerData;
-    createNewCustomer({
-      data,
-      accessToken: token,
-    });
+    updateCustomer({ id, data, accessToken: token });
   };
 
   const warning = () => {
@@ -41,17 +49,30 @@ export const CreateCustomer = () => {
       content: "Please fill all input!",
     });
   };
+  const success = () => {
+    messageApi.open({
+      type: "success",
+      content: "updated successfully!",
+    });
+  };
+
+  useEffect(() => {
+    if (currentCustomer) {
+      setCustomerData(currentCustomer);
+    }
+  }, [currentCustomer]);
 
   useEffect(() => {
     if (!isLoading && isSuccess) {
-      return navigate(-1);
+      success();
+      navigate(-1);
     }
   }, [isLoading, isSuccess]);
   return (
     <>
       {contextHolder}
       <Flex vertical gap={16} align="start">
-        <Title level={3}>Create Customer</Title>
+        <Title level={3}>Edit Customer</Title>
 
         <div
           style={{
@@ -82,6 +103,7 @@ export const CreateCustomer = () => {
         >
           <Title level={5}>Contact-number</Title>
           <Input
+            value={customerData.contact_number}
             onChange={(e) =>
               setCustomerData({
                 ...customerData,
@@ -144,9 +166,9 @@ export const CreateCustomer = () => {
             loading={isLoading}
             type="primary"
             style={{ width: "fit-content" }}
-            onClick={handleCreate}
+            onClick={handleUpdate}
           >
-            Create
+            Update
           </Button>
         </div>
       </Flex>
