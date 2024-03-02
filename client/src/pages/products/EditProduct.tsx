@@ -137,6 +137,7 @@ export const EditProduct = () => {
           <div style={{ width: "100%", display: "flex", gap: 4 }}>
             <Select
               style={{ flex: 1 }}
+              placeholder="select category"
               value={selectedCategoryId}
               onChange={(value) => setSelectedCategoryId(value)}
               options={categories?.map((item: Category) => {
@@ -207,6 +208,7 @@ export const EditProduct = () => {
             <Select
               style={{ flex: 1 }}
               value={selectedSupplierId}
+              placeholder="select supplier"
               onChange={(value) => setSelectedSupplierId(value)}
               options={suppliers?.map((item: Supplier) => {
                 return { label: item.name, value: item.id };
@@ -225,6 +227,7 @@ export const EditProduct = () => {
             </Button>
           </div>
         </div>
+
         <div
           style={{
             width: "100%",

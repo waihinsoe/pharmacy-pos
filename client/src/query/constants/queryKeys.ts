@@ -7,4 +7,7 @@ export const queryKeys = {
 
   suppliers: "suppliers",
   supplier: (id: number) => [`suppliers`, id],
+
+  customers: "customers",
+  customer: (id: number) => [`customers`, id],
 };

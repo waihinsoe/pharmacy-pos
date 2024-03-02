@@ -8,8 +8,7 @@ export const useCategories = (
   accessToken: string,
   query?: PaginationAndSearchQuery
 ) => {
-
-  if(query) {
+  if (query) {
     return useQuery(
       [queryKeys.categories, query],
       () => categoryService.list(accessToken, query),
@@ -17,7 +16,7 @@ export const useCategories = (
         keepPreviousData: true, // Enables smoother pagination
       }
     );
-  }else{
+  } else {
     return useQuery(
       [queryKeys.categories],
       () => categoryService.list(accessToken),
@@ -26,7 +25,6 @@ export const useCategories = (
       }
     );
   }
- 
 };
 
 export const useCategory = (id: number, accessToken: string) =>
