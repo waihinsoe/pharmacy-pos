@@ -2,27 +2,26 @@ import {
   Button,
   DatePicker,
   DatePickerProps,
-  Divider,
   Flex,
   Input,
   InputNumber,
-  InputRef,
   Select,
   message,
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import Title from "antd/es/typography/Title";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useProduct, useUpdateProduct } from "../../hooks/products/useProducts";
 import dayjs from "dayjs";
-import { Category, Product } from "../../types";
+import { Category, Product, Supplier } from "../../types";
 import { FaPlus } from "react-icons/fa6";
 import { useCategories } from "../../hooks/categories/useCategories";
 import { useSuppliers } from "../../hooks/suppliers/useSuppliers";
 
 export const EditProduct = () => {
+  const navigate = useNavigate();
   const { productId } = useParams();
   const { token } = useAuth();
   const { mutate: updateProduct, isLoading, isSuccess } = useUpdateProduct();
@@ -40,9 +39,8 @@ export const EditProduct = () => {
     expriy_date: dayjs(),
     img_url: "",
   });
+
   const [messageApi, contextHolder] = message.useMessage();
-  const [name, setName] = useState("");
-  const inputRef = useRef<InputRef>(null);
 
   const handleUpdate = () => {
     const { name, description, quantity, expriy_date } = productData;
@@ -85,20 +83,6 @@ export const EditProduct = () => {
     setProductData({ ...productData, expriy_date: date });
   };
 
-  const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
-  };
-
-  const addItem = (
-    e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>
-  ) => {
-    e.preventDefault();
-    setName("");
-    setTimeout(() => {
-      inputRef.current?.focus();
-    }, 0);
-  };
-
   useEffect(() => {
     if (currentProduct) {
       //change string date into dayjs date
@@ -112,7 +96,8 @@ export const EditProduct = () => {
 
   useEffect(() => {
     if (!isLoading && isSuccess) {
-      return success();
+      success();
+      navigate(-1);
     }
   }, [isLoading, isSuccess]);
 
@@ -149,41 +134,27 @@ export const EditProduct = () => {
           }}
         >
           <Title level={5}>Select category</Title>
-          <Select
-            placeholder="Select cateogry"
-            onChange={(value) => setSelectedCategoryId(value)}
-            dropdownRender={(menu) => (
-              <>
-                {menu}
-                <Divider style={{ margin: "8px 0" }} />
-                <Flex gap={4}>
-                  <Input
-                    style={{ flex: 1 }}
-                    placeholder="Please enter new category name"
-                    ref={inputRef}
-                    value={name}
-                    onChange={onNameChange}
-                    onKeyDown={(e) => e.stopPropagation()}
-                  />
-                  <Button
-                    type="primary"
-                    icon={<FaPlus />}
-                    onClick={addItem}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    create category
-                  </Button>
-                </Flex>
-              </>
-            )}
-            options={categories?.map((item: Category) => ({
-              label: item.name,
-              value: item.id,
-            }))}
-          />
+          <div style={{ width: "100%", display: "flex", gap: 4 }}>
+            <Select
+              style={{ flex: 1 }}
+              value={selectedCategoryId}
+              onChange={(value) => setSelectedCategoryId(value)}
+              options={categories?.map((item: Category) => {
+                return { label: item.name, value: item.id };
+              })}
+            />
+            <Button
+              type="primary"
+              icon={<FaPlus />}
+              onClick={() => navigate("/categories/create")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              create category
+            </Button>
+          </div>
         </div>
 
         <div
@@ -232,43 +203,28 @@ export const EditProduct = () => {
           }}
         >
           <Title level={5}>Select supplier</Title>
-          <Select
-            placeholder="Select supplier"
-            onChange={(value) => setSelectedSupplierId(value)}
-            dropdownRender={(menu) => (
-              <>
-                {menu}
-                <Divider style={{ margin: "8px 0" }} />
-                <Flex gap={4}>
-                  <Input
-                    style={{ flex: 1 }}
-                    placeholder="Please enter new supplier name"
-                    ref={inputRef}
-                    value={name}
-                    onChange={onNameChange}
-                    onKeyDown={(e) => e.stopPropagation()}
-                  />
-                  <Button
-                    type="primary"
-                    icon={<FaPlus />}
-                    onClick={addItem}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    create supplier
-                  </Button>
-                </Flex>
-              </>
-            )}
-            options={suppliers?.map((item: Category) => ({
-              label: item.name,
-              value: item.id,
-            }))}
-          />
+          <div style={{ width: "100%", display: "flex", gap: 4 }}>
+            <Select
+              style={{ flex: 1 }}
+              value={selectedSupplierId}
+              onChange={(value) => setSelectedSupplierId(value)}
+              options={suppliers?.map((item: Supplier) => {
+                return { label: item.name, value: item.id };
+              })}
+            />
+            <Button
+              onClick={() => navigate("/suppliers/create")}
+              type="primary"
+              icon={<FaPlus />}
+              style={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              create supplier
+            </Button>
+          </div>
         </div>
-
         <div
           style={{
             width: "100%",

@@ -1,7 +1,7 @@
 import { Button, Flex, Input, message } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import Title from "antd/es/typography/Title";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCreateCategory } from "../../hooks/categories/useCategories";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +10,11 @@ import { useNavigate } from "react-router-dom";
 export const CreateCategory = () => {
   const navigate = useNavigate();
   const { token } = useAuth();
-  const { mutate: createNewCategory, isLoading } = useCreateCategory();
+  const {
+    mutate: createNewCategory,
+    isLoading,
+    isSuccess,
+  } = useCreateCategory();
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [messageApi, contextHolder] = message.useMessage();
@@ -23,8 +27,6 @@ export const CreateCategory = () => {
       data,
       accessToken: token || "",
     });
-    // route back
-    navigate(-1);
   };
 
   const warning = () => {
@@ -33,6 +35,12 @@ export const CreateCategory = () => {
       content: "Please fill all input!",
     });
   };
+
+  useEffect(() => {
+    if (!isLoading && isSuccess) {
+      return navigate(-1);
+    }
+  }, [isLoading, isSuccess]);
 
   return (
     <>

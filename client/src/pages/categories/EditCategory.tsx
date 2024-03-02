@@ -7,9 +7,10 @@ import {
   useUpdateCategory,
 } from "../../hooks/categories/useCategories";
 import { useAuth } from "../../context/AuthContext";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const EditCategory = () => {
+  const navigate = useNavigate();
   const { categoryId } = useParams();
   const { token } = useAuth();
   const { mutate: updateCategory, isLoading, isSuccess } = useUpdateCategory();
@@ -51,7 +52,8 @@ export const EditCategory = () => {
 
   useEffect(() => {
     if (!isLoading && isSuccess) {
-      return success();
+      success();
+      return navigate(-1);
     }
   }, [isLoading, isSuccess]);
   return (

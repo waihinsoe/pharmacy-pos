@@ -3,7 +3,7 @@ import Title from "antd/es/typography/Title";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "../../context/AuthContext";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   useSupplier,
   useUpdateSupplier,
@@ -14,6 +14,7 @@ const { Option } = Select;
 // name description
 
 export const EditSupplier = () => {
+  const navigate = useNavigate();
   const { supplierId } = useParams();
   const { token } = useAuth();
   const { mutate: updateSupplier, isLoading, isSuccess } = useUpdateSupplier();
@@ -59,7 +60,8 @@ export const EditSupplier = () => {
 
   useEffect(() => {
     if (!isLoading && isSuccess) {
-      return success();
+      success();
+      navigate(-1);
     }
   }, [isLoading, isSuccess]);
   return (
