@@ -7,18 +7,14 @@ import type {
   TableRowSelection,
 } from "antd/es/table/interface";
 import Highlighter from "react-highlight-words";
-import {
-  useCategories,
-  useDeleteCategory,
-  useDeleteManyCategory,
-} from "../../hooks/categories/useCategories";
+
 import { useAuth } from "../../context/AuthContext";
 import { PaginationAndSearchQuery } from "../../types";
 import { FaPlus } from "react-icons/fa6";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { MdCancelPresentation } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import {
   useDeleteManyProduct,
   useDeleteProduct,
@@ -30,8 +26,8 @@ type InputRef = GetRef<typeof Input>;
 interface DataType {
   id: number;
   name: string;
-  category_name: string;
-  supplier_name: string;
+  category_id: number;
+  supplier_id: number;
   description: string;
   price: number;
   quantity: number;
@@ -213,8 +209,50 @@ export const ProductListTable = () => {
       sorter: (a, b) => a.description.length - b.description.length,
       sortDirections: ["descend", "ascend"],
     },
+
     {
-      title: "operation",
+      title: "Category_Id",
+      dataIndex: "category_id",
+      key: "category_id",
+      ...getColumnSearchProps("category_id"),
+      sorter: (a, b) => a.category_id - b.category_id,
+      sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Supplier_Id",
+      dataIndex: "supplier_id",
+      key: "supplier_id",
+      ...getColumnSearchProps("supplier_id"),
+      sorter: (a, b) => a.supplier_id - b.supplier_id,
+      sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+      ...getColumnSearchProps("price"),
+      sorter: (a, b) => a.price - b.price,
+      sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Quantity",
+      dataIndex: "quantity",
+      key: "quantity",
+      ...getColumnSearchProps("quantity"),
+      sorter: (a, b) => a.quantity - b.quantity,
+      sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Expriy_Date",
+      dataIndex: "expriy_date",
+      key: "expriy_date",
+      ...getColumnSearchProps("expriy_date"),
+      sorter: (a, b) =>
+        dayjs(a.expriy_date).unix() - dayjs(b.expriy_date).unix(),
+      sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Operation",
       dataIndex: "operation",
       render: (_, record: { id: React.Key }) =>
         data.data.length >= 1 ? (

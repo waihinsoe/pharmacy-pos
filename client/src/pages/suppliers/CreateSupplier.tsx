@@ -1,6 +1,6 @@
 import { Button, Flex, Form, Input, Select, message } from "antd";
 import Title from "antd/es/typography/Title";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useCreateSupplier } from "../../hooks/suppliers/useSuppliers";
@@ -11,7 +11,11 @@ const { Option } = Select;
 export const CreateSupplier = () => {
   const navigate = useNavigate();
   const { token } = useAuth();
-  const { mutate: createNewSupplier, isLoading } = useCreateSupplier();
+  const {
+    mutate: createNewSupplier,
+    isLoading,
+    isSuccess,
+  } = useCreateSupplier();
   const [supplierData, setSupplierData] = useState<Supplier>({
     name: "",
     contact_number: "",
@@ -28,8 +32,6 @@ export const CreateSupplier = () => {
       data,
       accessToken: token,
     });
-    // route back
-    navigate(-1);
   };
 
   const warning = () => {
@@ -39,6 +41,11 @@ export const CreateSupplier = () => {
     });
   };
 
+  useEffect(() => {
+    if (!isLoading && isSuccess) {
+      return navigate(-1);
+    }
+  }, [isLoading, isSuccess]);
   return (
     <>
       {contextHolder}
