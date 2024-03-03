@@ -39,7 +39,6 @@ export const Router = () => {
             <Route path="products" element={<ProductList />} />
             <Route path="products/create" element={<CreateProduct />} />
             <Route path="products/edit/:productId" element={<EditProduct />} />
-            <Route path="sales/new" element={<NewSale />} />
             <Route path="sales/history" element={<SalesHistory />} />
             <Route path="customers" element={<CustomerList />} />
             <Route path="customers/create" element={<CreateCustomer />} />
@@ -57,6 +56,7 @@ export const Router = () => {
             <Route path="reports/products" element={<ProdcutReport />} />
             <Route path="*" element={<NotFound />} />
           </Route>
+          <Route path="sales/new" element={<NewSale />} />
         </Route>
       </Routes>
     </BrowserRouter>

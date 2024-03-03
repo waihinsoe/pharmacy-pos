@@ -9,6 +9,7 @@ import { RiCustomerService2Line } from "react-icons/ri";
 import { FaTruckLoading } from "react-icons/fa";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { MdOutlineCategory } from "react-icons/md";
+import { GiMedicines } from "react-icons/gi";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -31,7 +32,7 @@ function getItem(
 const items: MenuItem[] = [
   getItem("Dashboard", "/", <RxDashboard />),
   getItem("Categories", "/categories", <MdOutlineCategory />),
-  getItem("Products", "/products", <MdOutlineInventory />),
+  getItem("Products", "/products", <GiMedicines />),
   getItem("Sale-history", "/sales/history", <GrHistory />),
   getItem("Customers", "/customers", <RiCustomerService2Line />),
   getItem("Suppliers", "/suppliers", <FaTruckLoading />),

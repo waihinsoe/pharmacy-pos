@@ -7,7 +7,7 @@ import type {
   TableRowSelection,
 } from "antd/es/table/interface";
 import Highlighter from "react-highlight-words";
-
+import { Image } from "antd";
 import { useAuth } from "../../context/AuthContext";
 import { PaginationAndSearchQuery } from "../../types";
 import { FaPlus } from "react-icons/fa6";
@@ -27,8 +27,7 @@ interface DataType {
   id: number;
   name: string;
   category_id: number;
-  supplier_id: number;
-  description: string;
+  img_url: string;
   price: number;
   quantity: number;
   expriy_date: Dayjs;
@@ -194,19 +193,19 @@ export const ProductListTable = () => {
 
   const columns: TableColumnsType<DataType> = [
     {
+      title: "Image",
+      dataIndex: "img_url",
+      key: "image", // this is the value that is parsed from the DB / server side
+      render: (img_url) => (
+        <Image width={100} src={img_url} style={{ borderRadius: 3 }} />
+      ), // 'theImageURL' is the variable you must declare in order the render the URL
+    },
+    {
       title: "Name",
       dataIndex: "name",
       key: "name",
       ...getColumnSearchProps("name"),
       sorter: (a, b) => a.name.length - b.name.length,
-      sortDirections: ["descend", "ascend"],
-    },
-    {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-      ...getColumnSearchProps("description"),
-      sorter: (a, b) => a.description.length - b.description.length,
       sortDirections: ["descend", "ascend"],
     },
 
@@ -218,14 +217,7 @@ export const ProductListTable = () => {
       sorter: (a, b) => a.category_id - b.category_id,
       sortDirections: ["descend", "ascend"],
     },
-    {
-      title: "Supplier_Id",
-      dataIndex: "supplier_id",
-      key: "supplier_id",
-      ...getColumnSearchProps("supplier_id"),
-      sorter: (a, b) => a.supplier_id - b.supplier_id,
-      sortDirections: ["descend", "ascend"],
-    },
+
     {
       title: "Price",
       dataIndex: "price",
@@ -246,7 +238,6 @@ export const ProductListTable = () => {
       title: "Expriy_Date",
       dataIndex: "expriy_date",
       key: "expriy_date",
-      ...getColumnSearchProps("expriy_date"),
       sorter: (a, b) =>
         dayjs(a.expriy_date).unix() - dayjs(b.expriy_date).unix(),
       sortDirections: ["descend", "ascend"],
