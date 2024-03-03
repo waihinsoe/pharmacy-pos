@@ -8,7 +8,7 @@ interface Props {
   setCollapsed: (value: boolean) => void;
 }
 
-export const DashboardNavBar = ({ collapsed, setCollapsed }: Props) => {
+export const DashboardTopBar = ({ collapsed, setCollapsed }: Props) => {
   const [items, setItems] = useState<any>([]);
   const location = useLocation();
   const pathname = location.pathname;
