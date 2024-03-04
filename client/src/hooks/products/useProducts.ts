@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { queryKeys } from "../../query/constants/queryKeys";
-import { categoryService } from "../../services/api/categoryService";
 import { PaginationAndSearchQuery, Product } from "../../types";
 import { productService } from "../../services/api/productService";
 
@@ -19,7 +18,7 @@ export const useProducts = (
   } else {
     return useQuery(
       [queryKeys.products],
-      () => categoryService.list(accessToken),
+      () => productService.list(accessToken),
       {
         keepPreviousData: true, // Enables smoother pagination
       }
