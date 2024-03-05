@@ -21,14 +21,18 @@ export const ShowProducts = ({
   const productsByCategoryId: Product[] = categoryId
     ? products?.filter((item: Product) => item.category_id === categoryId)
     : products;
-  console.log(productsByCategoryId);
+
   if (isLoading) return <div>loading ....</div>;
+
   return (
     <div
       style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fill,minmax(120px,1fr))",
         gap: 16,
+        padding: "0 10px",
+        maxHeight: "100%",
+        overflowY: "scroll",
       }}
     >
       {productsByCategoryId.map((product) => {
@@ -37,6 +41,7 @@ export const ShowProducts = ({
         );
         return (
           <div
+            key={product.id}
             onClick={() => {
               if (isSelectedProduct) {
                 const filteredProducts = selectedProducts.filter(
@@ -44,7 +49,10 @@ export const ShowProducts = ({
                 );
                 return setSelectedProducts(filteredProducts);
               }
-              setSelectedProducts([...selectedProducts, product]);
+              setSelectedProducts([
+                ...selectedProducts,
+                { ...product, count: 1 },
+              ]);
             }}
           >
             {isSelectedProduct ? (

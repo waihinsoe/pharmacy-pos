@@ -62,6 +62,7 @@ model Products {
   name         String
   description  String
   price        Int
+  cost          Int
   quantity     Int
   img_url      String         @default("https://superblog.supercdn.cloud/site_cuid_cl92i00jg261301kozfglx818f/images/3-1673431008210-compressed.png")
   expriy_date  DateTime       @default(now())
