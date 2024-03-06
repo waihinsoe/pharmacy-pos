@@ -1,26 +1,19 @@
-import {
-  Badge,
-  Button,
-  Collapse,
-  Flex,
-  Select,
-  Tag,
-  Typography,
-  theme,
-} from "antd";
+import { Button, Col, Flex, Row, Select } from "antd";
 import { PosTopBar } from "../../components/navbar/PosTopBar";
 import { useCategories } from "../../hooks/categories/useCategories";
 import { useAuth } from "../../context/AuthContext";
-import { Category } from "../../types";
+import { Category, Product } from "../../types";
 import { useState } from "react";
 import { ShowProducts } from "./ShowProducts";
 import { FaPlus } from "react-icons/fa";
-import { GiMoneyStack } from "react-icons/gi";
+import { SelectedProductList } from "./SelectedProductList";
 
-const { useToken } = theme;
+export interface SelectedProduct extends Product {
+  count: number;
+}
 export const NewSale = () => {
   const { token } = useAuth();
-  const { token: themeToken } = useToken();
+
   const [selectedProducts, setSelectedProducts] = useState([]);
   console.log(selectedProducts);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
@@ -39,6 +32,7 @@ export const NewSale = () => {
     <Flex vertical style={{ height: "100vh" }}>
       <PosTopBar />
       <Flex style={{ flex: 1, backgroundColor: "pink", height: "90%" }}>
+        {/* ShowProducts */}
         <Flex
           flex={3}
           vertical
@@ -63,6 +57,9 @@ export const NewSale = () => {
             setSelectedProducts={setSelectedProducts}
           />
         </Flex>
+        {/* ShowProducts */}
+
+        {/* Checkout */}
         <Flex
           vertical
           gap={16}
@@ -85,50 +82,55 @@ export const NewSale = () => {
               Add customer
             </Button>
           </Flex>
-          <Flex vertical gap={4} flex={1} style={{ overflowY: "scroll" }}>
-            {selectedProducts.map((item: any) => {
-              return (
-                <Collapse
-                  size="small"
-                  items={[
-                    {
-                      key: "1",
-                      label: (
-                        <Flex justify="space-between" align="center">
-                          <Flex gap={16} align="center">
-                            <Badge
-                              count={item.count}
-                              style={{
-                                backgroundColor: themeToken.colorPrimary,
-                              }}
-                            />
+          <SelectedProductList
+            selectedProducts={selectedProducts}
+            setSelectedProducts={setSelectedProducts}
+          />
+          <Flex
+            vertical
+            gap={16}
+            style={{ backgroundColor: "#dfdfdf", borderRadius: 3 }}
+          >
+            <Flex vertical gap={16} style={{ padding: "16px 16px 0" }}>
+              <Row>
+                <Col
+                  span={12}
+                  style={{ textAlign: "left", fontWeight: "bold" }}
+                >
+                  TOTAL ITEMS
+                </Col>
 
-                            <Typography style={{ fontWeight: "500" }}>
-                              {item.name}
-                            </Typography>
-                          </Flex>
-                          <Tag
-                            color="green"
-                            icon={<GiMoneyStack size={16} />}
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 8,
-                            }}
-                          >
-                            {item.price}
-                          </Tag>
-                        </Flex>
-                      ),
-                      children: <p>{item.name}</p>,
+                <Col span={12} style={{ textAlign: "right", fontWeight: 600 }}>
+                  {selectedProducts.reduce(
+                    (accumulator, currentProduct: SelectedProduct) => {
+                      return accumulator + currentProduct.count;
                     },
-                  ]}
-                />
-              );
-            })}
-            {!selectedProducts.length && <div>not items</div>}
-          </Flex>
-          <Flex>
+                    0
+                  )}
+                </Col>
+              </Row>
+              <Row>
+                <Col
+                  span={12}
+                  style={{ textAlign: "left", fontWeight: "bold" }}
+                >
+                  TOTAL AMOUNT
+                </Col>
+
+                <Col span={12} style={{ textAlign: "right", fontWeight: 600 }}>
+                  {selectedProducts.reduce(
+                    (accumulator, currentProduct: SelectedProduct) => {
+                      return (
+                        accumulator +
+                        currentProduct.price * currentProduct.count
+                      );
+                    },
+                    0
+                  )}
+                </Col>
+              </Row>
+            </Flex>
+
             <Button
               style={{
                 width: "100%",
@@ -139,6 +141,7 @@ export const NewSale = () => {
             </Button>
           </Flex>
         </Flex>
+        {/* Checkout */}
       </Flex>
     </Flex>
   );
