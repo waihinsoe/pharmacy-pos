@@ -28,7 +28,7 @@ export const ShowProducts = ({
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fill,minmax(120px,1fr))",
+        gridTemplateColumns: "repeat(auto-fill,minmax(100px,1fr))",
         gap: 16,
         padding: "0 10px",
         maxHeight: "100%",
@@ -43,16 +43,12 @@ export const ShowProducts = ({
           <div
             key={product.id}
             onClick={() => {
-              if (isSelectedProduct) {
-                const filteredProducts = selectedProducts.filter(
-                  (item) => item.id !== product.id
-                );
-                return setSelectedProducts(filteredProducts);
+              if (!isSelectedProduct) {
+                setSelectedProducts([
+                  ...selectedProducts,
+                  { ...product, count: 1 },
+                ]);
               }
-              setSelectedProducts([
-                ...selectedProducts,
-                { ...product, count: 1 },
-              ]);
             }}
           >
             {isSelectedProduct ? (
