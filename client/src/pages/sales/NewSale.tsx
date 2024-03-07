@@ -1,23 +1,20 @@
-import { Button, Col, Flex, Row, Select } from "antd";
+import { Flex, Select } from "antd";
 import { PosTopBar } from "../../components/navbar/PosTopBar";
 import { useCategories } from "../../hooks/categories/useCategories";
 import { useAuth } from "../../context/AuthContext";
 import { Category, Product } from "../../types";
 import { useState } from "react";
 import { ShowProducts } from "./ShowProducts";
-import { FaPlus } from "react-icons/fa";
 import { SelectedProductList } from "./SelectedProductList";
-import { calculateTotalAmount, calculateTotalItems } from "../../utils";
-import { CheckoutSection } from "./CheckOutSection";
+import { CheckoutSection } from "./CheckoutSection";
+import { CustomerSelect } from "./CustomerSelect";
 
 export interface SelectedProduct extends Product {
   count: number;
 }
 export const NewSale = () => {
   const { token } = useAuth();
-
   const [selectedProducts, setSelectedProducts] = useState([]);
-  console.log(selectedProducts);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
     null
   );
@@ -73,21 +70,14 @@ export const NewSale = () => {
           }}
         >
           <Flex>
-            <Button
-              style={{
-                display: "flex",
-                alignItems: "center",
-              }}
-              type="primary"
-              icon={<FaPlus />}
-            >
-              Add customer
-            </Button>
+            <CustomerSelect />
           </Flex>
+
           <SelectedProductList
             selectedProducts={selectedProducts}
             setSelectedProducts={setSelectedProducts}
           />
+
           <CheckoutSection selectedProducts={selectedProducts} />
         </Flex>
         {/* Checkout */}

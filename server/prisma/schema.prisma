@@ -38,7 +38,7 @@ model Sales {
   user_id        Int
   sale_date      DateTime       @default(now())
   total_amount   Int
-  payment_method String
+  payment_method Payment       @default(CASH)
   created_at     DateTime       @default(now())
   updated_at     DateTime       @default(now()) @updatedAt
   Customers      Customers      @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -119,3 +119,9 @@ enum Role {
   CASHIER
   ADMIN
 }
+
+enum Payment {
+  CASH
+  KPAY
+}
+
