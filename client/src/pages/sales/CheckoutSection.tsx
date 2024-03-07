@@ -3,6 +3,7 @@ import { calculateTotalAmount, calculateTotalItems } from "../../utils";
 import { SelectedProduct } from "./NewSale";
 import { useState } from "react";
 import Title from "antd/es/typography/Title";
+import { Payment } from "../../types";
 
 interface Props {
   selectedProducts: SelectedProduct[];
@@ -11,19 +12,19 @@ interface Props {
 export const CheckoutSection = ({ selectedProducts }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmAmount, setConfirmAmount] = useState<number | null>(0);
-
+  const [paymentMethod, setPaymentMethod] = useState<Payment>(Payment.CASH);
   const totalAmount = calculateTotalAmount(selectedProducts);
   const totalItems = calculateTotalItems(selectedProducts);
 
-  const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
+  const handleChange = (value: Payment) => {
+    setPaymentMethod(value);
   };
 
   const showModal = () => {
     setIsModalOpen(true);
   };
 
-  const handleOk = () => {
+  const handleProceed = () => {
     setIsModalOpen(false);
   };
 
@@ -67,10 +68,9 @@ export const CheckoutSection = ({ selectedProducts }: Props) => {
         Checkout {totalAmount}
       </Button>
       <Modal
+        closable={false}
         title={<Title level={4}>Amount to Pay : {totalAmount} MMK</Title>}
         open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
         footer={[
           <Button key="back" onClick={handleCancel}>
             Cancel
@@ -79,7 +79,7 @@ export const CheckoutSection = ({ selectedProducts }: Props) => {
             key="submit"
             type="primary"
             disabled={confirmAmount !== totalAmount}
-            onClick={handleOk}
+            onClick={handleProceed}
           >
             Proceed
           </Button>,
@@ -89,12 +89,12 @@ export const CheckoutSection = ({ selectedProducts }: Props) => {
           <Flex align="center" justify="space-between">
             <Title level={5}>Payment Method : </Title>
             <Select
-              defaultValue="Cash"
+              value={paymentMethod}
               style={{ width: 120 }}
               onChange={handleChange}
               options={[
-                { value: "Cash", label: "Cash" },
-                { value: "Kpay", label: "Kpay" },
+                { value: Payment.CASH, label: "Cash" },
+                { value: Payment.KPAY, label: "Kpay" },
               ]}
             />
           </Flex>

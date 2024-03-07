@@ -63,3 +63,8 @@ enum Role {
   CASHIER = "CASHIER",
   ADMIN = "ADMIN",
 }
+
+export enum Payment {
+  CASH = "CASH",
+  KPAY = "KPAY",
+}
