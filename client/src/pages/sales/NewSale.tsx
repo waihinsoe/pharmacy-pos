@@ -7,6 +7,8 @@ import { useState } from "react";
 import { ShowProducts } from "./ShowProducts";
 import { FaPlus } from "react-icons/fa";
 import { SelectedProductList } from "./SelectedProductList";
+import { calculateTotalAmount, calculateTotalItems } from "../../utils";
+import { CheckoutSection } from "./CheckOutSection";
 
 export interface SelectedProduct extends Product {
   count: number;
@@ -86,60 +88,7 @@ export const NewSale = () => {
             selectedProducts={selectedProducts}
             setSelectedProducts={setSelectedProducts}
           />
-          <Flex
-            vertical
-            gap={16}
-            style={{ backgroundColor: "#dfdfdf", borderRadius: 3 }}
-          >
-            <Flex vertical gap={16} style={{ padding: "16px 16px 0" }}>
-              <Row>
-                <Col
-                  span={12}
-                  style={{ textAlign: "left", fontWeight: "bold" }}
-                >
-                  TOTAL ITEMS
-                </Col>
-
-                <Col span={12} style={{ textAlign: "right", fontWeight: 600 }}>
-                  {selectedProducts.reduce(
-                    (accumulator, currentProduct: SelectedProduct) => {
-                      return accumulator + currentProduct.count;
-                    },
-                    0
-                  )}
-                </Col>
-              </Row>
-              <Row>
-                <Col
-                  span={12}
-                  style={{ textAlign: "left", fontWeight: "bold" }}
-                >
-                  TOTAL AMOUNT
-                </Col>
-
-                <Col span={12} style={{ textAlign: "right", fontWeight: 600 }}>
-                  {selectedProducts.reduce(
-                    (accumulator, currentProduct: SelectedProduct) => {
-                      return (
-                        accumulator +
-                        currentProduct.price * currentProduct.count
-                      );
-                    },
-                    0
-                  )}
-                </Col>
-              </Row>
-            </Flex>
-
-            <Button
-              style={{
-                width: "100%",
-              }}
-              type="primary"
-            >
-              Checkout
-            </Button>
-          </Flex>
+          <CheckoutSection selectedProducts={selectedProducts} />
         </Flex>
         {/* Checkout */}
       </Flex>
