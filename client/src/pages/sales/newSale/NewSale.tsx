@@ -1,8 +1,8 @@
 import { Flex, Select } from "antd";
-import { PosTopBar } from "../../components/navbar/PosTopBar";
-import { useCategories } from "../../hooks/categories/useCategories";
-import { useAuth } from "../../context/AuthContext";
-import { Category, Product } from "../../types";
+import { PosTopBar } from "../../../components/navbar/PosTopBar";
+import { useCategories } from "../../../hooks/categories/useCategories";
+import { useAuth } from "../../../context/AuthContext";
+import { Category, Product } from "../../../types";
 import { useState } from "react";
 import { ShowProducts } from "./ShowProducts";
 import { SelectedProductList } from "./SelectedProductList";
@@ -15,15 +15,16 @@ export interface SelectedProduct extends Product {
 export const NewSale = () => {
   const { token } = useAuth();
   const [selectedProducts, setSelectedProducts] = useState([]);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
-    null
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | string>(
+    "All"
   );
+  const [selectedCustomer, setSelectedCustomer] = useState();
   const { data: categories } = useCategories(token || "");
 
   const optionData: Category[] = categories?.map((item: Category) => {
     return { label: item.name, value: item.id };
   });
-  const handleChange = (value: number | null) => {
+  const handleChange = (value: number | string) => {
     setSelectedCategoryId(value);
     console.log(`selected ${value}`);
   };
@@ -42,11 +43,11 @@ export const NewSale = () => {
           gap={16}
         >
           <Select
-            defaultValue={null}
+            defaultValue={"All"}
             placeholder={"select category"}
             onChange={handleChange}
             options={
-              optionData && [{ label: "All", value: null }, ...optionData]
+              optionData && [{ label: "All", value: "All" }, ...optionData]
             }
           />
 
@@ -70,7 +71,10 @@ export const NewSale = () => {
           }}
         >
           <Flex>
-            <CustomerSelect />
+            <CustomerSelect
+              selectedCustomer={selectedCustomer}
+              setSelectedCustomer={setSelectedCustomer}
+            />
           </Flex>
 
           <SelectedProductList

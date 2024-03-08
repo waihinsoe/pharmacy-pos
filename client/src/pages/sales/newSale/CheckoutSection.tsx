@@ -1,9 +1,9 @@
 import { Button, Col, Flex, InputNumber, Modal, Row, Select } from "antd";
-import { calculateTotalAmount, calculateTotalItems } from "../../utils";
+import { calculateTotalAmount, calculateTotalItems } from "../../../utils";
 import { SelectedProduct } from "./NewSale";
 import { useState } from "react";
 import Title from "antd/es/typography/Title";
-import { Payment } from "../../types";
+import { Payment } from "../../../types";
 
 interface Props {
   selectedProducts: SelectedProduct[];

@@ -6,7 +6,11 @@ export const getCustomers = async (req: Request, res: Response) => {
   console.log(isPaginateFetch);
   if (!isPaginateFetch) {
     try {
-      const customers = await prisma.customers.findMany();
+      const customers = await prisma.customers.findMany({
+        orderBy: {
+          created_at: "desc",
+        },
+      });
 
       if (!customers) {
         return res.status(200).json({ message: "customers not found." });
