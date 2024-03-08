@@ -1,11 +1,11 @@
-import { useProducts } from "../../hooks/products/useProducts";
-import { useAuth } from "../../context/AuthContext";
-import { Product } from "../../types";
+import { useProducts } from "../../../hooks/products/useProducts";
+import { useAuth } from "../../../context/AuthContext";
+import { Product } from "../../../types";
 import { ProductCard } from "./ProductCard";
 import Badge from "antd/es/badge";
 
 interface Props {
-  categoryId: number | null;
+  categoryId: number | string;
   selectedProducts: Product[];
   setSelectedProducts: (value: any) => void;
 }
@@ -18,9 +18,10 @@ export const ShowProducts = ({
   const { token } = useAuth();
   const { data: products, isLoading } = useProducts(token || "");
 
-  const productsByCategoryId: Product[] = categoryId
-    ? products?.filter((item: Product) => item.category_id === categoryId)
-    : products;
+  const productsByCategoryId: Product[] =
+    categoryId === "All"
+      ? products
+      : products?.filter((item: Product) => item.category_id === categoryId);
 
   if (isLoading) return <div>loading ....</div>;
 

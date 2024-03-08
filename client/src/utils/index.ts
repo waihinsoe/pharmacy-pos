@@ -1,4 +1,4 @@
-import { SelectedProduct } from "../pages/sales/NewSale";
+import { SelectedProduct } from "../pages/sales/newSale/NewSale";
 
 export const calculateTotalItems = (selectedProducts: SelectedProduct[]) => {
   return selectedProducts.reduce(

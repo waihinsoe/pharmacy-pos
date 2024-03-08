@@ -11,7 +11,7 @@ import { EditProduct } from "../pages/products/EditProduct";
 import { ProductList } from "../pages/products/ProductList";
 import { ProdcutReport } from "../pages/reports/ProductReport";
 import { SalesReport } from "../pages/reports/SalesReport";
-import { NewSale } from "../pages/sales/NewSale";
+import { NewSale } from "../pages/sales/newSale/NewSale";
 import { SalesHistory } from "../pages/sales/SalesHistory";
 import { CreateSupplier } from "../pages/suppliers/CreateSupplier";
 import { SupplierList } from "../pages/suppliers/SupplierList";
