@@ -1,9 +1,12 @@
 import { Button, Flex, Input, Modal, Table, TableColumnsType } from "antd";
 import { useState } from "react";
 import { FiSearch } from "react-icons/fi";
-import { GoPeople } from "react-icons/go";
-import { useCustomers } from "../../hooks/customers/useCustomers";
-import { useAuth } from "../../context/AuthContext";
+import { useCustomers } from "../../../hooks/customers/useCustomers";
+import { useAuth } from "../../../context/AuthContext";
+import { Customer } from "../../../types";
+import { GrUserManager } from "react-icons/gr";
+import { useNavigate } from "react-router-dom";
+import { AddCustomer } from "./AddCustomer";
 
 interface DataType {
   id: number;
@@ -37,33 +40,51 @@ const columns: TableColumnsType<DataType> = [
   },
 ];
 
-// rowSelection object indicates the need for row selection
-const rowSelection = {
-  onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
-    console.log(
-      `selectedRowKeys: ${selectedRowKeys}`,
-      "selectedRows: ",
-      selectedRows
-    );
-  },
-};
+interface Props {
+  selectedCustomer: Customer | undefined;
+  setSelectedCustomer: (value: any) => void;
+}
 
-export const CustomerSelect = () => {
+export const CustomerSelect = ({
+  selectedCustomer,
+  setSelectedCustomer,
+}: Props) => {
   const { token } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const { data: customers } = useCustomers(token || "");
 
-  const { data: customers, isLoading } = useCustomers(token || "");
+  const searchedCustomers =
+    customers?.filter((customer: Customer) =>
+      customer.name.toLowerCase().includes(searchTerm.toLowerCase())
+    ) || customers;
 
   const showModal = () => {
     setIsModalOpen(true);
   };
 
-  const handleAdd = () => {
+  const handleOk = () => {
     setIsModalOpen(false);
   };
 
   const handleCancel = () => {
+    setSelectedRowKeys([]);
+    setSelectedCustomer(undefined);
     setIsModalOpen(false);
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: (selectedRowKeys: React.Key[]) => {
+      setSelectedRowKeys(selectedRowKeys);
+      const customer = customers.find(
+        (item: Customer) => item.id === selectedRowKeys[0]
+      );
+      if (customer) {
+        setSelectedCustomer(customer);
+      }
+    },
   };
   return (
     <>
@@ -73,10 +94,10 @@ export const CustomerSelect = () => {
           alignItems: "center",
         }}
         type="primary"
-        icon={<GoPeople />}
+        icon={<GrUserManager />}
         onClick={showModal}
       >
-        Customer
+        {selectedCustomer ? selectedCustomer.name : "Customer"}
       </Button>
       <Modal
         width={"100%"}
@@ -85,46 +106,40 @@ export const CustomerSelect = () => {
         centered
         title={
           <Flex justify="space-between" align="center">
-            <Button
-              style={{
-                display: "flex",
-
-                alignItems: "center",
-              }}
-              type="primary"
-              onClick={showModal}
-            >
-              Create
-            </Button>
+            <AddCustomer
+              setSelectedCustomer={setSelectedCustomer}
+              setSelectedRowKeys={setSelectedRowKeys}
+            />
             <Input
               allowClear
               prefix={<FiSearch />}
               style={{ flex: 1, maxWidth: 200 }}
               placeholder="Search customers..."
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </Flex>
         }
         open={isModalOpen}
         footer={[
           <Button key="back" onClick={handleCancel}>
-            Cancel
+            unselect
           </Button>,
-          <Button key="submit" type="primary" onClick={handleAdd}>
-            Add
+          <Button key="submit" type="primary" onClick={handleOk}>
+            Ok
           </Button>,
         ]}
       >
-        <Flex vertical style={{ height: "60vh" }}>
+        <Flex vertical style={{ minHeight: "60vh" }}>
           <Table
             rowSelection={{
               type: "radio",
               ...rowSelection,
             }}
             columns={columns}
-            dataSource={customers}
+            dataSource={searchedCustomers}
             rowKey={"id"}
             pagination={false}
-            scroll={{ y: 800 }}
+            scroll={{ y: 400 }}
           />
         </Flex>
       </Modal>

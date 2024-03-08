@@ -9,7 +9,7 @@ import {
   Button,
   InputNumber,
 } from "antd";
-import { Product } from "../../types";
+import { Product } from "../../../types";
 import { GiMoneyStack } from "react-icons/gi";
 import { RxCross1, RxValue } from "react-icons/rx";
 import { SelectedProduct } from "./NewSale";
@@ -42,10 +42,11 @@ export const SelectedProductList = ({
       {selectedProducts.map((item: any) => {
         return (
           <Collapse
+            key={item.id}
             size="small"
             items={[
               {
-                key: "1",
+                key: item.id,
                 label: (
                   <Flex justify="space-between" align="center">
                     <Flex gap={16} align="center">
