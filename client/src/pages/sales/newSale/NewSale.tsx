@@ -2,16 +2,13 @@ import { Flex, Select } from "antd";
 import { PosTopBar } from "../../../components/navbar/PosTopBar";
 import { useCategories } from "../../../hooks/categories/useCategories";
 import { useAuth } from "../../../context/AuthContext";
-import { Category, Product } from "../../../types";
+import { Category } from "../../../types";
 import { useState } from "react";
 import { ShowProducts } from "./ShowProducts";
 import { SelectedProductList } from "./SelectedProductList";
 import { CheckoutSection } from "./CheckoutSection";
 import { CustomerSelect } from "./CustomerSelect";
 
-export interface SelectedProduct extends Product {
-  count: number;
-}
 export const NewSale = () => {
   const { token } = useAuth();
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -24,6 +21,7 @@ export const NewSale = () => {
   const optionData: Category[] = categories?.map((item: Category) => {
     return { label: item.name, value: item.id };
   });
+
   const handleChange = (value: number | string) => {
     setSelectedCategoryId(value);
     console.log(`selected ${value}`);
@@ -82,7 +80,10 @@ export const NewSale = () => {
             setSelectedProducts={setSelectedProducts}
           />
 
-          <CheckoutSection selectedProducts={selectedProducts} />
+          <CheckoutSection
+            selectedProducts={selectedProducts}
+            selectedCustomer={selectedCustomer}
+          />
         </Flex>
         {/* Checkout */}
       </Flex>
