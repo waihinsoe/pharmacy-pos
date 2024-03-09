@@ -34,16 +34,29 @@ model Customers {
 
 model Sales {
   id             Int            @id @default(autoincrement())
-  customer_id    Int
+  customer_id    Int?
   user_id        Int
   sale_date      DateTime       @default(now())
   total_amount   Int
   payment_method Payment       @default(CASH)
   created_at     DateTime       @default(now())
   updated_at     DateTime       @default(now()) @updatedAt
-  Customers      Customers      @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Customers      Customers?      @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Users          Users          @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Sale_details   Sale_details[]
+}
+
+
+model Sale_details {
+  id         Int      @id @default(autoincrement())
+  sale_id    Int
+  product_id Int
+  quantity   Int
+  price      Int
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+  Sales      Sales    @relation(fields: [sale_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Products   Products @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model Categories {
@@ -62,7 +75,7 @@ model Products {
   name         String
   description  String
   price        Int
-  cost          Int
+  cost          Int          @default(200)
   quantity     Int
   img_url      String         @default("https://superblog.supercdn.cloud/site_cuid_cl92i00jg261301kozfglx818f/images/3-1673431008210-compressed.png")
   expriy_date  DateTime       @default(now())
@@ -93,17 +106,6 @@ model Suppliers {
 // Suppliers   Suppliers @relation(fields: [supplier_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 // }
 
-model Sale_details {
-  id         Int      @id @default(autoincrement())
-  sale_id    Int
-  product_id Int
-  quantity   Int
-  price      Int
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now()) @updatedAt
-  Sales      Sales    @relation(fields: [sale_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Products   Products @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
 
 model Tokens {
   id              Int      @id @default(autoincrement())
