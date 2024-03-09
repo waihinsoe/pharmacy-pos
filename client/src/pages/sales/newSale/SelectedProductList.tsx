@@ -11,8 +11,8 @@ import {
 } from "antd";
 import { Product } from "../../../types";
 import { GiMoneyStack } from "react-icons/gi";
-import { RxCross1, RxValue } from "react-icons/rx";
-import { SelectedProduct } from "./NewSale";
+import { RxCross1 } from "react-icons/rx";
+import { SelectedProduct } from "../../../types/productTypes";
 
 const { useToken } = theme;
 
@@ -42,6 +42,7 @@ export const SelectedProductList = ({
       {selectedProducts.map((item: any) => {
         return (
           <Collapse
+            collapsible="icon"
             key={item.id}
             size="small"
             items={[

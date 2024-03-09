@@ -8,6 +8,7 @@ import { categoryRouter } from "./routes/categoryRouter";
 import { supplierRouter } from "./routes/supplierRouter";
 import { productRouter } from "./routes/productRouter";
 import { customerRouter } from "./routes/customerRouter";
+import { saleRouter } from "./routes/saleRouter";
 dotenv.config();
 
 const app = express();
@@ -31,6 +32,7 @@ app.use("/api/categories", categoryRouter);
 app.use("/api/suppliers", supplierRouter);
 app.use("/api/products", productRouter);
 app.use("/api/customers", customerRouter);
+app.use("/api/sales", saleRouter);
 
 app.listen(3000, () => {
   console.log("server is listening at port 3000");
