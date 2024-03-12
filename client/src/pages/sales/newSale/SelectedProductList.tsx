@@ -13,7 +13,7 @@ import { Product } from "../../../types";
 import { GiMoneyStack } from "react-icons/gi";
 import { RxCross1 } from "react-icons/rx";
 import { SelectedProduct } from "../../../types/productTypes";
-
+import NotFoundImage from "../../../assets/3371471.png";
 const { useToken } = theme;
 
 interface Props {
@@ -106,7 +106,7 @@ export const SelectedProductList = ({
                       <InputNumber
                         style={{ width: "100%" }}
                         min={1}
-                        max={99}
+                        max={item.quantity}
                         value={item.count}
                         onChange={(value) => onChangeQuantity(value, item)}
                       />
@@ -127,7 +127,18 @@ export const SelectedProductList = ({
           />
         );
       })}
-      {!selectedProducts.length && <div>not items</div>}
+      {!selectedProducts.length && (
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            display: "grid",
+            placeItems: "center",
+          }}
+        >
+          <img src={NotFoundImage} style={{ width: "300px" }} />
+        </div>
+      )}
     </Flex>
   );
 };

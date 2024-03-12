@@ -20,11 +20,13 @@ import { PrintSectionModal } from "./PrintSectionModal";
 interface Props {
   selectedProducts: SelectedProduct[];
   selectedCustomer: Customer | undefined;
+  setSelectedProducts: (value: any) => void;
 }
 
 export const CheckoutSection = ({
   selectedProducts,
   selectedCustomer,
+  setSelectedProducts,
 }: Props) => {
   const { user, token } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -41,12 +43,14 @@ export const CheckoutSection = ({
     isLoading,
     isSuccess,
   } = useCreateSale();
+
   const warning = () => {
     messageApi.open({
       type: "warning",
       content: "Please fill all input!",
     });
   };
+
   const success = () => {
     messageApi.open({
       type: "success",
@@ -77,6 +81,7 @@ export const CheckoutSection = ({
     createNewSale({ data, accessToken: token });
 
     setIsModalOpen(false);
+    setConfirmAmount(0);
   };
 
   const handleCancel = () => {
@@ -89,6 +94,7 @@ export const CheckoutSection = ({
       setIsPrintSectionModalOpen(true);
     }
   }, [isLoading, isSuccess]);
+
   return (
     <Flex
       vertical
@@ -173,6 +179,7 @@ export const CheckoutSection = ({
       <PrintSectionModal
         isPrintSectionModalOpen={isPrintSectionModalOpen}
         setIsPrintSectionModalOpen={setIsPrintSectionModalOpen}
+        setSelectedProducts={setSelectedProducts}
         receiptData={{ selectedProducts, sale_id: newSale?.sale_id }}
       />
     </Flex>
