@@ -16,6 +16,8 @@ export const NewSale = () => {
     "All"
   );
   const [selectedCustomer, setSelectedCustomer] = useState();
+  const [productSearchTerm, setProductSearchTerm] = useState("");
+
   const { data: categories } = useCategories(token || "");
 
   const optionData: Category[] = categories?.map((item: Category) => {
@@ -28,7 +30,10 @@ export const NewSale = () => {
   };
   return (
     <Flex vertical style={{ height: "100vh" }}>
-      <PosTopBar />
+      <PosTopBar
+        productSearchTerm={productSearchTerm}
+        setProductSearchTerm={setProductSearchTerm}
+      />
       <Flex style={{ flex: 1, backgroundColor: "pink", height: "90%" }}>
         {/* ShowProducts */}
         <Flex
@@ -50,6 +55,7 @@ export const NewSale = () => {
           />
 
           <ShowProducts
+            productSearchTerm={productSearchTerm}
             categoryId={selectedCategoryId}
             selectedProducts={selectedProducts}
             setSelectedProducts={setSelectedProducts}
@@ -83,6 +89,7 @@ export const NewSale = () => {
           <CheckoutSection
             selectedProducts={selectedProducts}
             selectedCustomer={selectedCustomer}
+            setSelectedProducts={setSelectedProducts}
           />
         </Flex>
         {/* Checkout */}

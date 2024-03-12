@@ -1,5 +1,8 @@
 import { Flex, Typography } from "antd";
 import { Product } from "../../../types";
+import { MdOutlineProductionQuantityLimits } from "react-icons/md";
+import { GiMoneyStack } from "react-icons/gi";
+import Paragraph from "antd/es/typography/Paragraph";
 
 interface Props {
   product: Product;
@@ -22,9 +25,15 @@ export const ProductCard = ({ product }: Props) => {
         alt=""
       />
       <Flex vertical gap={4} style={{ padding: 5 }}>
-        <Typography>{product.name}</Typography>
-        <Typography>{product.quantity}</Typography>
-        <Typography>{product.price}</Typography>
+        <Paragraph ellipsis>{product.name}</Paragraph>
+        <Flex align="center" gap={4}>
+          <MdOutlineProductionQuantityLimits />
+          <Typography>{product.quantity}</Typography>
+        </Flex>
+        <Flex align="center" gap={4}>
+          <GiMoneyStack />
+          <Typography>{product.price}</Typography>
+        </Flex>
       </Flex>
     </div>
   );

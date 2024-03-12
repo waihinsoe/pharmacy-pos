@@ -4,7 +4,15 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { OnlineTracker } from "../common/OnlineTracker";
 
-export const PosTopBar = () => {
+interface Props {
+  productSearchTerm: string;
+  setProductSearchTerm: (value: string) => void;
+}
+
+export const PosTopBar = ({
+  productSearchTerm,
+  setProductSearchTerm,
+}: Props) => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -18,6 +26,8 @@ export const PosTopBar = () => {
     >
       <Search
         style={{ maxWidth: 400 }}
+        value={productSearchTerm}
+        onChange={(e) => setProductSearchTerm(e.target.value)}
         placeholder="input search text"
         onSearch={onSearch}
         enterButton
