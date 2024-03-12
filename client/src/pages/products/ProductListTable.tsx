@@ -315,6 +315,7 @@ export const ProductListTable = () => {
         rowKey={"id"}
         pagination={{ current: page, pageSize: limit, total: data.total }}
         onChange={handleTableChange}
+        scroll={{ y: 450 }}
       />
     </Flex>
   );

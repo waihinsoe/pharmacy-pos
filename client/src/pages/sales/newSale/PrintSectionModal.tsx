@@ -9,12 +9,14 @@ interface Props {
   receiptData: ReceiptDataType;
   isPrintSectionModalOpen: boolean;
   setIsPrintSectionModalOpen: (value: boolean) => void;
+  setSelectedProducts: (value: any) => void;
 }
 
 export const PrintSectionModal = ({
   isPrintSectionModalOpen,
   setIsPrintSectionModalOpen,
   receiptData,
+  setSelectedProducts,
 }: Props) => {
   const receiptRef = useRef<HTMLDivElement>(null);
   const handlePrintSectionCancel = () => {
@@ -36,6 +38,10 @@ export const PrintSectionModal = ({
       <ReactToPrint
         trigger={() => <Button>Print Receipt</Button>}
         content={() => receiptRef.current}
+        onAfterPrint={() => {
+          setSelectedProducts([]);
+          setIsPrintSectionModalOpen(false);
+        }}
       />
     </Modal>
   );

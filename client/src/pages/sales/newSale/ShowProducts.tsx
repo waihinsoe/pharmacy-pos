@@ -5,6 +5,7 @@ import { ProductCard } from "./ProductCard";
 import Badge from "antd/es/badge";
 
 interface Props {
+  productSearchTerm: string;
   categoryId: number | string;
   selectedProducts: Product[];
   setSelectedProducts: (value: any) => void;
@@ -14,9 +15,16 @@ export const ShowProducts = ({
   categoryId,
   selectedProducts,
   setSelectedProducts,
+  productSearchTerm,
 }: Props) => {
   const { token } = useAuth();
   const { data: products, isLoading } = useProducts(token || "");
+
+  const searchedProducts = productSearchTerm
+    ? products?.filter((product: Product) =>
+        product.name.toLowerCase().includes(productSearchTerm.toLowerCase())
+      )
+    : [];
 
   const productsByCategoryId: Product[] =
     categoryId === "All"
@@ -36,7 +44,61 @@ export const ShowProducts = ({
         overflowY: "scroll",
       }}
     >
-      {productsByCategoryId.map((product) => {
+      {searchedProducts.length
+        ? searchedProducts.map((product: Product) => {
+            const isSelectedProduct = selectedProducts.some(
+              (item) => item.id === product.id
+            );
+            return (
+              <div
+                key={product.id}
+                onClick={() => {
+                  if (!isSelectedProduct) {
+                    setSelectedProducts([
+                      ...selectedProducts,
+                      { ...product, count: 1 },
+                    ]);
+                  }
+                }}
+              >
+                {isSelectedProduct ? (
+                  <Badge.Ribbon text="Selected">
+                    <ProductCard product={product} />
+                  </Badge.Ribbon>
+                ) : (
+                  <ProductCard product={product} />
+                )}
+              </div>
+            );
+          })
+        : productsByCategoryId.map((product) => {
+            const isSelectedProduct = selectedProducts.some(
+              (item) => item.id === product.id
+            );
+            return (
+              <div
+                key={product.id}
+                onClick={() => {
+                  if (!isSelectedProduct) {
+                    setSelectedProducts([
+                      ...selectedProducts,
+                      { ...product, count: 1 },
+                    ]);
+                  }
+                }}
+              >
+                {isSelectedProduct ? (
+                  <Badge.Ribbon text="Selected">
+                    <ProductCard product={product} />
+                  </Badge.Ribbon>
+                ) : (
+                  <ProductCard product={product} />
+                )}
+              </div>
+            );
+          })}
+
+      {/* {productsByCategoryId.map((product) => {
         const isSelectedProduct = selectedProducts.some(
           (item) => item.id === product.id
         );
@@ -61,7 +123,7 @@ export const ShowProducts = ({
             )}
           </div>
         );
-      })}
+      })} */}
     </div>
   );
 };
