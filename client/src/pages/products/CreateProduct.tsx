@@ -1,4 +1,4 @@
-import  {  useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useCreateProduct } from "../../hooks/products/useProducts";
@@ -19,10 +19,13 @@ import { FaPlus } from "react-icons/fa6";
 import { useCategories } from "../../hooks/categories/useCategories";
 import dayjs from "dayjs";
 import { useSuppliers } from "../../hooks/suppliers/useSuppliers";
+import socket from "../../socket/socket";
 
 export const CreateProduct = () => {
   const navigate = useNavigate();
   const { token } = useAuth();
+  const [barCode, setBarcode] = useState<any>();
+  console.log(barCode);
   const { mutate: createNewProduct, isLoading } = useCreateProduct();
   const [selectedSupplierId, setSelectedSupplierId] = useState<
     number | undefined
@@ -80,6 +83,15 @@ export const CreateProduct = () => {
     });
   };
 
+  useEffect(() => {
+    socket.on("serverResponse", (message: any) => {
+      setBarcode(message);
+    });
+
+    return () => {
+      socket.off("serverResponse");
+    };
+  });
   return (
     <>
       {contextHolder}
@@ -151,6 +163,21 @@ export const CreateProduct = () => {
             onChange={(value) =>
               setProductData({ ...productData, price: value || 0 })
             }
+          />
+        </div>
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 800,
+            display: "grid",
+            gridTemplateColumns: "1fr 3fr",
+          }}
+        >
+          <Title level={5}>BarCode</Title>
+          <InputNumber
+            style={{ width: "100%" }}
+            value={barCode?.qrCode}
+            onChange={(value) => setBarcode({ ...barCode, qrCode: value })}
           />
         </div>
 
