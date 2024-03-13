@@ -27,7 +27,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "*", // "http://localhost:5173"
+    origin: "http://localhost:5173",
     optionsSuccessStatus: 200,
     credentials: true,
   })
@@ -58,7 +58,7 @@ io.on("connection", (socket) => {
     // For example, you might want to validate the QR code or look up associated data
 
     // Send a response back to the client
-    socket.emit("serverResponse", {
+    io.sockets.emit("serverResponse", {
       message: "QR Code processed successfully",
       qrCode: data.qrValue,
     });
