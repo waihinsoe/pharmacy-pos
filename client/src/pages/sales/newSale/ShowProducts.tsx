@@ -3,11 +3,20 @@ import { useAuth } from "../../../context/AuthContext";
 import { Product } from "../../../types";
 import { ProductCard } from "./ProductCard";
 import Badge from "antd/es/badge";
-
+import { useEffect } from "react";
+import socket from "../../../socket/socket";
+import { SelectedProduct } from "../../../types/productTypes";
+import { message } from "antd";
+import ProductSuccessAudio from "../../../assets/product.mp3";
+import ProductErrorAudio from "../../../assets/errorProduct.mp3";
+import ProductSuccessAudio2 from "../../../assets/successProduct2.mp3";
+import ProductErrorAudio2 from "../../../assets/errorProduct2.mp3";
+import ProductSuccessAudio3 from "../../../assets/successProduct3.mp3";
+import ProductErrorAudio3 from "../../../assets/errorProduct3.mp3";
 interface Props {
   productSearchTerm: string;
   categoryId: number | string;
-  selectedProducts: Product[];
+  selectedProducts: SelectedProduct[];
   setSelectedProducts: (value: any) => void;
 }
 
@@ -19,6 +28,7 @@ export const ShowProducts = ({
 }: Props) => {
   const { token } = useAuth();
   const { data: products, isLoading } = useProducts(token || "");
+  const [messageApi, contextHolder] = message.useMessage();
 
   const searchedProducts = productSearchTerm
     ? products?.filter((product: Product) =>
@@ -31,6 +41,60 @@ export const ShowProducts = ({
       ? products
       : products?.filter((item: Product) => item.category_id === categoryId);
 
+  const warning = () => {
+    messageApi.open({
+      type: "warning",
+      content: "Product not found or scan error, TryAgain!",
+    });
+  };
+  const success = () => {
+    messageApi.open({
+      type: "success",
+      content: "Product scanned successfully!",
+    });
+  };
+  useEffect(() => {
+    socket.on("scannedProduct", (data: any) => {
+      if (data.hasOwnProperty("barcode")) {
+        const scannedProduct = products?.find(
+          (product: Product) => product.barcode === data.barcode
+        );
+
+        if (!scannedProduct) {
+          const sound = new Audio(ProductErrorAudio3);
+          sound.play();
+          return warning();
+        }
+
+        const selectedProduct = selectedProducts.find(
+          (item) => item.id === scannedProduct.id
+        );
+
+        if (selectedProduct) {
+          const filteredProducts = selectedProducts.filter(
+            (item) => item.id !== selectedProduct.id
+          );
+          setSelectedProducts([
+            ...filteredProducts,
+            { ...selectedProduct, count: selectedProduct.count + 1 },
+          ]);
+        } else {
+          setSelectedProducts([
+            ...selectedProducts,
+            { ...scannedProduct, count: 1 },
+          ]);
+        }
+        const sound = new Audio(ProductSuccessAudio3);
+        sound.play();
+        success();
+      }
+    });
+    const sound = new Audio("/path/to/your/sound/productSelected.mp3");
+    sound.play();
+    return () => {
+      socket.off("scannedProduct");
+    };
+  });
   if (isLoading) return <div>loading ....</div>;
 
   return (
@@ -44,6 +108,8 @@ export const ShowProducts = ({
         overflowY: "scroll",
       }}
     >
+      {contextHolder}
+
       {searchedProducts.length
         ? searchedProducts.map((product: Product) => {
             const isSelectedProduct = selectedProducts.some(

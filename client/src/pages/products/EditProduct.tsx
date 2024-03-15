@@ -38,6 +38,7 @@ export const EditProduct = () => {
     quantity: 0,
     expriy_date: dayjs(),
     img_url: "",
+    barcode: "",
   });
 
   const [messageApi, contextHolder] = message.useMessage();

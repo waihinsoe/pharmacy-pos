@@ -24,8 +24,6 @@ import socket from "../../socket/socket";
 export const CreateProduct = () => {
   const navigate = useNavigate();
   const { token } = useAuth();
-  const [barCode, setBarcode] = useState<any>();
-  console.log(barCode);
   const { mutate: createNewProduct, isLoading } = useCreateProduct();
   const [selectedSupplierId, setSelectedSupplierId] = useState<
     number | undefined
@@ -40,6 +38,7 @@ export const CreateProduct = () => {
     quantity: 0,
     expriy_date: dayjs(),
     img_url: "",
+    barcode: "",
   });
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -50,7 +49,7 @@ export const CreateProduct = () => {
   const { data: categories } = useCategories(token || "");
   const { data: suppliers } = useSuppliers(token || "");
   const handleCreate = () => {
-    const { name, description, quantity, expriy_date } = productData;
+    const { name, description, quantity, expriy_date, barcode } = productData;
 
     const isValid =
       name &&
@@ -58,7 +57,8 @@ export const CreateProduct = () => {
       quantity &&
       expriy_date &&
       selectedSupplierId &&
-      selectedCategoryId;
+      selectedCategoryId &&
+      barcode;
 
     if (!isValid) return warning();
 
@@ -84,12 +84,12 @@ export const CreateProduct = () => {
   };
 
   useEffect(() => {
-    socket.on("serverResponse", (message: any) => {
-      setBarcode(message);
+    socket.on("barcodeForProduct", (data: any) => {
+      setProductData({ ...productData, barcode: data.barcode });
     });
 
     return () => {
-      socket.off("serverResponse");
+      socket.off("barcodeForProduct");
     };
   });
   return (
@@ -174,10 +174,13 @@ export const CreateProduct = () => {
           }}
         >
           <Title level={5}>BarCode</Title>
-          <InputNumber
-            style={{ width: "100%" }}
-            value={barCode?.qrCode}
-            onChange={(value) => setBarcode({ ...barCode, qrCode: value })}
+          <Input
+            placeholder="Enter product name"
+            allowClear
+            value={productData.barcode}
+            onChange={(e) =>
+              setProductData({ ...productData, barcode: e.target.value })
+            }
           />
         </div>
 
