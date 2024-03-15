@@ -11,6 +11,7 @@ import { customerRouter } from "./routes/customerRouter";
 import { saleRouter } from "./routes/saleRouter";
 import http from "http";
 import { Server } from "socket.io";
+import { prisma } from "./utils/db";
 dotenv.config();
 
 const app = express();
@@ -51,16 +52,21 @@ app.use("/api/sales", saleRouter);
 io.on("connection", (socket) => {
   console.log("New client connected");
 
-  socket.on("qrCodeDetected", (data) => {
-    console.log("Received QR Code:", data.qrValue);
+  socket.on("barcodeDetected", (data) => {
+    console.log("Received QR Code:", data.barcode);
 
     // Process the QR code here
     // For example, you might want to validate the QR code or look up associated data
 
     // Send a response back to the client
-    io.sockets.emit("serverResponse", {
-      message: "QR Code processed successfully",
-      qrCode: data.qrValue,
+    io.sockets.emit("barcodeForProduct", {
+      message: "barcode processed successfully",
+      barcode: data.barcode,
+    });
+
+    io.sockets.emit("scannedProduct", {
+      message: "found scannedProduct successfully",
+      barcode: data.barcode,
     });
 
     // Alternatively, you could broadcast to all connected clients (if applicable)
