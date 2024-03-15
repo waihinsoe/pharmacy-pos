@@ -11,6 +11,7 @@ export const createProduct = async (req: Request, res: Response) => {
       expriy_date,
       category_id,
       supplier_id,
+      barcode,
     } = req.body;
     const isValid =
       name &&
@@ -18,7 +19,8 @@ export const createProduct = async (req: Request, res: Response) => {
       quantity &&
       expriy_date &&
       category_id &&
-      supplier_id;
+      supplier_id &&
+      barcode;
 
     if (!isValid) {
       return res
@@ -35,6 +37,7 @@ export const createProduct = async (req: Request, res: Response) => {
         expriy_date,
         category_id,
         supplier_id,
+        barcode,
       },
     });
 

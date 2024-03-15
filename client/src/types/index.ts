@@ -28,6 +28,7 @@ export interface Product {
   description: string;
   price: number;
   quantity: number;
+  barcode: string;
   expriy_date: Dayjs;
   img_url: string;
   created_at?: Date;
