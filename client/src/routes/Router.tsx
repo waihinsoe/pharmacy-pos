@@ -12,7 +12,7 @@ import { ProductList } from "../pages/products/ProductList";
 import { ProdcutReport } from "../pages/reports/ProductReport";
 import { SalesReport } from "../pages/reports/SalesReport";
 import { NewSale } from "../pages/sales/newSale/NewSale";
-import { SalesHistory } from "../pages/sales/SalesHistory";
+import { SalesHistoryList } from "../pages/sales/saleHistory/SalesHistoryList";
 import { CreateSupplier } from "../pages/suppliers/CreateSupplier";
 import { SupplierList } from "../pages/suppliers/SupplierList";
 import { Register } from "../pages/auth/Register";
@@ -21,6 +21,7 @@ import { EditCategory } from "../pages/categories/EditCategory";
 import { CreateCategory } from "../pages/categories/CreateCategory";
 import { EditSupplier } from "../pages/suppliers/EditSupplier";
 import { EditCustomer } from "../pages/customers/EditCustomer";
+import { SaleDetailList } from "../pages/sales/saleHistory/SaleDetailList";
 export const Router = () => {
   return (
     <BrowserRouter>
@@ -39,7 +40,11 @@ export const Router = () => {
             <Route path="products" element={<ProductList />} />
             <Route path="products/create" element={<CreateProduct />} />
             <Route path="products/edit/:productId" element={<EditProduct />} />
-            <Route path="sales/history" element={<SalesHistory />} />
+            <Route path="sales/history" element={<SalesHistoryList />} />
+            <Route
+              path="sales/history/:saleId/detail"
+              element={<SaleDetailList />}
+            />
             <Route path="customers" element={<CustomerList />} />
             <Route path="customers/create" element={<CreateCustomer />} />
             <Route

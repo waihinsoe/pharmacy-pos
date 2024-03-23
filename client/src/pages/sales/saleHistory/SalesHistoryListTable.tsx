@@ -7,54 +7,64 @@ import type {
   TableRowSelection,
 } from "antd/es/table/interface";
 import Highlighter from "react-highlight-words";
-import { Image } from "antd";
-import { useAuth } from "../../context/AuthContext";
-import { PaginationAndSearchQuery } from "../../types";
+import {
+  useCategories,
+  useDeleteCategory,
+  useDeleteManyCategory,
+} from "../../../hooks/categories/useCategories";
+import { useAuth } from "../../../context/AuthContext";
+import { PaginationAndSearchQuery } from "../../../types";
 import { FaPlus } from "react-icons/fa6";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { MdCancelPresentation } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
-import dayjs, { Dayjs } from "dayjs";
-import {
-  useDeleteManyProduct,
-  useDeleteProduct,
-  useProducts,
-} from "../../hooks/products/useProducts";
+import dayjs from "dayjs";
+import { useSales } from "../../../hooks/sales/useSales";
+import { DatePicker } from "antd";
+import type { DatePickerProps, GetProps } from "antd";
+import { useCustomer } from "../../../hooks/customers/useCustomers";
 
+type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
+
+const { RangePicker } = DatePicker;
+// id             Int            @id @default(autoincrement())
+// customer_id    Int?
+// user_id        Int
+// sale_date      DateTime       @default(now())
+// total_amount   Int
+// payment_method Payment        @default(CASH)
 type InputRef = GetRef<typeof Input>;
 
 interface DataType {
   id: number;
-  name: string;
-  category_id: number;
-  img_url: string;
-  price: number;
-  quantity: number;
-  expriy_date: Dayjs;
+  customer_name: number;
+  seller_name: number;
+  total_amount: number;
+  payment_method: string;
+  sale_date: Date;
 }
 
 type DataIndex = keyof DataType;
 
-export const ProductListTable = () => {
-  const { token } = useAuth();
+export const SalesHistoryListTable = () => {
   const navigate = useNavigate();
-
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(30);
+  const [limit, setLimit] = useState(10);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
   const searchInput = useRef<InputRef>(null);
+  const { mutate: deleteCategory } = useDeleteCategory();
+  const { mutate: deleteManyCategory } = useDeleteManyCategory();
+  const { token } = useAuth();
 
-  const { mutate: deleteProduct } = useDeleteProduct();
-  const { mutate: deleteManyProduct } = useDeleteManyProduct();
-
-  const query: PaginationAndSearchQuery = {
-    page,
-    limit,
-    searchTerm: searchText,
-  };
-  const { data, isLoading } = useProducts(token || "", query);
+  // const query: PaginationAndSearchQuery = {
+  //   page,
+  //   limit,
+  //   searchTerm: searchText,
+  // };
+  const { data, isLoading } = useSales(token || "");
   const handleTableChange = (pagination: any) => {
     setPage(pagination.current);
     setLimit(pagination.pageSize);
@@ -62,14 +72,14 @@ export const ProductListTable = () => {
 
   const handleDelete = (key: React.Key) => {
     if (key) {
-      deleteProduct({ id: Number(key), accessToken: token || "" });
+      deleteCategory({ id: Number(key), accessToken: token || "" });
     }
   };
 
   const handleDeleteMany = () => {
     if (selectedRowKeys) {
       const ids = selectedRowKeys as number[];
-      deleteManyProduct({ ids, accessToken: token || "" });
+      deleteManyCategory({ ids, accessToken: token || "" });
       setSelectedRowKeys([]);
     }
   };
@@ -193,69 +203,73 @@ export const ProductListTable = () => {
 
   const columns: TableColumnsType<DataType> = [
     {
-      title: "Image",
-      dataIndex: "img_url",
-      key: "image", // this is the value that is parsed from the DB / server side
-      render: (img_url) => (
-        <Image width={100} src={img_url} style={{ borderRadius: 3 }} />
-      ), // 'theImageURL' is the variable you must declare in order the render the URL
+      title: "Seller_name",
+      dataIndex: "seller_name",
+      key: "seller_name",
+      // sorter: (a, b) => a.user_id - b.user_id,
+      // sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      ...getColumnSearchProps("name"),
-      sorter: (a, b) => a.name.length - b.name.length,
-      sortDirections: ["descend", "ascend"],
+      title: "Customer_name",
+      dataIndex: "customer_name",
+      key: "customer_name",
+      // sorter: (a, b) => a.customer_id - b.customer_id,
+      // sortDirections: ["descend", "ascend"],
     },
 
     {
-      title: "Category_Id",
-      dataIndex: "category_id",
-      key: "category_id",
-      sorter: (a, b) => a.category_id - b.category_id,
-      sortDirections: ["descend", "ascend"],
-    },
-
-    {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
-      sorter: (a, b) => a.price - b.price,
+      title: "Total_Amount",
+      dataIndex: "total_amount",
+      key: "total_amount",
+      sorter: (a, b) => a.total_amount - b.total_amount,
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Quantity",
-      dataIndex: "quantity",
-      key: "quantity",
-      sorter: (a, b) => a.quantity - b.quantity,
+      title: "Payment_Method",
+      dataIndex: "payment_method",
+      key: "payment_method",
+      sorter: (a, b) => a.payment_method.length - b.payment_method.length,
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Expriy_Date",
-      dataIndex: "expriy_date",
-      key: "expriy_date",
-      sorter: (a, b) =>
-        dayjs(a.expriy_date).unix() - dayjs(b.expriy_date).unix(),
+      title: "Sale_Date",
+      dataIndex: "sale_date",
+      key: "sale_date",
+      render: (sale_date) => {
+        return (
+          <div>
+            {dayjs(sale_date).format("HH:mm:ss / DD-MM-YYYY").toString()}
+          </div>
+        );
+      },
+      sorter: (a, b) => dayjs(a.sale_date).unix() - dayjs(b.sale_date).unix(),
       sortDirections: ["descend", "ascend"],
     },
     {
       title: "Operation",
       dataIndex: "operation",
       render: (_, record: { id: React.Key }) =>
-        data.data.length >= 1 ? (
+        data.length >= 1 ? (
           <Flex gap={16}>
-            <Popconfirm
-              title="Sure to delete?"
-              onConfirm={() => handleDelete(record.id)}
-            >
-              <a style={{ color: "red" }}>Delete</a>
-            </Popconfirm>
-            <Link to={`edit/${record.id}`}>Edit</Link>
+            <Link to={`${record.id}/detail`}>details</Link>
           </Flex>
         ) : null,
     },
   ];
+
+  const onChange = (
+    value: DatePickerProps["value"] | RangePickerProps["value"],
+    dateString: [string, string] | string
+  ) => {
+    console.log("Selected Time: ", value);
+    console.log("Formatted Selected Time: ", dateString);
+  };
+
+  const onOk = (
+    value: DatePickerProps["value"] | RangePickerProps["value"]
+  ) => {
+    console.log("onOk: ", value);
+  };
 
   if (isLoading) return <div>...loading</div>;
   return (
@@ -291,28 +305,22 @@ export const ProductListTable = () => {
         ) : (
           <div></div>
         )}
-        <Button
-          onClick={() => {
-            navigate("create");
-          }}
-          type="primary"
-          icon={<FaPlus />}
-          style={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          create product
-        </Button>
+        <RangePicker
+          showTime={{ format: "HH:mm" }}
+          format="YYYY-MM-DD HH:mm"
+          onChange={onChange}
+          onOk={onOk}
+        />
       </Flex>
       <Table
         rowSelection={{ ...rowSelection }}
         columns={columns}
-        dataSource={data.data}
+        dataSource={data}
         rowKey={"id"}
-        pagination={{ current: page, pageSize: limit, total: data.total }}
-        onChange={handleTableChange}
         scroll={{ y: 450 }}
+        pagination={{ pageSize: 40 }}
+        // pagination={{ current: page, pageSize: limit, total: data.total }}
+        onChange={handleTableChange}
       />
     </Flex>
   );

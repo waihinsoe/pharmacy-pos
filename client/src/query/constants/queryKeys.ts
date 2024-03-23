@@ -10,4 +10,8 @@ export const queryKeys = {
 
   customers: "customers",
   customer: (id: number) => [`customers`, id],
+
+  sales: "sales",
+  sale: (id: number) => [`sales`, id],
+  saleDetail: (saleId: number) => [`sales`, saleId, "detail"],
 };
