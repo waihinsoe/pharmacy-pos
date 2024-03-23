@@ -19,7 +19,6 @@ import { FaPlus } from "react-icons/fa6";
 import { useCategories } from "../../hooks/categories/useCategories";
 import dayjs from "dayjs";
 import { useSuppliers } from "../../hooks/suppliers/useSuppliers";
-import socket from "../../socket/socket";
 
 export const CreateProduct = () => {
   const navigate = useNavigate();
@@ -83,15 +82,6 @@ export const CreateProduct = () => {
     });
   };
 
-  useEffect(() => {
-    socket.on("barcodeForProduct", (data: any) => {
-      setProductData({ ...productData, barcode: data.barcode });
-    });
-
-    return () => {
-      socket.off("barcodeForProduct");
-    };
-  });
   return (
     <>
       {contextHolder}
@@ -165,24 +155,6 @@ export const CreateProduct = () => {
             }
           />
         </div>
-        <div
-          style={{
-            width: "100%",
-            maxWidth: 800,
-            display: "grid",
-            gridTemplateColumns: "1fr 3fr",
-          }}
-        >
-          <Title level={5}>BarCode</Title>
-          <Input
-            placeholder="Enter product name"
-            allowClear
-            value={productData.barcode}
-            onChange={(e) =>
-              setProductData({ ...productData, barcode: e.target.value })
-            }
-          />
-        </div>
 
         <div
           style={{
@@ -199,6 +171,25 @@ export const CreateProduct = () => {
             value={productData.quantity}
             onChange={(value) =>
               setProductData({ ...productData, quantity: value || 0 })
+            }
+          />
+        </div>
+
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 800,
+            display: "grid",
+            gridTemplateColumns: "1fr 3fr",
+          }}
+        >
+          <Title level={5}>BarCode</Title>
+          <Input
+            placeholder="Enter product barcode"
+            allowClear
+            value={productData.barcode}
+            onChange={(e) =>
+              setProductData({ ...productData, barcode: e.target.value })
             }
           />
         </div>

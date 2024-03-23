@@ -7,12 +7,9 @@ import { useEffect } from "react";
 import socket from "../../../socket/socket";
 import { SelectedProduct } from "../../../types/productTypes";
 import { message } from "antd";
-import ProductSuccessAudio from "../../../assets/product.mp3";
-import ProductErrorAudio from "../../../assets/errorProduct.mp3";
-import ProductSuccessAudio2 from "../../../assets/successProduct2.mp3";
-import ProductErrorAudio2 from "../../../assets/errorProduct2.mp3";
 import ProductSuccessAudio3 from "../../../assets/successProduct3.mp3";
 import ProductErrorAudio3 from "../../../assets/errorProduct3.mp3";
+import BarcodeScannerInput from "../../../components/scanner/BarcodeScannerInput";
 interface Props {
   productSearchTerm: string;
   categoryId: number | string;
@@ -41,10 +38,10 @@ export const ShowProducts = ({
       ? products
       : products?.filter((item: Product) => item.category_id === categoryId);
 
-  const warning = () => {
+  const warning = (content: string) => {
     messageApi.open({
       type: "warning",
-      content: "Product not found or scan error, TryAgain!",
+      content: content,
     });
   };
   const success = () => {
@@ -53,48 +50,42 @@ export const ShowProducts = ({
       content: "Product scanned successfully!",
     });
   };
-  useEffect(() => {
-    socket.on("scannedProduct", (data: any) => {
-      if (data.hasOwnProperty("barcode")) {
-        const scannedProduct = products?.find(
-          (product: Product) => product.barcode === data.barcode
-        );
 
-        if (!scannedProduct) {
-          const sound = new Audio(ProductErrorAudio3);
-          sound.play();
-          return warning();
-        }
+  const onScan = (value: string) => {
+    if (value) {
+      const scannedProduct = products?.find(
+        (product: Product) => product.barcode === value
+      );
 
-        const selectedProduct = selectedProducts.find(
-          (item) => item.id === scannedProduct.id
-        );
-
-        if (selectedProduct) {
-          const filteredProducts = selectedProducts.filter(
-            (item) => item.id !== selectedProduct.id
-          );
-          setSelectedProducts([
-            ...filteredProducts,
-            { ...selectedProduct, count: selectedProduct.count + 1 },
-          ]);
-        } else {
-          setSelectedProducts([
-            ...selectedProducts,
-            { ...scannedProduct, count: 1 },
-          ]);
-        }
-        const sound = new Audio(ProductSuccessAudio3);
-        sound.play();
-        success();
+      if (!scannedProduct) {
+        return warning("Product not found or scan error, TryAgain!");
       }
-    });
-    const sound = new Audio("/path/to/your/sound/productSelected.mp3");
-    sound.play();
-    return () => {
-      socket.off("scannedProduct");
-    };
-  });
+      if (scannedProduct.quantity === 0) return warning("out of stock!");
+
+      const selectedProduct = selectedProducts.find(
+        (item) => item.id === scannedProduct.id
+      );
+
+      if (selectedProduct) {
+        if (selectedProduct.count == selectedProduct.quantity)
+          return warning("out of stock!");
+        const filteredProducts = selectedProducts.filter(
+          (item) => item.id !== selectedProduct.id
+        );
+        setSelectedProducts([
+          ...filteredProducts,
+          { ...selectedProduct, count: selectedProduct.count + 1 },
+        ]);
+      } else {
+        setSelectedProducts([
+          ...selectedProducts,
+          { ...scannedProduct, count: 1 },
+        ]);
+      }
+      success();
+    }
+  };
+
   if (isLoading) return <div>loading ....</div>;
 
   return (
@@ -108,6 +99,7 @@ export const ShowProducts = ({
         overflowY: "scroll",
       }}
     >
+      <BarcodeScannerInput onScan={onScan} />
       {contextHolder}
 
       {searchedProducts.length

@@ -204,6 +204,25 @@ export const EditProduct = () => {
             gridTemplateColumns: "1fr 3fr",
           }}
         >
+          <Title level={5}>BarCode</Title>
+          <Input
+            placeholder="Enter product barcode"
+            allowClear
+            value={productData.barcode}
+            onChange={(e) =>
+              setProductData({ ...productData, barcode: e.target.value })
+            }
+          />
+        </div>
+
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 800,
+            display: "grid",
+            gridTemplateColumns: "1fr 3fr",
+          }}
+        >
           <Title level={5}>Select supplier</Title>
           <div style={{ width: "100%", display: "flex", gap: 4 }}>
             <Select
