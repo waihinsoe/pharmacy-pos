@@ -32,14 +32,14 @@ export const saleService = {
     query?: PaginationAndSearchQuery
   ) => {
     if (query) {
-      const { data } = await axios.get(`${API_URL}/${id}`, {
+      const { data } = await axios.get(`${API_URL}/${id}/detail`, {
         ...getAxiosConfig(accessToken),
         params: { ...query },
       });
       return data;
     } else {
       const { data } = await axios.get(
-        `${API_URL}/${id}`,
+        `${API_URL}/${id}/detail`,
         getAxiosConfig(accessToken)
       );
       return data;
