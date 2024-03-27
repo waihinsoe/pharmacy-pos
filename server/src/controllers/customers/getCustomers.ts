@@ -3,7 +3,6 @@ import { prisma } from "../../utils/db";
 
 export const getCustomers = async (req: Request, res: Response) => {
   const isPaginateFetch = req.query.hasOwnProperty("page");
-  console.log(isPaginateFetch);
   if (!isPaginateFetch) {
     try {
       const customers = await prisma.customers.findMany({

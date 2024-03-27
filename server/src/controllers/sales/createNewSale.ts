@@ -6,7 +6,6 @@ import { SaledProduct } from "../../types";
 export const createNewSale = async (req: Request, res: Response) => {
   try {
     const { customer_id, user_id, saled_products, payment_method } = req.body;
-
     const isValid = user_id && saled_products.length > 0 && payment_method;
     if (!isValid) return res.status(400).json({ error: "bad request!" });
 
