@@ -23,7 +23,7 @@ export const useSales = (
   }
 };
 
-export const useSaleDetails = (
+export const useSaleDetail = (
   id: number,
   accessToken: string,
   query?: PaginationAndSearchQuery

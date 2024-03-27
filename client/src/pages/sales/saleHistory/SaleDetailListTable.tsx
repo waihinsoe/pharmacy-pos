@@ -8,45 +8,41 @@ import type {
 } from "antd/es/table/interface";
 import Highlighter from "react-highlight-words";
 import {
-  useCategories,
   useDeleteCategory,
   useDeleteManyCategory,
 } from "../../../hooks/categories/useCategories";
 import { useAuth } from "../../../context/AuthContext";
-import { PaginationAndSearchQuery } from "../../../types";
-import { FaPlus } from "react-icons/fa6";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { MdCancelPresentation } from "react-icons/md";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
-import { useSales } from "../../../hooks/sales/useSales";
+import { useSaleDetail, useSales } from "../../../hooks/sales/useSales";
 import { DatePicker } from "antd";
 import type { DatePickerProps, GetProps } from "antd";
-import { useCustomer } from "../../../hooks/customers/useCustomers";
 
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 
 const { RangePicker } = DatePicker;
-// id             Int            @id @default(autoincrement())
-// customer_id    Int?
-// user_id        Int
-// sale_date      DateTime       @default(now())
-// total_amount   Int
-// payment_method Payment        @default(CASH)
+
 type InputRef = GetRef<typeof Input>;
+// id         Int      @id @default(autoincrement())
+// sale_id    Int
+// product_id Int
+// quantity   Int
+// price      Int
 
 interface DataType {
   id: number;
-  customer_name: number;
-  seller_name: number;
-  total_amount: number;
-  payment_method: string;
-  sale_date: Date;
+  sale_id: number;
+  product_name: string;
+  quantity: number;
+  price: number;
 }
 
 type DataIndex = keyof DataType;
 
 export const SaleDetailListTable = () => {
+  const { saleId } = useParams();
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -65,6 +61,8 @@ export const SaleDetailListTable = () => {
   //   searchTerm: searchText,
   // };
   const { data, isLoading } = useSales(token || "");
+  const { data: saleDetail } = useSaleDetail(Number(saleId), token || "");
+  console.log(saleDetail);
   const handleTableChange = (pagination: any) => {
     setPage(pagination.current);
     setLimit(pagination.pageSize);
@@ -203,57 +201,33 @@ export const SaleDetailListTable = () => {
 
   const columns: TableColumnsType<DataType> = [
     {
-      title: "Seller_name",
-      dataIndex: "seller_name",
-      key: "seller_name",
+      title: "Sale_id",
+      dataIndex: "sale_id",
+      key: "sale_id",
       // sorter: (a, b) => a.user_id - b.user_id,
       // sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Customer_name",
-      dataIndex: "customer_name",
-      key: "customer_name",
+      title: "Product_Name",
+      dataIndex: "product_name",
+      key: "product_name",
       // sorter: (a, b) => a.customer_id - b.customer_id,
       // sortDirections: ["descend", "ascend"],
     },
 
     {
-      title: "Total_Amount",
-      dataIndex: "total_amount",
-      key: "total_amount",
-      sorter: (a, b) => a.total_amount - b.total_amount,
+      title: "quantity",
+      dataIndex: "quantity",
+      key: "quantity",
+      sorter: (a, b) => a.quantity - b.quantity,
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Payment_Method",
-      dataIndex: "payment_method",
-      key: "payment_method",
-      sorter: (a, b) => a.payment_method.length - b.payment_method.length,
+      title: "Total_Price",
+      dataIndex: "price",
+      key: "price",
+      sorter: (a, b) => a.price - b.price,
       sortDirections: ["descend", "ascend"],
-    },
-    {
-      title: "Sale_Date",
-      dataIndex: "sale_date",
-      key: "sale_date",
-      render: (sale_date) => {
-        return (
-          <div>
-            {dayjs(sale_date).format("HH:mm:ss / DD-MM-YYYY").toString()}
-          </div>
-        );
-      },
-      sorter: (a, b) => dayjs(a.sale_date).unix() - dayjs(b.sale_date).unix(),
-      sortDirections: ["descend", "ascend"],
-    },
-    {
-      title: "Operation",
-      dataIndex: "operation",
-      render: (_, record: { id: React.Key }) =>
-        data.length >= 1 ? (
-          <Flex gap={16}>
-            <Link to={`details/${record.id}`}>details</Link>
-          </Flex>
-        ) : null,
     },
   ];
 
@@ -315,7 +289,7 @@ export const SaleDetailListTable = () => {
       <Table
         rowSelection={{ ...rowSelection }}
         columns={columns}
-        dataSource={data}
+        dataSource={saleDetail}
         rowKey={"id"}
         scroll={{ y: 450 }}
         pagination={{ pageSize: 40 }}
