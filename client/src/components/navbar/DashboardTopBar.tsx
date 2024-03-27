@@ -92,6 +92,23 @@ const createArrayForBreadcrumb = (href: string) => {
   }
 
   if (isSaleHistoryRoute) {
+    const isSaleDetailRoute = href.includes("detail");
+    if (isSaleDetailRoute) {
+      const saleId = href.split("/")[3];
+      return [
+        {
+          title: <Link to={"/sales/history"}>Sales-history</Link>,
+        },
+        {
+          title: (
+            <Link to={`/sales/history/${saleId}/detail`}>
+              Sales-history-detail
+            </Link>
+          ),
+        },
+      ];
+    }
+
     return [
       {
         title: <Link to={"/sales/history"}>Sales-history</Link>,
