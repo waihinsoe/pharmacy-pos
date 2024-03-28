@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useCreateProduct } from "../../hooks/products/useProducts";
+import { UploadOutlined } from "@ant-design/icons";
 import {
   Button,
   DatePicker,
@@ -19,6 +20,8 @@ import { FaPlus } from "react-icons/fa6";
 import { useCategories } from "../../hooks/categories/useCategories";
 import dayjs from "dayjs";
 import { useSuppliers } from "../../hooks/suppliers/useSuppliers";
+import { Upload, UploadFile, UploadProps } from "antd";
+import { ImageUpload } from "../../utils";
 
 export const CreateProduct = () => {
   const navigate = useNavigate();
@@ -40,14 +43,15 @@ export const CreateProduct = () => {
     barcode: "",
   });
   const [messageApi, contextHolder] = message.useMessage();
-
+  const [file, setFile] = useState<UploadFile>();
   const onChange: DatePickerProps["onChange"] = (date) => {
     setProductData({ ...productData, expriy_date: date });
   };
 
   const { data: categories } = useCategories(token || "");
   const { data: suppliers } = useSuppliers(token || "");
-  const handleCreate = () => {
+
+  const handleCreate = async () => {
     const { name, description, quantity, expriy_date, barcode } = productData;
 
     const isValid =
@@ -60,19 +64,23 @@ export const CreateProduct = () => {
       barcode;
 
     if (!isValid) return warning();
+    const url = await ImageUpload(file);
 
-    const data: Product = {
-      ...productData,
-      category_id: selectedCategoryId,
-      supplier_id: selectedSupplierId,
-    };
+    if (url) {
+      const data: Product = {
+        ...productData,
+        category_id: selectedCategoryId,
+        supplier_id: selectedSupplierId,
+        img_url: url as string,
+      };
 
-    createNewProduct({
-      data,
-      accessToken: token || "",
-    });
-    // route back
-    navigate(-1);
+      createNewProduct({
+        data,
+        accessToken: token || "",
+      });
+      // route back
+      navigate(-1);
+    }
   };
 
   const warning = () => {
@@ -80,6 +88,17 @@ export const CreateProduct = () => {
       type: "warning",
       content: "Please fill all input!",
     });
+  };
+
+  const props: UploadProps = {
+    onRemove: () => {
+      setFile(undefined);
+    },
+    beforeUpload: (file) => {
+      setFile(file);
+
+      return false;
+    },
   };
 
   return (
@@ -255,6 +274,20 @@ export const CreateProduct = () => {
               setProductData({ ...productData, description: e.target.value })
             }
           />
+        </div>
+
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 800,
+            display: "grid",
+            gridTemplateColumns: "1fr 3fr",
+          }}
+        >
+          <Title level={5}>Photo</Title>
+          <Upload maxCount={1} {...props}>
+            <Button icon={<UploadOutlined />}>Select File</Button>
+          </Upload>
         </div>
 
         <div
