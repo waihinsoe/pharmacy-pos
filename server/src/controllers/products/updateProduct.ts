@@ -12,6 +12,7 @@ export const updateProduct = async (req: Request, res: Response) => {
       expriy_date,
       category_id,
       supplier_id,
+      img_url,
     } = req.body;
 
     const isValid =
@@ -39,6 +40,7 @@ export const updateProduct = async (req: Request, res: Response) => {
         expriy_date,
         category_id,
         supplier_id,
+        img_url,
       },
     });
     return res.status(200).json({ category: updatedProduct });

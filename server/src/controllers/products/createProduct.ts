@@ -12,6 +12,7 @@ export const createProduct = async (req: Request, res: Response) => {
       category_id,
       supplier_id,
       barcode,
+      img_url,
     } = req.body;
     const isValid =
       name &&
@@ -20,7 +21,8 @@ export const createProduct = async (req: Request, res: Response) => {
       expriy_date &&
       category_id &&
       supplier_id &&
-      barcode;
+      barcode &&
+      img_url;
 
     if (!isValid) {
       return res
@@ -38,6 +40,7 @@ export const createProduct = async (req: Request, res: Response) => {
         category_id,
         supplier_id,
         barcode,
+        img_url,
       },
     });
 
