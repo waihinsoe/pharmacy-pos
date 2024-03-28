@@ -19,7 +19,9 @@ import { Category, Product, Supplier } from "../../types";
 import { FaPlus } from "react-icons/fa6";
 import { useCategories } from "../../hooks/categories/useCategories";
 import { useSuppliers } from "../../hooks/suppliers/useSuppliers";
-
+import { Upload, UploadFile, UploadProps } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import { ImageUpload } from "../../utils";
 export const EditProduct = () => {
   const navigate = useNavigate();
   const { productId } = useParams();
@@ -40,10 +42,11 @@ export const EditProduct = () => {
     img_url: "",
     barcode: "",
   });
+  const [file, setFile] = useState<UploadFile>();
 
   const [messageApi, contextHolder] = message.useMessage();
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     const { name, description, quantity, expriy_date } = productData;
 
     const isValid =
@@ -57,14 +60,25 @@ export const EditProduct = () => {
       token;
 
     if (!isValid) return warning();
-
-    const id = Number(productId);
-    const data: Product = {
-      ...productData,
-      category_id: selectedCategoryId,
-      supplier_id: selectedSupplierId,
-    };
-    updateProduct({ id, data, accessToken: token });
+    if (file) {
+      const url = await ImageUpload(file);
+      const id = Number(productId);
+      const data: Product = {
+        ...productData,
+        category_id: selectedCategoryId,
+        supplier_id: selectedSupplierId,
+        img_url: url as string,
+      };
+      updateProduct({ id, data, accessToken: token });
+    } else {
+      const id = Number(productId);
+      const data: Product = {
+        ...productData,
+        category_id: selectedCategoryId,
+        supplier_id: selectedSupplierId,
+      };
+      updateProduct({ id, data, accessToken: token });
+    }
   };
 
   const warning = () => {
@@ -82,6 +96,16 @@ export const EditProduct = () => {
 
   const onChange: DatePickerProps["onChange"] = (date) => {
     setProductData({ ...productData, expriy_date: date });
+  };
+
+  const props: UploadProps = {
+    onRemove: () => {
+      setFile(undefined);
+    },
+    beforeUpload: (file) => {
+      setFile(file);
+      return false;
+    },
   };
 
   useEffect(() => {
@@ -277,6 +301,20 @@ export const EditProduct = () => {
               setProductData({ ...productData, description: e.target.value })
             }
           />
+        </div>
+
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 800,
+            display: "grid",
+            gridTemplateColumns: "1fr 3fr",
+          }}
+        >
+          <Title level={5}>Photo</Title>
+          <Upload maxCount={1} {...props}>
+            <Button icon={<UploadOutlined />}>Select File</Button>
+          </Upload>
         </div>
 
         <div

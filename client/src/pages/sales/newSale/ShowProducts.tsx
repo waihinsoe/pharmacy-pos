@@ -137,7 +137,7 @@ export const ShowProducts = ({
               <div
                 key={product.id}
                 onClick={() => {
-                  if (!isSelectedProduct) {
+                  if (!isSelectedProduct && product.quantity) {
                     setSelectedProducts([
                       ...selectedProducts,
                       { ...product, count: 1 },
