@@ -1,5 +1,6 @@
-import { SelectedProduct } from "../pages/sales/newSale/NewSale";
-
+import { imageDB } from "../firebase/config";
+import { SelectedProduct } from "../types/productTypes";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 export const calculateTotalItems = (selectedProducts: SelectedProduct[]) => {
   return selectedProducts.reduce(
     (accumulator, currentProduct: SelectedProduct) => {
@@ -16,4 +17,31 @@ export const calculateTotalAmount = (selectedProducts: SelectedProduct[]) => {
     },
     0
   );
+};
+
+export const ImageUpload = (file: any) => {
+  return new Promise((resolve, reject) => {
+    if (file) {
+      const storageRef = ref(imageDB, `images/${file.name}`);
+      const uploadTask = uploadBytesResumable(
+        storageRef,
+        file as unknown as Blob
+      );
+
+      uploadTask.on(
+        "state_changed",
+        () => {},
+        (error) => {
+          console.error(error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            resolve(downloadURL);
+          });
+        }
+      );
+    } else {
+      reject("No file selected."); // Reject the promise if no file is selected
+    }
+  });
 };

@@ -26,9 +26,31 @@ export const ProductCard = ({ product }: Props) => {
       />
       <Flex vertical gap={4} style={{ padding: 5 }}>
         <Paragraph ellipsis>{product.name}</Paragraph>
-        <Flex align="center" gap={4}>
+        <Flex
+          align="center"
+          gap={4}
+          style={{
+            color:
+              product.quantity === 0
+                ? "red"
+                : product.quantity <= 10
+                ? "orange"
+                : "black",
+          }}
+        >
           <MdOutlineProductionQuantityLimits />
-          <Typography>{product.quantity}</Typography>
+          <Typography
+            style={{
+              color:
+                product.quantity === 0
+                  ? "red"
+                  : product.quantity <= 10
+                  ? "orange"
+                  : "black",
+            }}
+          >
+            {product.quantity}
+          </Typography>
         </Flex>
         <Flex align="center" gap={4}>
           <GiMoneyStack />
