@@ -14,4 +14,6 @@ export const queryKeys = {
   sales: "sales",
   sale: (id: number) => [`sales`, id],
   saleDetail: (saleId: number) => [`sales`, saleId, "detail"],
+
+  dailySalesReport: (date: string) => [`salesReport`, "daily", date],
 };
