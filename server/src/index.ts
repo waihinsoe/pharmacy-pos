@@ -12,6 +12,7 @@ import { saleRouter } from "./routes/saleRouter";
 import http from "http";
 import { Server } from "socket.io";
 import { prisma } from "./utils/db";
+import { saleReportRouter } from "./routes/saleReportRouter";
 dotenv.config();
 
 const app = express();
@@ -48,6 +49,7 @@ app.use("/api/suppliers", supplierRouter);
 app.use("/api/products", productRouter);
 app.use("/api/customers", customerRouter);
 app.use("/api/sales", saleRouter);
+app.use("/api/sales/reports", saleReportRouter);
 
 io.on("connection", (socket) => {
   console.log("New client connected");
