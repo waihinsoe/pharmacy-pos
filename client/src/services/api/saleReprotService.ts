@@ -1,6 +1,6 @@
 import axios from "axios";
 import { config } from "../../config";
-import { PaginationAndSearchQuery } from "../../types";
+import { ReportDateQuery } from "../../types";
 
 const API_URL = `${config.apiBaseUrl}/sales/reports`;
 
@@ -12,10 +12,7 @@ const getAxiosConfig = (accessToken: string) => ({
 });
 
 export const saleReportService = {
-  getDailyReport: async (
-    accessToken: string,
-    query?: PaginationAndSearchQuery
-  ) => {
+  getDailyReport: async (accessToken: string, query?: ReportDateQuery) => {
     if (query) {
       const { data } = await axios.get(`${API_URL}/daily`, {
         ...getAxiosConfig(accessToken),
@@ -31,20 +28,32 @@ export const saleReportService = {
     }
   },
 
-  getMonthlyReport: async (
-    id: number,
-    accessToken: string,
-    query?: PaginationAndSearchQuery
-  ) => {
+  getMonthlyReport: async (accessToken: string, query?: ReportDateQuery) => {
     if (query) {
-      const { data } = await axios.get(`${API_URL}/${id}/detail`, {
+      const { data } = await axios.get(`${API_URL}/monthly`, {
         ...getAxiosConfig(accessToken),
         params: { ...query },
       });
       return data;
     } else {
       const { data } = await axios.get(
-        `${API_URL}/${id}/detail`,
+        `${API_URL}/monthly`,
+        getAxiosConfig(accessToken)
+      );
+      return data;
+    }
+  },
+
+  getYearlyReport: async (accessToken: string, query?: ReportDateQuery) => {
+    if (query) {
+      const { data } = await axios.get(`${API_URL}/yearly`, {
+        ...getAxiosConfig(accessToken),
+        params: { ...query },
+      });
+      return data;
+    } else {
+      const { data } = await axios.get(
+        `${API_URL}/yearly`,
         getAxiosConfig(accessToken)
       );
       return data;

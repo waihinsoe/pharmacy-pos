@@ -10,7 +10,7 @@ import { CreateProduct } from "../pages/products/CreateProduct";
 import { EditProduct } from "../pages/products/EditProduct";
 import { ProductList } from "../pages/products/ProductList";
 import { ProdcutReport } from "../pages/reports/ProductReport";
-import { SalesReport } from "../pages/reports/SalesReport";
+import { SalesReport } from "../pages/reports/salesReport/SalesReport";
 import { NewSale } from "../pages/sales/newSale/NewSale";
 import { SalesHistoryList } from "../pages/sales/saleHistory/SalesHistoryList";
 import { CreateSupplier } from "../pages/suppliers/CreateSupplier";

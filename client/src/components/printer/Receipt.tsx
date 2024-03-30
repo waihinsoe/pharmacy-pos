@@ -32,7 +32,7 @@ const Receipt = forwardRef<HTMLDivElement, ReceiptProps>(
         <Flex vertical style={{ marginTop: "16px" }} gap={8}>
           {receiptData.selectedProducts.map((product) => {
             return (
-              <Flex justify="space-between" align="end">
+              <Flex justify="space-between" align="end" key={product.id}>
                 <Flex vertical>
                   <Typography>{product.name}</Typography>
                   <Typography>
