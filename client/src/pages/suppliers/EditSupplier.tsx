@@ -22,7 +22,6 @@ export const EditSupplier = () => {
     Number(supplierId),
     token || ""
   );
-  console.log(currentSupplier);
   const [supplierData, setSupplierData] = useState<Supplier>({
     name: "",
     contact_number: "",

@@ -26,7 +26,6 @@ export const NewSale = () => {
 
   const handleChange = (value: number | string) => {
     setSelectedCategoryId(value);
-    console.log(`selected ${value}`);
   };
   return (
     <Flex vertical style={{ height: "100vh" }}>

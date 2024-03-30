@@ -60,6 +60,11 @@ export interface PaginationAndSearchQuery {
   searchTerm: string;
 }
 
+export interface ReportDateQuery {
+  startDate: string;
+  endDate: string;
+}
+
 enum Role {
   CASHIER = "CASHIER",
   ADMIN = "ADMIN",
