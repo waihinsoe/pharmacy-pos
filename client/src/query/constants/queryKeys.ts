@@ -15,5 +15,7 @@ export const queryKeys = {
   sale: (id: number) => [`sales`, id],
   saleDetail: (saleId: number) => [`sales`, saleId, "detail"],
 
-  dailySalesReport: (date: string) => [`salesReport`, "daily", date],
+  dailySalesReport: (query: any) => [`salesReport`, "daily", query],
+  monthlySalesReport: (query: any) => [`salesReport`, "monthly", query],
+  yearlySalesReport: (query: any) => [`salesReport`, "yearly", query],
 };

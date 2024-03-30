@@ -62,7 +62,6 @@ export const SaleDetailListTable = () => {
   // };
   const { data, isLoading } = useSales(token || "");
   const { data: saleDetail } = useSaleDetail(Number(saleId), token || "");
-  console.log(saleDetail);
   const handleTableChange = (pagination: any) => {
     setPage(pagination.current);
     setLimit(pagination.pageSize);
