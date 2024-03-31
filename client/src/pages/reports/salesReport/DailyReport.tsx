@@ -2,7 +2,7 @@ import { Flex } from "antd";
 import { useAuth } from "../../../context/AuthContext";
 import { useDailySalesReport } from "../../../hooks/salesReport/useSaleReport";
 import { ReportDateQuery } from "../../../types";
-import { Area, Column, Pie, Rose } from "@ant-design/plots";
+import { Area, Column, Rose } from "@ant-design/plots";
 interface Props {
   chart: string;
   query: ReportDateQuery;
@@ -12,7 +12,7 @@ export const DailyReport = ({ query, chart }: Props) => {
   const { token } = useAuth();
 
   const { data, isLoading } = useDailySalesReport(token || "", query);
-  console.log(data);
+
   if (isLoading) return <div>loading ...</div>;
   const areaConfig = {
     data,
@@ -54,18 +54,9 @@ export const DailyReport = ({ query, chart }: Props) => {
     xField: "sale_date",
     yField: "total_amount",
     colorField: "sale_date",
-    // transform: [{ type: "groupX", y: "sum" }],
     scale: { y: { type: "sqrt" }, x: { padding: 0 } },
     axis: false,
     legend: { color: { length: 400, layout: { justifyContent: "center" } } },
-    labels: [
-      {
-        text: "total_amount",
-        position: "outside",
-        formatter: "~s",
-        transform: [{ type: "overlapDodgeY" }],
-      },
-    ],
     tooltip: { items: [{ channel: "y", valueFormatter: "~s" }] },
   };
 

@@ -26,7 +26,7 @@ type InputRef = GetRef<typeof Input>;
 interface DataType {
   id: number;
   name: string;
-  category_id: number;
+  // category_id: number;
   img_url: string;
   price: number;
   quantity: number;
@@ -209,13 +209,13 @@ export const ProductListTable = () => {
       sortDirections: ["descend", "ascend"],
     },
 
-    {
-      title: "Category_Id",
-      dataIndex: "category_id",
-      key: "category_id",
-      sorter: (a, b) => a.category_id - b.category_id,
-      sortDirections: ["descend", "ascend"],
-    },
+    // {
+    //   title: "Category_Id",
+    //   dataIndex: "category_id",
+    //   key: "category_id",
+    //   sorter: (a, b) => a.category_id - b.category_id,
+    //   sortDirections: ["descend", "ascend"],
+    // },
 
     {
       title: "Price",
@@ -238,6 +238,9 @@ export const ProductListTable = () => {
       sorter: (a, b) =>
         dayjs(a.expriy_date).unix() - dayjs(b.expriy_date).unix(),
       sortDirections: ["descend", "ascend"],
+      render: (expriy_date) => {
+        return <div>{dayjs(expriy_date).format("DD-MM-YYYY").toString()}</div>;
+      },
     },
     {
       title: "Operation",

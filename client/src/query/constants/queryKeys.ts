@@ -18,4 +18,7 @@ export const queryKeys = {
   dailySalesReport: (query: any) => [`salesReport`, "daily", query],
   monthlySalesReport: (query: any) => [`salesReport`, "monthly", query],
   yearlySalesReport: (query: any) => [`salesReport`, "yearly", query],
+
+  categoriesReport: (query: any) => [`inventoryReport`, "categories", query],
+  productsReport: (query: any) => [`inventoryReport`, "products", query],
 };

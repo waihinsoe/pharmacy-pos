@@ -1,10 +1,10 @@
 import { DatePickerProps, Flex, Segmented, Select } from "antd";
 import { FaChartArea } from "react-icons/fa";
 import { FaChartBar } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaChartPie } from "react-icons/fa6";
 import { DatePicker } from "antd";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import moment from "moment";
 import { RangePickerProps } from "antd/es/date-picker";
@@ -27,6 +27,7 @@ const yearlyEndDate = dayjs(); // Today
 const formatISODate = (date: any) => date.toISOString().split("T")[0];
 
 const { RangePicker } = DatePicker;
+
 export const SalesReport = () => {
   const [chart, setChart] = useState("Area");
   const [timePeriod, setTimePeriod] = useState("Daily");
