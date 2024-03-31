@@ -1,8 +1,9 @@
 import express from "express";
-import { getDailySalesReport } from "../controllers/saleReports/getDailySalesReport";
-import { getMonthlySalesReport } from "../controllers/saleReports/getMonthlySalesReport";
-import { getYearlySalesReport } from "../controllers/saleReports/getYearlySalesReport";
+
 import { isAuthenticated } from "../middlewares/auth/isAuthenticated";
+import { getDailySalesReport } from "../controllers/salesReport/getDailySalesReport";
+import { getMonthlySalesReport } from "../controllers/salesReport/getMonthlySalesReport";
+import { getYearlySalesReport } from "../controllers/salesReport/getYearlySalesReport";
 export const saleReportRouter = express.Router();
 
 saleReportRouter.get("/daily", isAuthenticated, getDailySalesReport);

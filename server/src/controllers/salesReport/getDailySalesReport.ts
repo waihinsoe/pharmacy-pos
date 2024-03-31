@@ -6,6 +6,7 @@ export const getDailySalesReport = async (req: Request, res: Response) => {
   const adjustedEndDate = dayjs(endDate as string)
     .endOf("day")
     .toDate();
+
   try {
     const salesByDay = await prisma.sales.findMany({
       where: {
@@ -34,7 +35,6 @@ export const getDailySalesReport = async (req: Request, res: Response) => {
       },
       {}
     );
-    console.log(dailySales);
 
     const data = Object.entries(dailySales).map(([date, total_amount]) => ({
       sale_date: date,

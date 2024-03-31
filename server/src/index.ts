@@ -13,6 +13,7 @@ import http from "http";
 import { Server } from "socket.io";
 import { prisma } from "./utils/db";
 import { saleReportRouter } from "./routes/saleReportRouter";
+import { inventoryReportRouter } from "./routes/inventoryReportRouter";
 dotenv.config();
 
 const app = express();
@@ -37,12 +38,6 @@ app.use(
 
 app.use(cookieParser(config.cookieSecret));
 
-app.get("/search", (req: Request, res: Response) => {
-  console.log(req.query);
-  console.log("hello");
-  res.send({ message: "hello" });
-});
-
 app.use("/api/auth", authRouter);
 app.use("/api/categories", categoryRouter);
 app.use("/api/suppliers", supplierRouter);
@@ -50,6 +45,7 @@ app.use("/api/products", productRouter);
 app.use("/api/customers", customerRouter);
 app.use("/api/sales", saleRouter);
 app.use("/api/sales/reports", saleReportRouter);
+app.use("/api/inventory/reports", inventoryReportRouter);
 
 io.on("connection", (socket) => {
   console.log("New client connected");

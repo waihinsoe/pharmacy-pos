@@ -1,21 +1,20 @@
 import { Request, Response } from "express";
 import { prisma } from "../../utils/db";
 import dayjs from "dayjs";
-export const getMonthlySalesReport = async (req: Request, res: Response) => {
-  const { startDate, endDate } = req.query;
 
+export const getYearlySalesReport = async (req: Request, res: Response) => {
+  const { startDate, endDate } = req.query;
   try {
     // Start of the start month
     const start = dayjs(startDate as string)
-      .startOf("month")
+      .startOf("year")
       .toDate();
 
     // End of the end month
     const end = dayjs(endDate as string)
-      .endOf("month")
+      .endOf("year")
       .toDate();
-
-    const salesByDay = await prisma.sales.findMany({
+    const salesByYear = await prisma.sales.findMany({
       where: {
         sale_date: {
           gte: start,
@@ -31,24 +30,22 @@ export const getMonthlySalesReport = async (req: Request, res: Response) => {
       },
     });
 
-    const monthlySales = salesByDay.reduce(
+    const yearlySales = salesByYear.reduce(
       (acc: any, { sale_date, total_amount }) => {
-        const yearMonth = sale_date.toISOString().substring(0, 7); // Format: YYYY-MM
-        if (!acc[yearMonth]) {
-          acc[yearMonth] = 0;
+        const year = sale_date.toISOString().substring(0, 4); // Format: YYYY-MM
+        if (!acc[year]) {
+          acc[year] = 0;
         }
-        acc[yearMonth] += total_amount;
+        acc[year] += total_amount;
         return acc;
       },
       {}
     );
 
-    const data = Object.entries(monthlySales).map(
-      ([yearMonth, total_amount]) => ({
-        month: yearMonth,
-        total_amount,
-      })
-    );
+    const data = Object.entries(yearlySales).map(([year, total_amount]) => ({
+      year,
+      total_amount,
+    }));
 
     return res.send(data);
   } catch (error) {
