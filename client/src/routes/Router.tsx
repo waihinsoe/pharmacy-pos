@@ -9,7 +9,7 @@ import { CustomerList } from "../pages/customers/CustomerList";
 import { CreateProduct } from "../pages/products/CreateProduct";
 import { EditProduct } from "../pages/products/EditProduct";
 import { ProductList } from "../pages/products/ProductList";
-import { ProdcutReport } from "../pages/reports/ProductReport";
+import { InventoryReport } from "../pages/reports/inventoryReport/InventoryReport";
 import { SalesReport } from "../pages/reports/salesReport/SalesReport";
 import { NewSale } from "../pages/sales/newSale/NewSale";
 import { SalesHistoryList } from "../pages/sales/saleHistory/SalesHistoryList";
@@ -58,7 +58,7 @@ export const Router = () => {
               element={<EditSupplier />}
             />
             <Route path="reports/sales" element={<SalesReport />} />
-            <Route path="reports/products" element={<ProdcutReport />} />
+            <Route path="reports/inventory" element={<InventoryReport />} />
             <Route path="*" element={<NotFound />} />
           </Route>
           <Route path="sales/new" element={<NewSale />} />

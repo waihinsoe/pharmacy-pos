@@ -39,7 +39,7 @@ const items: MenuItem[] = [
 
   getItem("Reports", "reports", <HiOutlineDocumentReport />, [
     getItem("Sales", "/reports/sales"),
-    getItem("Products", "/reports/products"),
+    getItem("inventory", "/reports/inventory"),
   ]),
 ];
 

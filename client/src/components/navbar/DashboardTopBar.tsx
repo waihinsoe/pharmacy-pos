@@ -118,7 +118,7 @@ const createArrayForBreadcrumb = (href: string) => {
 
   if (isReportsRoute) {
     const isSalesReportsRoute = href.includes("sales");
-    const isProductsReportsRoute = href.includes("products");
+    const isInventoryReportsRoute = href.includes("inventory");
 
     if (isSalesReportsRoute) {
       return [
@@ -128,10 +128,10 @@ const createArrayForBreadcrumb = (href: string) => {
       ];
     }
 
-    if (isProductsReportsRoute) {
+    if (isInventoryReportsRoute) {
       return [
         {
-          title: <Link to={"/reports/products"}>products-reports</Link>,
+          title: <Link to={"/reports/inventory"}>inventory-reports</Link>,
         },
       ];
     }

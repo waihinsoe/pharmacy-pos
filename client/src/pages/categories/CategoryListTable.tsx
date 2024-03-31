@@ -222,7 +222,7 @@ export const CategoryListTable = () => {
 
   if (isLoading) return <div>...loading</div>;
   return (
-    <Flex vertical gap={16}>
+    <Flex vertical gap={16} style={{ width: "100%" }}>
       <Flex justify="space-between">
         {selectedRowKeys.length ? (
           <Flex gap={16}>
@@ -269,6 +269,7 @@ export const CategoryListTable = () => {
         </Button>
       </Flex>
       <Table
+        style={{ width: "100%" }}
         rowSelection={{ ...rowSelection }}
         columns={columns}
         dataSource={data.data}

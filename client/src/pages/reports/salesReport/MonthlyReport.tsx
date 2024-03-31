@@ -54,18 +54,9 @@ export const MonthlyReport = ({ query, chart }: Props) => {
     xField: "month",
     yField: "total_amount",
     colorField: "month",
-    // transform: [{ type: "groupX", y: "sum" }],
     scale: { y: { type: "sqrt" }, x: { padding: 0 } },
     axis: false,
     legend: { color: { length: 400, layout: { justifyContent: "center" } } },
-    labels: [
-      {
-        text: "total_amount",
-        position: "outside",
-        formatter: "~s",
-        transform: [{ type: "overlapDodgeY" }],
-      },
-    ],
     tooltip: { items: [{ channel: "y", valueFormatter: "~s" }] },
   };
   return (
