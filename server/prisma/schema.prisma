@@ -49,7 +49,7 @@ model Sales {
 model Sale_details {
   id         Int      @id @default(autoincrement())
   sale_id    Int
-  product_id Int
+  product_id Int 
   quantity   Int
   price      Int
   created_at DateTime @default(now())
@@ -60,6 +60,7 @@ model Sale_details {
 
 model Categories {
   id          Int        @id @default(autoincrement())
+  
   name        String
   description String
   created_at  DateTime   @default(now())
