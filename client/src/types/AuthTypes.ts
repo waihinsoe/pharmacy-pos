@@ -33,3 +33,5 @@ export enum AUTH_STATUS {
   SUCCEEDED = "SUCCEEDED",
   FAILED = "FAILED",
 }
+
+export type { User };
