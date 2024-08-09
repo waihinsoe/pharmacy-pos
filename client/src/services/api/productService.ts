@@ -1,6 +1,7 @@
 import axios from "axios";
 import { config } from "../../config";
 import { PaginationAndSearchQuery, Product } from "../../types";
+import { ImageDelete } from "../../utils";
 
 const API_URL = `${config.apiBaseUrl}/products`;
 
@@ -51,11 +52,12 @@ export const productService = {
     return resData;
   },
 
-  delete: async (id: number, accessToken: string) => {
+  delete: async (item: Product, accessToken: string) => {
     const { data: resData } = await axios.delete(
-      `${API_URL}/${id}`,
+      `${API_URL}/${item.id}`,
       getAxiosConfig(accessToken)
     );
+    ImageDelete(item);
     return resData;
   },
 
