@@ -9,7 +9,7 @@ import type {
 import Highlighter from "react-highlight-words";
 import { Image } from "antd";
 import { useAuth } from "../../context/AuthContext";
-import { PaginationAndSearchQuery } from "../../types";
+import { PaginationAndSearchQuery, Product } from "../../types";
 import { FaPlus } from "react-icons/fa6";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { MdCancelPresentation } from "react-icons/md";
@@ -20,6 +20,7 @@ import {
   useDeleteProduct,
   useProducts,
 } from "../../hooks/products/useProducts";
+import { ImageDelete } from "../../utils";
 
 type InputRef = GetRef<typeof Input>;
 
@@ -60,9 +61,9 @@ export const ProductListTable = () => {
     setLimit(pagination.pageSize);
   };
 
-  const handleDelete = (key: React.Key) => {
-    if (key) {
-      deleteProduct({ id: Number(key), accessToken: token || "" });
+  const handleDelete = (item: Product) => {
+    if (item) {
+      deleteProduct({ item, accessToken: token || "" });
     }
   };
 
@@ -175,6 +176,7 @@ export const ProductListTable = () => {
         .includes((value as string).toLowerCase()),
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
+        //@ts-ignore
         setTimeout(() => searchInput.current?.select(), 100);
       }
     },
@@ -245,12 +247,12 @@ export const ProductListTable = () => {
     {
       title: "Operation",
       dataIndex: "operation",
-      render: (_, record: { id: React.Key }) =>
+      render: (_, record: any) =>
         data.data.length >= 1 ? (
           <Flex gap={16}>
             <Popconfirm
               title="Sure to delete?"
-              onConfirm={() => handleDelete(record.id)}
+              onConfirm={() => handleDelete(record)}
             >
               <a style={{ color: "red" }}>Delete</a>
             </Popconfirm>

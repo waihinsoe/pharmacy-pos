@@ -67,8 +67,8 @@ export const useDeleteProduct = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    ({ id, accessToken }: { id: number; accessToken: string }) =>
-      productService.delete(id, accessToken),
+    ({ item, accessToken }: { item: Product; accessToken: string }) =>
+      productService.delete(item, accessToken),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(queryKeys.products);
