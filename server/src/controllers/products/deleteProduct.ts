@@ -4,6 +4,7 @@ import { prisma } from "../../utils/db";
 export const deleteProduct = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    console.log(id);
     if (!id)
       return res.status(404).json({ error: "Missing id. Please try again. " });
 
