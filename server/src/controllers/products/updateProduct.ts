@@ -12,6 +12,7 @@ export const updateProduct = async (req: Request, res: Response) => {
       expriy_date,
       category_id,
       supplier_id,
+      barcode,
       img_url,
     } = req.body;
 
@@ -19,6 +20,7 @@ export const updateProduct = async (req: Request, res: Response) => {
       id &&
       name &&
       description &&
+      barcode &&
       quantity &&
       expriy_date &&
       category_id &&
@@ -37,6 +39,7 @@ export const updateProduct = async (req: Request, res: Response) => {
         description,
         price,
         quantity,
+        barcode,
         expriy_date,
         category_id,
         supplier_id,
