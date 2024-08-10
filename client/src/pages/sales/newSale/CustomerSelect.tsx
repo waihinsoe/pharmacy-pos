@@ -5,7 +5,6 @@ import { useCustomers } from "../../../hooks/customers/useCustomers";
 import { useAuth } from "../../../context/AuthContext";
 import { Customer } from "../../../types";
 import { GrUserManager } from "react-icons/gr";
-import { useNavigate } from "react-router-dom";
 import { AddCustomer } from "./AddCustomer";
 
 interface DataType {

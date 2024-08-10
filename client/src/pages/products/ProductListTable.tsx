@@ -20,7 +20,6 @@ import {
   useDeleteProduct,
   useProducts,
 } from "../../hooks/products/useProducts";
-import { ImageDelete } from "../../utils";
 
 type InputRef = GetRef<typeof Input>;
 
