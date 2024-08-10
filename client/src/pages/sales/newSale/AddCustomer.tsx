@@ -1,4 +1,4 @@
-import { Button, Flex, Form, Input, Modal, Select, message } from "antd";
+import { Button, Flex, Input, Modal, Select, message } from "antd";
 import Title from "antd/es/typography/Title";
 import { useEffect, useState } from "react";
 import { Customer } from "../../../types";
@@ -23,6 +23,7 @@ export const AddCustomer = ({
     isLoading,
     isSuccess,
   } = useCreateCustomer();
+
   const [customerData, setCustomerData] = useState<Customer>({
     name: "",
     contact_number: "",
@@ -96,7 +97,7 @@ export const AddCustomer = ({
       >
         <Flex vertical gap={12}>
           <Input
-            placeholder="Enter customer name"
+            placeholder="Enter name"
             allowClear
             value={customerData.name}
             onChange={(e) =>
@@ -111,13 +112,13 @@ export const AddCustomer = ({
                 contact_number: e.target.value,
               })
             }
-            placeholder="Enter customer phone number"
+            placeholder="Enter phone number"
             addonBefore={prefixSelector}
             style={{ width: "100%" }}
           />
 
           <Input
-            placeholder="Enter customer email"
+            placeholder="Enter email"
             allowClear
             value={customerData.email}
             onChange={(e) =>

@@ -4,7 +4,6 @@ import { Menu } from "antd";
 import { RxDashboard } from "react-icons/rx";
 import { useLocation, useNavigate } from "react-router-dom";
 import { GrHistory } from "react-icons/gr";
-import { MdOutlineInventory } from "react-icons/md";
 import { RiCustomerService2Line } from "react-icons/ri";
 import { FaTruckLoading } from "react-icons/fa";
 import { HiOutlineDocumentReport } from "react-icons/hi";

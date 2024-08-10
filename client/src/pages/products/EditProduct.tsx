@@ -22,6 +22,8 @@ import { useSuppliers } from "../../hooks/suppliers/useSuppliers";
 import { Upload, UploadFile, UploadProps } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { ImageUpload } from "../../utils";
+import { CreateCategoryModal } from "./CreateCategoryModal";
+import { CreateSupplierModal } from "./CreateSupplierModal";
 export const EditProduct = () => {
   const navigate = useNavigate();
   const { productId } = useParams();
@@ -130,7 +132,7 @@ export const EditProduct = () => {
     <>
       {contextHolder}
       <Flex vertical gap={16} align="start">
-        <Title level={3}>Create New Product</Title>
+        <Title level={3}>Edit Product</Title>
         <div
           style={{
             width: "100%",
@@ -169,7 +171,7 @@ export const EditProduct = () => {
                 return { label: item.name, value: item.id };
               })}
             />
-            <Button
+            {/* <Button
               type="primary"
               icon={<FaPlus />}
               onClick={() => navigate("/categories/create")}
@@ -179,7 +181,8 @@ export const EditProduct = () => {
               }}
             >
               create category
-            </Button>
+            </Button> */}
+            <CreateCategoryModal />
           </div>
         </div>
 
@@ -258,7 +261,7 @@ export const EditProduct = () => {
                 return { label: item.name, value: item.id };
               })}
             />
-            <Button
+            {/* <Button
               onClick={() => navigate("/suppliers/create")}
               type="primary"
               icon={<FaPlus />}
@@ -268,7 +271,9 @@ export const EditProduct = () => {
               }}
             >
               create supplier
-            </Button>
+            </Button> */}
+
+            <CreateSupplierModal />
           </div>
         </div>
 
