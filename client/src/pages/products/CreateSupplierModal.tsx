@@ -6,7 +6,6 @@ import Modal from "antd/es/modal";
 import Title from "antd/es/typography/Title";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
-import { useCreateCategory } from "../../hooks/categories/useCategories";
 import { useAuth } from "../../context/AuthContext";
 import Form from "antd/es/form";
 import Select from "antd/es/select";

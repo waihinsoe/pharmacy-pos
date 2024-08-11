@@ -1,19 +1,18 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { authRouter } from "./routes/authRouter";
 import cookieParser from "cookie-parser";
 import { config } from "./config";
-import { categoryRouter } from "./routes/categoryRouter";
-import { supplierRouter } from "./routes/supplierRouter";
-import { productRouter } from "./routes/productRouter";
-import { customerRouter } from "./routes/customerRouter";
-import { saleRouter } from "./routes/saleRouter";
+import { categoryRouter } from "./routes/category/category.router";
+import { supplierRouter } from "./routes/supplier/supplier.router";
+import { productRouter } from "./routes/product/product.router";
+import { customerRouter } from "./routes/customer/customer.router";
+import { saleRouter } from "./routes/sale/sale.router";
 import http from "http";
 import { Server } from "socket.io";
-import { prisma } from "./utils/db";
-import { saleReportRouter } from "./routes/saleReportRouter";
-import { inventoryReportRouter } from "./routes/inventoryReportRouter";
+import { saleReportRouter } from "./routes/saleReport/saleReport.router";
+import { inventoryReportRouter } from "./routes/inventoryReport/inventoryReport.router";
+import { authRouter } from "./routes/auth/auth.router";
 dotenv.config();
 
 const app = express();
