@@ -16,12 +16,13 @@ import { Category, Product, Supplier } from "../../types";
 import Title from "antd/es/typography/Title";
 import Input from "antd/es/input/Input";
 import TextArea from "antd/es/input/TextArea";
-import { FaPlus } from "react-icons/fa6";
 import { useCategories } from "../../hooks/categories/useCategories";
 import dayjs from "dayjs";
 import { useSuppliers } from "../../hooks/suppliers/useSuppliers";
 import { Upload, UploadFile, UploadProps } from "antd";
 import { ImageUpload } from "../../utils";
+import { CreateCategoryModal } from "./CreateCategoryModal";
+import { CreateSupplierModal } from "./CreateSupplierModal";
 
 export const CreateProduct = () => {
   const navigate = useNavigate();
@@ -143,7 +144,7 @@ export const CreateProduct = () => {
                 return { label: item.name, value: item.id };
               })}
             />
-            <Button
+            {/* <Button
               type="primary"
               icon={<FaPlus />}
               onClick={() => navigate("/categories/create")}
@@ -153,7 +154,8 @@ export const CreateProduct = () => {
               }}
             >
               create category
-            </Button>
+            </Button> */}
+            <CreateCategoryModal />
           </div>
         </div>
 
@@ -231,7 +233,7 @@ export const CreateProduct = () => {
                 return { label: item.name, value: item.id };
               })}
             />
-            <Button
+            {/* <Button
               onClick={() => navigate("/suppliers/create")}
               type="primary"
               icon={<FaPlus />}
@@ -241,7 +243,8 @@ export const CreateProduct = () => {
               }}
             >
               create supplier
-            </Button>
+            </Button> */}
+            <CreateSupplierModal />
           </div>
         </div>
 
