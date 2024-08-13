@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "dev": "ts-node-dev src/index.ts"
+    "start": "cross-env NODE_ENV=production ts-node-dev src/index.ts",
+    "start:dev": "cross-env NODE_ENV=development ts-node-dev src/index.ts",
+    "test": "cross-env NODE_ENV=test ts-node-dev src/index.ts"
   },
   "author": "",
   "license": "ISC",
