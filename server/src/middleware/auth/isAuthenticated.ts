@@ -14,6 +14,7 @@ export const isAuthenticated = async (
     const authToken = req.get("Authorization");
     //check header
     const accessToken = authToken?.split("Bearer ")[1];
+    // console.log(accessToken);
     if (!accessToken) {
       return res.status(401).json({ message: "accessToken Unauthorized" });
     }
@@ -21,8 +22,11 @@ export const isAuthenticated = async (
     const { signedCookies = {} } = req;
 
     const { refreshToken } = signedCookies;
+    console.log("refreshToken :", refreshToken);
     if (!refreshToken) {
-      return res.status(401).json({ message: "refreshToken Unauthorized" });
+      return res
+        .status(401)
+        .json({ message: "refreshToken Unauthorized hehe" });
     }
 
     const refreshTokenInDB = await prisma.tokens.findFirst({

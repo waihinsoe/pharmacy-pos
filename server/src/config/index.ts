@@ -11,6 +11,9 @@ interface Config {
   cookieSecret: string;
   accessTokenLife: string;
   refreshTokenLife: string;
+  cloudinaryCloudName: string;
+  cloudinaryApiKey: string;
+  cloudinaryApiSecret: string;
 }
 
 export const config: Config = {
@@ -21,4 +24,7 @@ export const config: Config = {
   cookieSecret: process.env.COOKIE_SECRET || "",
   accessTokenLife: process.env.ACCESS_TOKEN_LIFE || "",
   refreshTokenLife: process.env.REFRESH_TOKEN_LIFE || "",
+  cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME || "",
+  cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || "",
+  cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || "",
 };
