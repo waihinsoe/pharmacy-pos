@@ -169,6 +169,7 @@ export const CategoryListTable = () => {
         .includes((value as string).toLowerCase()),
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
+        //@ts-ignore
         setTimeout(() => searchInput.current?.select(), 100);
       }
     },

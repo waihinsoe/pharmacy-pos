@@ -62,10 +62,11 @@ export const CreateProduct = () => {
       expriy_date &&
       selectedSupplierId &&
       selectedCategoryId &&
-      barcode;
+      barcode &&
+      token;
 
     if (!isValid) return warning();
-    const url = await ImageUpload(file);
+    const url = await ImageUpload(file, token);
 
     if (url) {
       const data: Product = {

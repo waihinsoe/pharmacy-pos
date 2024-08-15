@@ -6,7 +6,9 @@ import {
   getProductsReport,
 } from "../../controllers/inventoryReport/inventoryReport.controller";
 
-export const inventoryReportRouter = express.Router();
+const inventoryReportRouter = express.Router();
 
 inventoryReportRouter.get("/categories", isAuthenticated, getCategoriesReport);
 inventoryReportRouter.get("/products", isAuthenticated, getProductsReport);
+
+export default inventoryReportRouter;

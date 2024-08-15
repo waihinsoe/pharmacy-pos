@@ -1,3 +1,4 @@
+import axios from "axios";
 import { imageDB } from "../firebase/config";
 import { Product } from "../types";
 import { SelectedProduct } from "../types/productTypes";
@@ -7,6 +8,7 @@ import {
   getDownloadURL,
   deleteObject,
 } from "firebase/storage";
+import { config } from "../config";
 
 export const calculateTotalItems = (selectedProducts: SelectedProduct[]) => {
   return selectedProducts.reduce(
@@ -26,32 +28,77 @@ export const calculateTotalAmount = (selectedProducts: SelectedProduct[]) => {
   );
 };
 
-export const ImageUpload = (file: any) => {
-  return new Promise((resolve, reject) => {
-    if (file) {
-      const storageRef = ref(imageDB, `images/${file.name}`);
-      const uploadTask = uploadBytesResumable(
-        storageRef,
-        file as unknown as Blob
-      );
-
-      uploadTask.on(
-        "state_changed",
-        () => {},
-        (error) => {
-          console.error(error);
+export const ImageUpload = async (file: any, accessToken: string) => {
+  console.log(accessToken);
+  if (file) {
+    const formData = new FormData();
+    formData.append("file", file);
+    const { data: resData } = await axios.post(
+      `${config.apiBaseUrl}/upload/image`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
         },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            resolve(downloadURL);
-          });
-        }
-      );
-    } else {
-      reject("No file selected."); // Reject the promise if no file is selected
-    }
-  });
+        withCredentials: true,
+      }
+    );
+    console.log(resData);
+    return resData.imageUrl;
+  }
+
+  // return new Promise((resolve, reject) => {
+  //   if (file) {
+  //     const storageRef = ref(imageDB, `images/${file.name}`);
+  //     const uploadTask = uploadBytesResumable(
+  //       storageRef,
+  //       file as unknown as Blob
+  //     );
+
+  //     uploadTask.on(
+  //       "state_changed",
+  //       () => {},
+  //       (error) => {
+  //         console.error(error);
+  //       },
+  //       () => {
+  //         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+  //           resolve(downloadURL);
+  //         });
+  //       }
+  //     );
+  //   } else {
+  //     reject("No file selected."); // Reject the promise if no file is selected
+  //   }
+  // });
 };
+
+// export const ImageUpload = (file: any) => {
+//   return new Promise((resolve, reject) => {
+//     if (file) {
+//       const storageRef = ref(imageDB, `images/${file.name}`);
+//       const uploadTask = uploadBytesResumable(
+//         storageRef,
+//         file as unknown as Blob
+//       );
+
+//       uploadTask.on(
+//         "state_changed",
+//         () => {},
+//         (error) => {
+//           console.error(error);
+//         },
+//         () => {
+//           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+//             resolve(downloadURL);
+//           });
+//         }
+//       );
+//     } else {
+//       reject("No file selected."); // Reject the promise if no file is selected
+//     }
+//   });
+// };
 
 export const ImageDelete = (item: Product) => {
   const decodedUrl = decodeURIComponent(item.img_url);

@@ -8,7 +8,7 @@ import {
   logout,
   refreshAccessToken,
 } from "../../controllers/auth/auth.controller";
-export const authRouter = express.Router();
+const authRouter = express.Router();
 
 //                   register acts like middileware
 authRouter.post("/register", register, generateAuthTokens);
@@ -18,3 +18,5 @@ authRouter.post("/login", login, generateAuthTokens);
 authRouter.post("/logout", isAuthenticated, logout);
 
 authRouter.post("/refresh", refreshAccessToken);
+
+export default authRouter;

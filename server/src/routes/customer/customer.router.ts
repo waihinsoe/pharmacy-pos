@@ -9,7 +9,7 @@ import {
   updateCustomer,
 } from "../../controllers/customer/customer.controller";
 
-export const customerRouter = express.Router();
+const customerRouter = express.Router();
 
 customerRouter.get("/", isAuthenticated, getCustomers);
 
@@ -22,3 +22,5 @@ customerRouter.put("/:id", isAuthenticated, updateCustomer);
 customerRouter.delete("/:id", isAuthenticated, deleteCustomer);
 // delete many
 customerRouter.delete("/deleteMany/:ids", isAuthenticated, deleteCustomers);
+
+export default customerRouter;

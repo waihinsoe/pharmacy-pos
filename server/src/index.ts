@@ -3,16 +3,17 @@ import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { config } from "./config";
-import { categoryRouter } from "./routes/category/category.router";
-import { supplierRouter } from "./routes/supplier/supplier.router";
-import { productRouter } from "./routes/product/product.router";
-import { customerRouter } from "./routes/customer/customer.router";
-import { saleRouter } from "./routes/sale/sale.router";
+import categoryRouter from "./routes/category/category.router";
+import supplierRouter from "./routes/supplier/supplier.router";
+import productRouter from "./routes/product/product.router";
+import customerRouter from "./routes/customer/customer.router";
+import saleRouter from "./routes/sale/sale.router";
 import http from "http";
 import { Server } from "socket.io";
-import { saleReportRouter } from "./routes/saleReport/saleReport.router";
-import { inventoryReportRouter } from "./routes/inventoryReport/inventoryReport.router";
-import { authRouter } from "./routes/auth/auth.router";
+import saleReportRouter from "./routes/saleReport/saleReport.router";
+import inventoryReportRouter from "./routes/inventoryReport/inventoryReport.router";
+import authRouter from "./routes/auth/auth.router";
+import uploadRouter from "./routes/upload/upload.router";
 dotenv.config({
   path: `.env.${process.env.NODE_ENV}`,
 });
@@ -32,7 +33,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["*", "http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     optionsSuccessStatus: 200,
     credentials: true,
@@ -49,6 +50,7 @@ app.use("/api/customers", customerRouter);
 app.use("/api/sales", saleRouter);
 app.use("/api/sales/reports", saleReportRouter);
 app.use("/api/inventory/reports", inventoryReportRouter);
+app.use("/api/upload", uploadRouter);
 
 // io.on("connection", (socket) => {
 //   console.log("New client connected");
