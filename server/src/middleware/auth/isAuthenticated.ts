@@ -22,7 +22,7 @@ export const isAuthenticated = async (
     const { signedCookies = {} } = req;
 
     const { refreshToken } = signedCookies;
-    console.log("refreshToken :", refreshToken);
+    // console.log("refreshToken :", refreshToken);
     if (!refreshToken) {
       return res
         .status(401)

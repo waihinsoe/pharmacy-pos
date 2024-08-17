@@ -63,7 +63,7 @@ export const EditProduct = () => {
 
     if (!isValid) return warning();
     if (file) {
-      const url = await ImageUpload(file);
+      const url = await ImageUpload(file, token);
       const id = Number(productId);
       const data: Product = {
         ...productData,
