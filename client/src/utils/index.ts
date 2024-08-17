@@ -34,7 +34,7 @@ export const ImageUpload = async (file: any, accessToken: string) => {
     const formData = new FormData();
     formData.append("file", file);
     const { data: resData } = await axios.post(
-      `${config.apiBaseUrl}/upload/image`,
+      `${config.apiBaseUrl}/asset/upload/image`,
       formData,
       {
         headers: {
@@ -46,31 +46,6 @@ export const ImageUpload = async (file: any, accessToken: string) => {
     console.log(resData);
     return resData.imageUrl;
   }
-
-  // return new Promise((resolve, reject) => {
-  //   if (file) {
-  //     const storageRef = ref(imageDB, `images/${file.name}`);
-  //     const uploadTask = uploadBytesResumable(
-  //       storageRef,
-  //       file as unknown as Blob
-  //     );
-
-  //     uploadTask.on(
-  //       "state_changed",
-  //       () => {},
-  //       (error) => {
-  //         console.error(error);
-  //       },
-  //       () => {
-  //         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-  //           resolve(downloadURL);
-  //         });
-  //       }
-  //     );
-  //   } else {
-  //     reject("No file selected."); // Reject the promise if no file is selected
-  //   }
-  // });
 };
 
 // export const ImageUpload = (file: any) => {
