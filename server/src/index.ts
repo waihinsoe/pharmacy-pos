@@ -13,7 +13,7 @@ import { Server } from "socket.io";
 import saleReportRouter from "./routes/saleReport/saleReport.router";
 import inventoryReportRouter from "./routes/inventoryReport/inventoryReport.router";
 import authRouter from "./routes/auth/auth.router";
-import uploadRouter from "./routes/upload/upload.router";
+import assetRouter from "./routes/asset/asset.router";
 dotenv.config({
   path: `.env.${process.env.NODE_ENV}`,
 });
@@ -50,7 +50,7 @@ app.use("/api/customers", customerRouter);
 app.use("/api/sales", saleRouter);
 app.use("/api/sales/reports", saleReportRouter);
 app.use("/api/inventory/reports", inventoryReportRouter);
-app.use("/api/upload", uploadRouter);
+app.use("/api/asset", assetRouter);
 
 // io.on("connection", (socket) => {
 //   console.log("New client connected");
