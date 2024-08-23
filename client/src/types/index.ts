@@ -30,7 +30,7 @@ export interface Product {
   quantity: number;
   barcode: string;
   expriy_date: Dayjs;
-  img_url: string;
+  img_url?: string;
   created_at?: Date;
   updated_at?: Date;
 }

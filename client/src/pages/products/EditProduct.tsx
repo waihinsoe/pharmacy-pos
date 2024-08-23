@@ -51,6 +51,8 @@ export const EditProduct = () => {
   const handleUpdate = async () => {
     const { name, description, quantity, expriy_date } = productData;
 
+    console.log(expriy_date);
+
     const isValid =
       productId &&
       name &&

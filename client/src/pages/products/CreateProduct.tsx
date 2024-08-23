@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useCreateProduct } from "../../hooks/products/useProducts";
@@ -27,7 +27,7 @@ import { CreateSupplierModal } from "./CreateSupplierModal";
 export const CreateProduct = () => {
   const navigate = useNavigate();
   const { token } = useAuth();
-  const { mutate: createNewProduct, isLoading } = useCreateProduct();
+  const { mutate: createNewProduct, isLoading, isSuccess } = useCreateProduct();
   const [selectedSupplierId, setSelectedSupplierId] = useState<
     number | undefined
   >();
@@ -40,7 +40,6 @@ export const CreateProduct = () => {
     price: 0,
     quantity: 0,
     expriy_date: dayjs(),
-    img_url: "",
     barcode: "",
   });
   const [messageApi, contextHolder] = message.useMessage();
@@ -63,26 +62,28 @@ export const CreateProduct = () => {
       selectedSupplierId &&
       selectedCategoryId &&
       barcode &&
+      file &&
       token;
 
     if (!isValid) return warning();
-    const url = await ImageUpload(file, token);
 
-    if (url) {
-      const data: Product = {
-        ...productData,
-        category_id: selectedCategoryId,
-        supplier_id: selectedSupplierId,
-        img_url: url as string,
-      };
+    const formData = new FormData();
 
-      createNewProduct({
-        data,
-        accessToken: token || "",
-      });
-      // route back
-      navigate(-1);
-    }
+    Object.entries(productData).forEach(([key, value]) => {
+      if (key === "expriy_date") {
+        formData.append(key, value.toISOString());
+      } else {
+        formData.append(key, value);
+      }
+    });
+    formData.append("category_id", String(selectedCategoryId));
+    formData.append("supplier_id", String(selectedSupplierId));
+    formData.append("file", file as unknown as Blob);
+
+    createNewProduct({
+      data: formData,
+      accessToken: token || "",
+    });
   };
 
   const warning = () => {
@@ -102,6 +103,11 @@ export const CreateProduct = () => {
       return false;
     },
   };
+  useEffect(() => {
+    if (!isLoading && isSuccess) {
+      navigate(-1);
+    }
+  }, [isLoading, isSuccess]);
 
   return (
     <>

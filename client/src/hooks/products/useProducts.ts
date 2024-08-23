@@ -33,7 +33,7 @@ export const useCreateProduct = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    ({ data, accessToken }: { data: Product; accessToken: string }) =>
+    ({ data, accessToken }: { data: FormData; accessToken: string }) =>
       productService.create(data, accessToken),
     {
       onSuccess: () => {
