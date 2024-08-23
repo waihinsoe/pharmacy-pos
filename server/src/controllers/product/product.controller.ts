@@ -1,6 +1,7 @@
+import { Dayjs } from "dayjs";
 import { Request, Response } from "express";
 import { prisma } from "../../utils/db";
-import { deleteImage } from "../asset/asset.controller";
+import { deleteImage, uploadImage } from "../asset/asset.controller";
 
 export const getProduct = async (req: Request, res: Response) => {
   try {
@@ -88,6 +89,7 @@ export const getProducts = async (req: Request, res: Response) => {
 };
 
 export const createProduct = async (req: Request, res: Response) => {
+  const filePath = req.file?.path;
   try {
     const {
       name,
@@ -98,7 +100,6 @@ export const createProduct = async (req: Request, res: Response) => {
       category_id,
       supplier_id,
       barcode,
-      img_url,
     } = req.body;
     const isValid =
       name &&
@@ -108,7 +109,7 @@ export const createProduct = async (req: Request, res: Response) => {
       category_id &&
       supplier_id &&
       barcode &&
-      img_url;
+      filePath;
 
     if (!isValid) {
       return res
@@ -116,15 +117,19 @@ export const createProduct = async (req: Request, res: Response) => {
         .json({ error: "Missing some data, Please add all fields." });
     }
 
+    const result = await uploadImage(filePath);
+    const img_url = result?.secure_url;
+
+    if (!img_url) return res.status(400).json({ error: "image upload fail!" });
     const product = await prisma.products.create({
       data: {
         name,
         description,
-        price,
-        quantity,
+        price: Number(price),
+        quantity: Number(quantity),
         expriy_date,
-        category_id,
-        supplier_id,
+        category_id: Number(category_id),
+        supplier_id: Number(supplier_id),
         barcode,
         img_url,
       },
@@ -138,7 +143,7 @@ export const createProduct = async (req: Request, res: Response) => {
 
     return res.status(200).json(product);
   } catch (error) {
-    res.status(500).json({ error: "error" });
+    res.status(500).json({ error: error });
   }
 };
 
