@@ -8,13 +8,14 @@ import {
   getProducts,
   updateProduct,
 } from "../../controllers/product/product.controller";
+import { upload } from "../../middleware/multer-config";
 
 const productRouter = express.Router();
 
 productRouter.get("/", isAuthenticated, getProducts);
 productRouter.get("/:id", isAuthenticated, getProduct);
 
-productRouter.post("/", isAuthenticated, createProduct);
+productRouter.post("/", isAuthenticated, upload.single("file"), createProduct);
 
 productRouter.put("/:id", isAuthenticated, updateProduct);
 
