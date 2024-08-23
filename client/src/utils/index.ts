@@ -1,13 +1,6 @@
 import axios from "axios";
-import { imageDB } from "../firebase/config";
-import { Product } from "../types";
 import { SelectedProduct } from "../types/productTypes";
-import {
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-  deleteObject,
-} from "firebase/storage";
+
 import { config } from "../config";
 
 export const calculateTotalItems = (selectedProducts: SelectedProduct[]) => {
@@ -75,31 +68,31 @@ export const ImageUpload = async (file: any, accessToken: string) => {
 //   });
 // };
 
-export const ImageDelete = (item: Product) => {
-  const decodedUrl = decodeURIComponent(item.img_url);
-  const pathRegex = /\/o\/(.+?)\?/;
-  const match = decodedUrl.match(pathRegex);
+// export const ImageDelete = (item: Product) => {
+//   const decodedUrl = decodeURIComponent(item.img_url);
+//   const pathRegex = /\/o\/(.+?)\?/;
+//   const match = decodedUrl.match(pathRegex);
 
-  if (match) {
-    const filePath = match[1];
+//   if (match) {
+//     const filePath = match[1];
 
-    return new Promise((resolve, reject) => {
-      if (filePath) {
-        const storageRef = ref(imageDB, `${filePath}`);
-        deleteObject(storageRef)
-          .then(() => {
-            console.log("file deleted successfully");
-            resolve("file deleted successfully");
-          })
-          .catch((error) => {
-            console.log("Error while deleting the file: ", error);
-            reject("Error while deleting the file");
-          });
-      } else {
-        reject("No file name provided.");
-      }
-    });
-  } else {
-    console.error("Failed to extract file path from URL");
-  }
-};
+//     return new Promise((resolve, reject) => {
+//       if (filePath) {
+//         const storageRef = ref(imageDB, `${filePath}`);
+//         deleteObject(storageRef)
+//           .then(() => {
+//             console.log("file deleted successfully");
+//             resolve("file deleted successfully");
+//           })
+//           .catch((error) => {
+//             console.log("Error while deleting the file: ", error);
+//             reject("Error while deleting the file");
+//           });
+//       } else {
+//         reject("No file name provided.");
+//       }
+//     });
+//   } else {
+//     console.error("Failed to extract file path from URL");
+//   }
+// };

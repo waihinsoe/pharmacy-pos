@@ -1,7 +1,6 @@
 import axios from "axios";
 import { config } from "../../config";
 import { PaginationAndSearchQuery, Product } from "../../types";
-import { ImageDelete } from "../../utils";
 
 const API_URL = `${config.apiBaseUrl}/products`;
 
@@ -34,7 +33,7 @@ export const productService = {
     return data;
   },
 
-  create: async (data: Product, accessToken: string) => {
+  create: async (data: FormData, accessToken: string) => {
     const { data: resData } = await axios.post(
       `${API_URL}`,
       data,
@@ -57,7 +56,6 @@ export const productService = {
       `${API_URL}/${item.id}`,
       getAxiosConfig(accessToken)
     );
-    ImageDelete(item);
     return resData;
   },
 
