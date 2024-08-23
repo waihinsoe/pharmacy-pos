@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import type { GetRef, TableColumnsType, TableColumnType } from "antd";
 import { Button, Flex, Input, Popconfirm, Space, Table } from "antd";
@@ -20,6 +20,9 @@ import {
   useDeleteProduct,
   useProducts,
 } from "../../hooks/products/useProducts";
+import socket from "../../socket/socket";
+import { useQueryClient } from "react-query";
+import { queryKeys } from "../../query/constants/queryKeys";
 
 type InputRef = GetRef<typeof Input>;
 
@@ -38,6 +41,7 @@ type DataIndex = keyof DataType;
 export const ProductListTable = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(30);
@@ -260,6 +264,19 @@ export const ProductListTable = () => {
         ) : null,
     },
   ];
+
+  useEffect(() => {
+    socket.on("add_product", (message: any) => {
+      if (message) {
+        // want to invalidate product data
+        queryClient.invalidateQueries(queryKeys.products); // Adjust this to match your query key
+      }
+    });
+
+    return () => {
+      socket.off("add_product");
+    };
+  }, []);
 
   if (isLoading) return <div>...loading</div>;
   return (

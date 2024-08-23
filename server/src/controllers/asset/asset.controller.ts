@@ -7,18 +7,30 @@ cloudinary.config({
   api_key: config.cloudinaryApiKey,
   api_secret: config.cloudinaryApiSecret,
 });
-export const uploadImage = async (req: Request, res: Response) => {
-  try {
-    if (!req.file) return;
-    console.log(req.file);
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: "pharmacy_pos",
-    });
-    res.json({ imageUrl: result.secure_url });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Error uploading image to Cloudinary" });
-  }
+// export const uploadImage = async (req: Request, res: Response) => {
+//   try {
+//     if (!req.file) return;
+//     console.log(req.file);
+//     const result = await cloudinary.uploader.upload(req.file.path, {
+//       folder: "pharmacy_pos",
+//     });
+//     res.json({ imageUrl: result.secure_url });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ error: "Error uploading image to Cloudinary" });
+
+//   }
+// };
+
+export const uploadImage = async (filePath: string) => {
+  console.log(filePath);
+  if (!filePath) return;
+  console.log(filePath);
+  const result = await cloudinary.uploader.upload(filePath, {
+    folder: "pharmacy_pos",
+  });
+
+  return result;
 };
 
 export const deleteImage = async (img_url: string) => {

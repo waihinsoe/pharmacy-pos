@@ -23,11 +23,17 @@ import { Upload, UploadFile, UploadProps } from "antd";
 import { ImageUpload } from "../../utils";
 import { CreateCategoryModal } from "./CreateCategoryModal";
 import { CreateSupplierModal } from "./CreateSupplierModal";
+import socket from "../../socket/socket";
 
 export const CreateProduct = () => {
   const navigate = useNavigate();
   const { token } = useAuth();
-  const { mutate: createNewProduct, isLoading, isSuccess } = useCreateProduct();
+  const {
+    mutate: createNewProduct,
+    isLoading,
+    isSuccess,
+    isError,
+  } = useCreateProduct();
   const [selectedSupplierId, setSelectedSupplierId] = useState<
     number | undefined
   >();
@@ -104,10 +110,16 @@ export const CreateProduct = () => {
     },
   };
   useEffect(() => {
-    if (!isLoading && isSuccess) {
-      navigate(-1);
+    if (!isLoading) {
+      if (isSuccess) {
+        socket.emit("add_product", { message: "add_product" });
+        navigate(-1);
+      } else if (isError) {
+        // Handle error state, e.g., display a message
+        console.log("Operation failed");
+      }
     }
-  }, [isLoading, isSuccess]);
+  }, [isLoading, isSuccess, isError, navigate, socket]);
 
   return (
     <>

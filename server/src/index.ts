@@ -20,15 +20,15 @@ dotenv.config({
 
 const app = express();
 const port = process.env.PORT || 3000;
-// const server = http.createServer(app);
-// const io = new Server(server, {
-//   cors: {
-//     origin: "*", // This should match the client's origin
-//     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-//     allowedHeaders: ["my-custom-header"],
-//     credentials: true,
-//   },
-// });
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: ["*", "http://localhost:5173"], // This should match the client's origin
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["my-custom-header"],
+    credentials: true,
+  },
+});
 app.use(express.json());
 
 app.use(
@@ -52,35 +52,40 @@ app.use("/api/sales/reports", saleReportRouter);
 app.use("/api/inventory/reports", inventoryReportRouter);
 app.use("/api/asset", assetRouter);
 
-// io.on("connection", (socket) => {
-//   console.log("New client connected");
+io.on("connection", (socket) => {
+  console.log("New client connected");
 
-//   socket.on("barcodeDetected", (data) => {
-//     console.log("Received QR Code:", data.barcode);
+  socket.on("barcodeDetected", (data) => {
+    console.log("Received QR Code:", data.barcode);
 
-//     // Process the QR code here
-//     // For example, you might want to validate the QR code or look up associated data
+    // Process the QR code here
+    // For example, you might want to validate the QR code or look up associated data
 
-//     // Send a response back to the client
-//     io.sockets.emit("barcodeForProduct", {
-//       message: "barcode processed successfully",
-//       barcode: data.barcode,
-//     });
+    // Send a response back to the client
+    io.sockets.emit("barcodeForProduct", {
+      message: "barcode processed successfully",
+      barcode: data.barcode,
+    });
 
-//     io.sockets.emit("scannedProduct", {
-//       message: "found scannedProduct successfully",
-//       barcode: data.barcode,
-//     });
+    io.sockets.emit("scannedProduct", {
+      message: "found scannedProduct successfully",
+      barcode: data.barcode,
+    });
 
-//     // Alternatively, you could broadcast to all connected clients (if applicable)
-//     // io.emit('broadcastEvent', { data: 'some data to all clients' });
-//   });
+    // Alternatively, you could broadcast to all connected clients (if applicable)
+    // io.emit('broadcastEvent', { data: 'some data to all clients' });
+  });
 
-//   socket.on("disconnect", () => {
-//     console.log("Client disconnected");
-//   });
-// });
+  socket.on("add_product", (data) => {
+    console.log(data);
+    io.sockets.emit("add_product", { message: true });
+  });
 
-app.listen(port, () => {
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
+});
+
+server.listen(port, () => {
   console.log(`server is listening at port ${port}`);
 });
