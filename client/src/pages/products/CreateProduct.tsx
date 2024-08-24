@@ -20,7 +20,6 @@ import { useCategories } from "../../hooks/categories/useCategories";
 import dayjs from "dayjs";
 import { useSuppliers } from "../../hooks/suppliers/useSuppliers";
 import { Upload, UploadFile, UploadProps } from "antd";
-import { ImageUpload } from "../../utils";
 import { CreateCategoryModal } from "./CreateCategoryModal";
 import { CreateSupplierModal } from "./CreateSupplierModal";
 import socket from "../../socket/socket";

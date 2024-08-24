@@ -16,7 +16,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useProduct, useUpdateProduct } from "../../hooks/products/useProducts";
 import dayjs from "dayjs";
 import { Category, Product, Supplier } from "../../types";
-import { FaPlus } from "react-icons/fa6";
 import { useCategories } from "../../hooks/categories/useCategories";
 import { useSuppliers } from "../../hooks/suppliers/useSuppliers";
 import { Upload, UploadFile, UploadProps } from "antd";
@@ -33,8 +32,6 @@ export const EditProduct = () => {
   const { data: categories } = useCategories(token || "");
   const { data: suppliers } = useSuppliers(token || "");
 
-  const [selectedSupplierId, setSelectedSupplierId] = useState<number>();
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number>();
   const [productData, setProductData] = useState<Product>({
     name: "",
     description: "",
@@ -49,9 +46,15 @@ export const EditProduct = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const handleUpdate = async () => {
-    const { name, description, quantity, expriy_date } = productData;
-
-    console.log(expriy_date);
+    console.log(productData);
+    const {
+      name,
+      description,
+      quantity,
+      expriy_date,
+      supplier_id,
+      category_id,
+    } = productData;
 
     const isValid =
       productId &&
@@ -59,29 +62,31 @@ export const EditProduct = () => {
       description &&
       quantity &&
       expriy_date &&
-      selectedSupplierId &&
-      selectedCategoryId &&
+      supplier_id &&
+      category_id &&
       token;
 
     if (!isValid) return warning();
+
+    const formData = new FormData();
+    Object.entries(productData).forEach(([key, value]) => {
+      if (key === "expriy_date") {
+        formData.append(key, value.toISOString());
+      } else {
+        formData.append(key, value);
+      }
+    });
+    const id = Number(productId);
     if (file) {
-      const url = await ImageUpload(file, token);
-      const id = Number(productId);
-      const data: Product = {
-        ...productData,
-        category_id: selectedCategoryId,
-        supplier_id: selectedSupplierId,
-        img_url: url as string,
-      };
-      updateProduct({ id, data, accessToken: token });
+      formData.append("file", file as unknown as Blob);
+
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
+
+      updateProduct({ id, data: formData, accessToken: token });
     } else {
-      const id = Number(productId);
-      const data: Product = {
-        ...productData,
-        category_id: selectedCategoryId,
-        supplier_id: selectedSupplierId,
-      };
-      updateProduct({ id, data, accessToken: token });
+      updateProduct({ id, data: formData, accessToken: token });
     }
   };
 
@@ -118,8 +123,6 @@ export const EditProduct = () => {
       currentProduct.expriy_date = dayjs(currentProduct.expriy_date);
 
       setProductData(currentProduct);
-      setSelectedCategoryId(currentProduct.category_id);
-      setSelectedSupplierId(currentProduct.supplier_id);
     }
   }, [currentProduct]);
 
@@ -167,23 +170,15 @@ export const EditProduct = () => {
             <Select
               style={{ flex: 1 }}
               placeholder="select category"
-              value={selectedCategoryId}
-              onChange={(value) => setSelectedCategoryId(value)}
+              value={productData.category_id}
+              onChange={(value) =>
+                setProductData({ ...productData, category_id: value })
+              }
               options={categories?.map((item: Category) => {
                 return { label: item.name, value: item.id };
               })}
             />
-            {/* <Button
-              type="primary"
-              icon={<FaPlus />}
-              onClick={() => navigate("/categories/create")}
-              style={{
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              create category
-            </Button> */}
+
             <CreateCategoryModal />
           </div>
         </div>
@@ -256,24 +251,15 @@ export const EditProduct = () => {
           <div style={{ width: "100%", display: "flex", gap: 4 }}>
             <Select
               style={{ flex: 1 }}
-              value={selectedSupplierId}
+              value={productData.supplier_id}
               placeholder="select supplier"
-              onChange={(value) => setSelectedSupplierId(value)}
+              onChange={(value) =>
+                setProductData({ ...productData, supplier_id: value })
+              }
               options={suppliers?.map((item: Supplier) => {
                 return { label: item.name, value: item.id };
               })}
             />
-            {/* <Button
-              onClick={() => navigate("/suppliers/create")}
-              type="primary"
-              icon={<FaPlus />}
-              style={{
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              create supplier
-            </Button> */}
 
             <CreateSupplierModal />
           </div>

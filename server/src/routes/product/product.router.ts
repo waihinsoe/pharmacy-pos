@@ -17,7 +17,12 @@ productRouter.get("/:id", isAuthenticated, getProduct);
 
 productRouter.post("/", isAuthenticated, upload.single("file"), createProduct);
 
-productRouter.put("/:id", isAuthenticated, updateProduct);
+productRouter.put(
+  "/:id",
+  isAuthenticated,
+  upload.single("file"),
+  updateProduct
+);
 
 productRouter.delete("/:id", isAuthenticated, deleteProduct);
 // delete many
