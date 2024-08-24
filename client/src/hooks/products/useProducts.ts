@@ -70,6 +70,31 @@ export const useDeleteProduct = () => {
     ({ item, accessToken }: { item: Product; accessToken: string }) =>
       productService.delete(item, accessToken),
     {
+      onMutate: async ({ item }) => {
+        await queryClient.cancelQueries(queryKeys.products);
+        const previousProducts = queryClient.getQueriesData(queryKeys.products);
+
+        console.log(previousProducts);
+        queryClient.setQueriesData(queryKeys.products, (oldProducts: any) => {
+          return {
+            ...oldProducts,
+            data: oldProducts.data.filter(
+              (product: any) => product.id !== item.id
+            ),
+            total: oldProducts.total - 1,
+          };
+        });
+
+        return { previousProducts };
+      },
+
+      onError: (err, variables, context) => {
+        console.log(context?.previousProducts[0][1]);
+        queryClient.setQueriesData(
+          queryKeys.products,
+          context?.previousProducts[0][1]
+        );
+      },
       onSuccess: () => {
         queryClient.invalidateQueries(queryKeys.products);
       },

@@ -48,6 +48,7 @@ export const productService = {
       data,
       getAxiosConfig(accessToken)
     );
+    console.log(resData);
     return resData;
   },
 
