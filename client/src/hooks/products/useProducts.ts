@@ -45,7 +45,7 @@ export const useCreateProduct = () => {
 
 interface UpdateProductMutationDataType {
   id: number;
-  data: Product;
+  data: FormData;
   accessToken: string;
 }
 export const useUpdateProduct = () => {

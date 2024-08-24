@@ -89,6 +89,7 @@ export const getProducts = async (req: Request, res: Response) => {
 };
 
 export const createProduct = async (req: Request, res: Response) => {
+  //@ts-ignore
   const filePath = req.file?.path;
   try {
     const {
@@ -121,6 +122,7 @@ export const createProduct = async (req: Request, res: Response) => {
     const img_url = result?.secure_url;
 
     if (!img_url) return res.status(400).json({ error: "image upload fail!" });
+
     const product = await prisma.products.create({
       data: {
         name,
@@ -170,7 +172,8 @@ export const updateProduct = async (req: Request, res: Response) => {
       quantity &&
       expriy_date &&
       category_id &&
-      supplier_id;
+      supplier_id &&
+      img_url;
 
     if (!isValid) {
       return res
@@ -188,8 +191,16 @@ export const updateProduct = async (req: Request, res: Response) => {
         .json({ error: "product not found. Please try again" });
     }
 
-    if (img_url !== product.img_url) {
+    let new_img_url: string | undefined;
+
+    if (req.file) {
+      const filePath = req.file?.path;
       await deleteImage(product.img_url);
+      const result = await uploadImage(filePath);
+      new_img_url = result?.secure_url;
+
+      if (!new_img_url)
+        return res.status(400).json({ error: "image upload fail!" });
     }
 
     const updatedProduct = await prisma.products.update({
@@ -197,13 +208,13 @@ export const updateProduct = async (req: Request, res: Response) => {
       data: {
         name,
         description,
-        price,
-        quantity,
+        price: Number(price),
+        quantity: Number(quantity),
         barcode,
         expriy_date,
-        category_id,
-        supplier_id,
-        img_url,
+        category_id: Number(category_id),
+        supplier_id: Number(supplier_id),
+        img_url: new_img_url || img_url,
       },
     });
     return res.status(200).json({ category: updatedProduct });
