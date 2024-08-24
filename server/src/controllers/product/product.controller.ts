@@ -1,4 +1,3 @@
-import { Dayjs } from "dayjs";
 import { Request, Response } from "express";
 import { prisma } from "../../utils/db";
 import { deleteImage, uploadImage } from "../asset/asset.controller";
