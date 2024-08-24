@@ -42,7 +42,7 @@ export const productService = {
     return resData;
   },
 
-  update: async (id: number, data: Product, accessToken: string) => {
+  update: async (id: number, data: FormData, accessToken: string) => {
     const { data: resData } = await axios.put(
       `${API_URL}/${id}`,
       data,
