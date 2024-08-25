@@ -8,39 +8,31 @@ import {
 } from "../../hooks/categories/useCategories";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export const EditCategory = () => {
   const navigate = useNavigate();
   const { categoryId } = useParams();
   const { token } = useAuth();
-  const { mutate: updateCategory, isLoading, isSuccess } = useUpdateCategory();
+  const {
+    mutate: updateCategory,
+    isLoading,
+    isSuccess,
+    isError,
+  } = useUpdateCategory();
   const { data: currentCategory } = useCategory(
     Number(categoryId),
     token || ""
   );
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [messageApi, contextHolder] = message.useMessage();
 
   const handleUpdate = () => {
     const isValid = categoryId && name && description && token;
-    if (!isValid) return warning();
+    if (!isValid) return toast.error("Please fill all input!");
     const id = Number(categoryId);
     const data = { name, description };
     updateCategory({ id, data, accessToken: token });
-  };
-
-  const warning = () => {
-    messageApi.open({
-      type: "warning",
-      content: "Please fill all input!",
-    });
-  };
-  const success = () => {
-    messageApi.open({
-      type: "success",
-      content: "updated successfully!",
-    });
   };
 
   useEffect(() => {
@@ -51,14 +43,18 @@ export const EditCategory = () => {
   }, [currentCategory]);
 
   useEffect(() => {
-    if (!isLoading && isSuccess) {
-      success();
-      return navigate(-1);
+    if (!isLoading) {
+      if (isSuccess) {
+        navigate(-1);
+        toast.success("Category updated successfully!");
+      } else if (isError) {
+        // Handle error state, e.g., display a message
+        toast.error("Operation failed!");
+      }
     }
-  }, [isLoading, isSuccess]);
+  }, [isLoading, isSuccess, isError, navigate]);
   return (
     <>
-      {contextHolder}
       <Flex vertical gap={16} align="start">
         <Title level={3}>Create Category</Title>
 

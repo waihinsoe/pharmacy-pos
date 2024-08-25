@@ -1,10 +1,11 @@
-import { Button, Flex, Form, Input, InputNumber, Select, message } from "antd";
+import { Button, Flex, Form, Input, InputNumber, Select } from "antd";
 import Title from "antd/es/typography/Title";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Customer } from "../../types";
 import { useCreateCustomer } from "../../hooks/customers/useCustomers";
+import toast from "react-hot-toast";
 const { Option } = Select;
 // name description
 
@@ -15,6 +16,7 @@ export const CreateCustomer = () => {
     mutate: createNewCustomer,
     isLoading,
     isSuccess,
+    isError,
   } = useCreateCustomer();
   const [customerData, setCustomerData] = useState<Customer>({
     name: "",
@@ -22,12 +24,11 @@ export const CreateCustomer = () => {
     email: "",
     loyalty_points: 0,
   });
-  const [messageApi, contextHolder] = message.useMessage();
 
   const handleCreate = () => {
     const { name, contact_number, email } = customerData;
     const isValid = name && contact_number && email && token;
-    if (!isValid) return warning();
+    if (!isValid) return toast.error("Please fill all input!");
     const data = customerData;
     createNewCustomer({
       data,
@@ -35,21 +36,19 @@ export const CreateCustomer = () => {
     });
   };
 
-  const warning = () => {
-    messageApi.open({
-      type: "warning",
-      content: "Please fill all input!",
-    });
-  };
-
   useEffect(() => {
-    if (!isLoading && isSuccess) {
-      return navigate(-1);
+    if (!isLoading) {
+      if (isSuccess) {
+        navigate(-1);
+        toast.success("Customer created successfully!");
+      } else if (isError) {
+        // Handle error state, e.g., display a message
+        toast.error("Operation failed!");
+      }
     }
-  }, [isLoading, isSuccess]);
+  }, [isLoading, isSuccess, isError, navigate]);
   return (
     <>
-      {contextHolder}
       <Flex vertical gap={16} align="start">
         <Title level={3}>Create Customer</Title>
 

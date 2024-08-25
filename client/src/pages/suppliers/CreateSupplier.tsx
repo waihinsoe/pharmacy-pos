@@ -5,6 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useCreateSupplier } from "../../hooks/suppliers/useSuppliers";
 import { Supplier } from "../../types";
+import toast from "react-hot-toast";
 const { Option } = Select;
 // name description
 
@@ -15,18 +16,18 @@ export const CreateSupplier = () => {
     mutate: createNewSupplier,
     isLoading,
     isSuccess,
+    isError,
   } = useCreateSupplier();
   const [supplierData, setSupplierData] = useState<Supplier>({
     name: "",
     contact_number: "",
     address: "",
   });
-  const [messageApi, contextHolder] = message.useMessage();
 
   const handleCreate = () => {
     const { name, contact_number, address } = supplierData;
     const isValid = name && contact_number && address && token;
-    if (!isValid) return warning();
+    if (!isValid) return toast.error("Please fill all input!");
     const data = supplierData;
     createNewSupplier({
       data,
@@ -34,21 +35,19 @@ export const CreateSupplier = () => {
     });
   };
 
-  const warning = () => {
-    messageApi.open({
-      type: "warning",
-      content: "Please fill all input!",
-    });
-  };
-
   useEffect(() => {
-    if (!isLoading && isSuccess) {
-      return navigate(-1);
+    if (!isLoading) {
+      if (isSuccess) {
+        navigate(-1);
+        toast.success("Supplier created successfully!");
+      } else if (isError) {
+        // Handle error state, e.g., display a message
+        toast.error("Operation failed!");
+      }
     }
-  }, [isLoading, isSuccess]);
+  }, [isLoading, isSuccess, isError, navigate]);
   return (
     <>
-      {contextHolder}
       <Flex vertical gap={16} align="start">
         <Title level={3}>Create Supplier</Title>
 

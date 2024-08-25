@@ -1,18 +1,15 @@
-import { Button, Flex, Form, Input, InputNumber, Select, message } from "antd";
+import { Button, Flex, Form, Input, InputNumber, Select } from "antd";
 import Title from "antd/es/typography/Title";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  useSupplier,
-  useUpdateSupplier,
-} from "../../hooks/suppliers/useSuppliers";
-import { Customer, Supplier } from "../../types";
+import { Customer } from "../../types";
 import {
   useCustomer,
   useUpdateCustomer,
 } from "../../hooks/customers/useCustomers";
+import toast from "react-hot-toast";
 
 const { Option } = Select;
 // name description
@@ -21,7 +18,12 @@ export const EditCustomer = () => {
   const navigate = useNavigate();
   const { customerId } = useParams();
   const { token } = useAuth();
-  const { mutate: updateCustomer, isLoading, isSuccess } = useUpdateCustomer();
+  const {
+    mutate: updateCustomer,
+    isLoading,
+    isSuccess,
+    isError,
+  } = useUpdateCustomer();
   const { data: currentCustomer } = useCustomer(
     Number(customerId),
     token || ""
@@ -32,28 +34,14 @@ export const EditCustomer = () => {
     email: "",
     loyalty_points: 0,
   });
-  const [messageApi, contextHolder] = message.useMessage();
 
   const handleUpdate = () => {
     const { name, contact_number, email } = customerData;
     const isValid = customerId && name && contact_number && email && token;
-    if (!isValid) return warning();
+    if (!isValid) return toast.error("Please fill all input!");
     const id = Number(customerId);
     const data = customerData;
     updateCustomer({ id, data, accessToken: token });
-  };
-
-  const warning = () => {
-    messageApi.open({
-      type: "warning",
-      content: "Please fill all input!",
-    });
-  };
-  const success = () => {
-    messageApi.open({
-      type: "success",
-      content: "updated successfully!",
-    });
   };
 
   useEffect(() => {
@@ -63,14 +51,19 @@ export const EditCustomer = () => {
   }, [currentCustomer]);
 
   useEffect(() => {
-    if (!isLoading && isSuccess) {
-      success();
-      navigate(-1);
+    if (!isLoading) {
+      if (isSuccess) {
+        navigate(-1);
+        toast.success("Customer updated successfully!");
+      } else if (isError) {
+        // Handle error state, e.g., display a message
+        toast.error("Operation failed!");
+      }
     }
-  }, [isLoading, isSuccess]);
+  }, [isLoading, isSuccess, isError, navigate]);
+
   return (
     <>
-      {contextHolder}
       <Flex vertical gap={16} align="start">
         <Title level={3}>Edit Customer</Title>
 

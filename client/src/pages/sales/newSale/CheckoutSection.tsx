@@ -16,6 +16,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { useCreateSale } from "../../../hooks/sales/useSales";
 import { SelectedProduct } from "../../../types/productTypes";
 import { PrintSectionModal } from "./PrintSectionModal";
+import toast from "react-hot-toast";
 
 interface Props {
   selectedProducts: SelectedProduct[];
@@ -35,7 +36,6 @@ export const CheckoutSection = ({
   const [paymentMethod, setPaymentMethod] = useState<Payment>(Payment.CASH);
   const totalAmount = calculateTotalAmount(selectedProducts);
   const totalItems = calculateTotalItems(selectedProducts);
-  const [messageApi, contextHolder] = message.useMessage();
 
   const {
     mutate: createNewSale,
@@ -43,20 +43,6 @@ export const CheckoutSection = ({
     isLoading,
     isSuccess,
   } = useCreateSale();
-
-  const warning = () => {
-    messageApi.open({
-      type: "warning",
-      content: "Please fill all input!",
-    });
-  };
-
-  const success = () => {
-    messageApi.open({
-      type: "success",
-      content: "saved successfully!",
-    });
-  };
 
   const handleChange = (value: Payment) => {
     setPaymentMethod(value);
@@ -69,7 +55,7 @@ export const CheckoutSection = ({
   const handleProceed = async () => {
     const isValid =
       user && selectedProducts.length > 0 && paymentMethod && token;
-    if (!isValid) return warning();
+    if (!isValid) return toast.error("Please fill all input!");
 
     const data = {
       customer_id: selectedCustomer?.id,
@@ -90,7 +76,7 @@ export const CheckoutSection = ({
 
   useEffect(() => {
     if (!isLoading && isSuccess) {
-      success();
+      toast.success("saved successfully!");
       setIsPrintSectionModalOpen(true);
     }
   }, [isLoading, isSuccess]);
@@ -101,7 +87,6 @@ export const CheckoutSection = ({
       gap={16}
       style={{ backgroundColor: "#dfdfdf", borderRadius: 3 }}
     >
-      {contextHolder}
       <Flex vertical gap={16} style={{ padding: "16px 16px 0" }}>
         <Row>
           <Col span={12} style={{ textAlign: "left", fontWeight: "bold" }}>
