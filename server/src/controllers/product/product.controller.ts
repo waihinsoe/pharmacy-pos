@@ -238,9 +238,10 @@ export const deleteProduct = async (req: Request, res: Response) => {
         .json({ error: "product not found. Please try again" });
     }
 
+    await prisma.products.delete({ where: { id: Number(id) } });
+
     console.log(await deleteImage(product.img_url));
 
-    await prisma.products.delete({ where: { id: Number(id) } });
     return res.status(200).json({
       message: "deleted product successfully",
     });

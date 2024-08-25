@@ -3,6 +3,7 @@ import { DashboardTopBar } from "../components/navbar/DashboardTopBar";
 import { DashboardSideBar } from "../components/navbar/DashboardSideBar";
 import { useState } from "react";
 import { Flex } from "antd";
+import { Toaster } from "react-hot-toast";
 
 export const Layout = () => {
   const [collapsed, setCollapsed] = useState(true);
@@ -16,6 +17,7 @@ export const Layout = () => {
           <Outlet />
         </main>
       </Flex>
+      <Toaster />
     </Flex>
   );
 };

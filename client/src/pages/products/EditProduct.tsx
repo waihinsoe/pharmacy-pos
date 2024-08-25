@@ -20,14 +20,19 @@ import { useCategories } from "../../hooks/categories/useCategories";
 import { useSuppliers } from "../../hooks/suppliers/useSuppliers";
 import { Upload, UploadFile, UploadProps } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
-import { ImageUpload } from "../../utils";
 import { CreateCategoryModal } from "./CreateCategoryModal";
 import { CreateSupplierModal } from "./CreateSupplierModal";
+import toast from "react-hot-toast";
 export const EditProduct = () => {
   const navigate = useNavigate();
   const { productId } = useParams();
   const { token } = useAuth();
-  const { mutate: updateProduct, isLoading, isSuccess } = useUpdateProduct();
+  const {
+    mutate: updateProduct,
+    isLoading,
+    isSuccess,
+    isError,
+  } = useUpdateProduct();
   const { data: currentProduct } = useProduct(Number(productId), token || "");
   const { data: categories } = useCategories(token || "");
   const { data: suppliers } = useSuppliers(token || "");
@@ -42,8 +47,6 @@ export const EditProduct = () => {
     barcode: "",
   });
   const [file, setFile] = useState<UploadFile>();
-
-  const [messageApi, contextHolder] = message.useMessage();
 
   const handleUpdate = async () => {
     console.log(productData);
@@ -66,7 +69,7 @@ export const EditProduct = () => {
       category_id &&
       token;
 
-    if (!isValid) return warning();
+    if (!isValid) return toast.error("Please fill all input!");
 
     const formData = new FormData();
     Object.entries(productData).forEach(([key, value]) => {
@@ -88,19 +91,6 @@ export const EditProduct = () => {
     } else {
       updateProduct({ id, data: formData, accessToken: token });
     }
-  };
-
-  const warning = () => {
-    messageApi.open({
-      type: "warning",
-      content: "Please fill all input!",
-    });
-  };
-  const success = () => {
-    messageApi.open({
-      type: "success",
-      content: "updated successfully!",
-    });
   };
 
   const onChange: DatePickerProps["onChange"] = (date) => {
@@ -127,15 +117,19 @@ export const EditProduct = () => {
   }, [currentProduct]);
 
   useEffect(() => {
-    if (!isLoading && isSuccess) {
-      success();
-      navigate(-1);
+    if (!isLoading) {
+      if (isSuccess) {
+        navigate(-1);
+        toast.success("Product updated successfully!");
+      } else if (isError) {
+        // Handle error state, e.g., display a message
+        toast.error("Operation failed!");
+      }
     }
-  }, [isLoading, isSuccess]);
+  }, [isLoading, isSuccess, isError, navigate]);
 
   return (
     <>
-      {contextHolder}
       <Flex vertical gap={16} align="start">
         <Title level={3}>Edit Product</Title>
         <div

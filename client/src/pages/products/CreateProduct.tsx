@@ -10,7 +10,6 @@ import {
   Flex,
   InputNumber,
   Select,
-  message,
 } from "antd";
 import { Category, Product, Supplier } from "../../types";
 import Title from "antd/es/typography/Title";
@@ -23,6 +22,7 @@ import { Upload, UploadFile, UploadProps } from "antd";
 import { CreateCategoryModal } from "./CreateCategoryModal";
 import { CreateSupplierModal } from "./CreateSupplierModal";
 import socket from "../../socket/socket";
+import toast from "react-hot-toast";
 
 export const CreateProduct = () => {
   const navigate = useNavigate();
@@ -47,7 +47,6 @@ export const CreateProduct = () => {
     expriy_date: dayjs(),
     barcode: "",
   });
-  const [messageApi, contextHolder] = message.useMessage();
   const [file, setFile] = useState<UploadFile>();
   const onChange: DatePickerProps["onChange"] = (date) => {
     setProductData({ ...productData, expriy_date: date });
@@ -70,7 +69,7 @@ export const CreateProduct = () => {
       file &&
       token;
 
-    if (!isValid) return warning();
+    if (!isValid) return toast.error("Please fill all input");
 
     const formData = new FormData();
 
@@ -91,13 +90,6 @@ export const CreateProduct = () => {
     });
   };
 
-  const warning = () => {
-    messageApi.open({
-      type: "warning",
-      content: "Please fill all input!",
-    });
-  };
-
   const props: UploadProps = {
     onRemove: () => {
       setFile(undefined);
@@ -108,21 +100,22 @@ export const CreateProduct = () => {
       return false;
     },
   };
+
   useEffect(() => {
     if (!isLoading) {
       if (isSuccess) {
         socket.emit("add_product", { message: "add_product" });
         navigate(-1);
+        toast.success("Product created successfully!");
       } else if (isError) {
         // Handle error state, e.g., display a message
-        console.log("Operation failed");
+        toast.error("Operation failed!");
       }
     }
   }, [isLoading, isSuccess, isError, navigate, socket]);
 
   return (
     <>
-      {contextHolder}
       <Flex vertical gap={16} align="start">
         <Title level={3}>Create New Product</Title>
         <div

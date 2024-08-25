@@ -2,13 +2,13 @@ import Button from "antd/es/button";
 import Flex from "antd/es/flex";
 import Input from "antd/es/input";
 import TextArea from "antd/es/input/TextArea";
-import message from "antd/es/message";
 import Modal from "antd/es/modal";
 import Title from "antd/es/typography/Title";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { useCreateCategory } from "../../hooks/categories/useCategories";
 import { useAuth } from "../../context/AuthContext";
+import toast from "react-hot-toast";
 export const CreateCategoryModal = () => {
   const { token } = useAuth();
   const [name, setName] = useState("");
@@ -18,22 +18,15 @@ export const CreateCategoryModal = () => {
     mutate: createNewCategory,
     isLoading,
     isSuccess,
+    isError,
   } = useCreateCategory();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [messageApi, contextHolder] = message.useMessage();
 
   const handleCreate = () => {
     const isValid = name && description && token;
-    if (!isValid) return warning();
+    if (!isValid) return toast.error("Please fill all input!");
     const data = { name, description };
     createNewCategory({ data, accessToken: token || "" });
-  };
-
-  const warning = () => {
-    messageApi.open({
-      type: "warning",
-      content: "Please fill all input!",
-    });
   };
 
   const showModal = () => {
@@ -54,9 +47,20 @@ export const CreateCategoryModal = () => {
     }
   }, [isLoading, isSuccess]);
 
+  useEffect(() => {
+    if (!isLoading) {
+      if (isSuccess) {
+        handleOk();
+        toast.success("Category created successfully!");
+      } else if (isError) {
+        // Handle error state, e.g., display a message
+        toast.error("Operation failed!");
+      }
+    }
+  }, [isLoading, isSuccess, isError]);
+
   return (
     <>
-      {contextHolder}
       <Button
         loading={isLoading}
         type="primary"

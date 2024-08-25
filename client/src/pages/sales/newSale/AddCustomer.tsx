@@ -1,9 +1,10 @@
-import { Button, Flex, Input, Modal, Select, message } from "antd";
+import { Button, Flex, Input, Modal, Select } from "antd";
 import Title from "antd/es/typography/Title";
 import { useEffect, useState } from "react";
 import { Customer } from "../../../types";
 import { useCreateCustomer } from "../../../hooks/customers/useCustomers";
 import { useAuth } from "../../../context/AuthContext";
+import toast from "react-hot-toast";
 const { Option } = Select;
 
 interface Props {
@@ -16,7 +17,6 @@ export const AddCustomer = ({
   setSelectedCustomer,
 }: Props) => {
   const { token } = useAuth();
-  const [messageApi, contextHolder] = message.useMessage();
   const {
     mutate: createNewCustomer,
     data: createdCustomer,
@@ -32,13 +32,6 @@ export const AddCustomer = ({
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const warning = () => {
-    messageApi.open({
-      type: "warning",
-      content: "Please fill all input!",
-    });
-  };
-
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -46,7 +39,7 @@ export const AddCustomer = ({
   const handleAdd = () => {
     const { name, contact_number, email } = customerData;
     const isValid = name && contact_number && email && token;
-    if (!isValid) return warning();
+    if (!isValid) return toast.error("Please fill all input!");
     const data = customerData;
     createNewCustomer({
       data,
@@ -67,7 +60,6 @@ export const AddCustomer = ({
   }, [isLoading, isSuccess]);
   return (
     <>
-      {contextHolder}
       <Button
         style={{
           display: "flex",
