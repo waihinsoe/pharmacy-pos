@@ -1,10 +1,11 @@
-import { Button, Flex, Input, message } from "antd";
+import { Button, Flex, Input } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import Title from "antd/es/typography/Title";
 import { useEffect, useState } from "react";
 import { useCreateCategory } from "../../hooks/categories/useCategories";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 // name description
 
 export const CreateCategory = () => {
@@ -14,14 +15,14 @@ export const CreateCategory = () => {
     mutate: createNewCategory,
     isLoading,
     isSuccess,
+    isError,
   } = useCreateCategory();
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [messageApi, contextHolder] = message.useMessage();
 
   const handleCreate = () => {
     const isValid = name && description && token;
-    if (!isValid) return warning();
+    if (!isValid) return toast.success("Please fill all input!");
     const data = { name, description };
     createNewCategory({
       data,
@@ -29,22 +30,20 @@ export const CreateCategory = () => {
     });
   };
 
-  const warning = () => {
-    messageApi.open({
-      type: "warning",
-      content: "Please fill all input!",
-    });
-  };
-
   useEffect(() => {
-    if (!isLoading && isSuccess) {
-      return navigate(-1);
+    if (!isLoading) {
+      if (isSuccess) {
+        navigate(-1);
+        toast.success("Category created successfully!");
+      } else if (isError) {
+        // Handle error state, e.g., display a message
+        toast.error("Operation failed!");
+      }
     }
-  }, [isLoading, isSuccess]);
+  }, [isLoading, isSuccess, isError, navigate]);
 
   return (
     <>
-      {contextHolder}
       <Flex vertical gap={16} align="start">
         <Title level={3}>Create Category</Title>
 

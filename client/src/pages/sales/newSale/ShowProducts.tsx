@@ -3,13 +3,9 @@ import { useAuth } from "../../../context/AuthContext";
 import { Product } from "../../../types";
 import { ProductCard } from "./ProductCard";
 import Badge from "antd/es/badge";
-import { useEffect } from "react";
-import socket from "../../../socket/socket";
 import { SelectedProduct } from "../../../types/productTypes";
-import { message } from "antd";
-import ProductSuccessAudio3 from "../../../assets/successProduct3.mp3";
-import ProductErrorAudio3 from "../../../assets/errorProduct3.mp3";
 import BarcodeScannerInput from "../../../components/scanner/BarcodeScannerInput";
+import toast from "react-hot-toast";
 interface Props {
   productSearchTerm: string;
   categoryId: number | string;
@@ -25,7 +21,6 @@ export const ShowProducts = ({
 }: Props) => {
   const { token } = useAuth();
   const { data: products, isLoading } = useProducts(token || "");
-  const [messageApi, contextHolder] = message.useMessage();
 
   const searchedProducts = productSearchTerm
     ? products?.filter((product: Product) =>
@@ -38,19 +33,6 @@ export const ShowProducts = ({
       ? products
       : products?.filter((item: Product) => item.category_id === categoryId);
 
-  const warning = (content: string) => {
-    messageApi.open({
-      type: "warning",
-      content: content,
-    });
-  };
-  const success = () => {
-    messageApi.open({
-      type: "success",
-      content: "Product scanned successfully!",
-    });
-  };
-
   const onScan = (value: string) => {
     if (value) {
       const scannedProduct = products?.find(
@@ -58,9 +40,9 @@ export const ShowProducts = ({
       );
 
       if (!scannedProduct) {
-        return warning("Product not found or scan error, TryAgain!");
+        return toast.error("Product not found or scan error, TryAgain!");
       }
-      if (scannedProduct.quantity === 0) return warning("out of stock!");
+      if (scannedProduct.quantity === 0) return toast.error("out of stock!");
 
       const selectedProduct = selectedProducts.find(
         (item) => item.id === scannedProduct.id
@@ -68,7 +50,7 @@ export const ShowProducts = ({
 
       if (selectedProduct) {
         if (selectedProduct.count == selectedProduct.quantity)
-          return warning("out of stock!");
+          return toast.error("out of stock!");
         const filteredProducts = selectedProducts.filter(
           (item) => item.id !== selectedProduct.id
         );
@@ -82,7 +64,7 @@ export const ShowProducts = ({
           { ...scannedProduct, count: 1 },
         ]);
       }
-      success();
+      toast.success("Product scanned successfully!");
     }
   };
 
@@ -100,7 +82,6 @@ export const ShowProducts = ({
       }}
     >
       <BarcodeScannerInput onScan={onScan} />
-      {contextHolder}
 
       {searchedProducts.length
         ? searchedProducts.map((product: Product) => {

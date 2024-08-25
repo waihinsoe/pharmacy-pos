@@ -1,7 +1,6 @@
 import Button from "antd/es/button";
 import Flex from "antd/es/flex";
 import Input from "antd/es/input";
-import message from "antd/es/message";
 import Modal from "antd/es/modal";
 import Title from "antd/es/typography/Title";
 import { useEffect, useState } from "react";
@@ -11,6 +10,7 @@ import Form from "antd/es/form";
 import Select from "antd/es/select";
 import { Supplier } from "../../types";
 import { useCreateSupplier } from "../../hooks/suppliers/useSuppliers";
+import toast from "react-hot-toast";
 
 const { Option } = Select;
 
@@ -26,25 +26,18 @@ export const CreateSupplierModal = () => {
     mutate: createNewSupplier,
     isLoading,
     isSuccess,
+    isError,
   } = useCreateSupplier();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [messageApi, contextHolder] = message.useMessage();
 
   const handleCreate = () => {
     const { name, contact_number, address } = supplierData;
     const isValid = name && contact_number && address && token;
-    if (!isValid) return warning();
+    if (!isValid) return toast.error("Please fill all input!");
     const data = supplierData;
     createNewSupplier({
       data,
       accessToken: token,
-    });
-  };
-
-  const warning = () => {
-    messageApi.open({
-      type: "warning",
-      content: "Please fill all input!",
     });
   };
 
@@ -61,14 +54,19 @@ export const CreateSupplierModal = () => {
   };
 
   useEffect(() => {
-    if (!isLoading && isSuccess) {
-      handleOk();
+    if (!isLoading) {
+      if (isSuccess) {
+        handleOk();
+        toast.success("Category created successfully!");
+      } else if (isError) {
+        // Handle error state, e.g., display a message
+        toast.error("Operation failed!");
+      }
     }
-  }, [isLoading, isSuccess]);
+  }, [isLoading, isSuccess, isError]);
 
   return (
     <>
-      {contextHolder}
       <Button
         loading={isLoading}
         type="primary"
