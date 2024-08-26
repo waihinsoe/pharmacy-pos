@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -22,13 +23,14 @@ model Users {
 }
 
 model Customers {
-  id             Int      @id @default(autoincrement())
+  id             Int       @id @default(autoincrement())
   name           String
   contact_number String
   email          String
   loyalty_points Int
-  created_at     DateTime @default(now())
-  updated_at     DateTime @default(now()) @updatedAt
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @default(now()) @updatedAt
+  deleted_at     DateTime?
   Sales          Sales[]
 }
 
@@ -41,30 +43,33 @@ model Sales {
   payment_method Payment        @default(CASH)
   created_at     DateTime       @default(now())
   updated_at     DateTime       @default(now()) @updatedAt
+  deleted_at     DateTime?
   Customers      Customers?     @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Users          Users          @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Sale_details   Sale_details[]
 }
 
 model Sale_details {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   sale_id    Int
-  product_id Int 
+  product_id Int
   quantity   Int
   price      Int
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now()) @updatedAt
-  Sales      Sales    @relation(fields: [sale_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Products   Products @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now()) @updatedAt
+  deleted_at DateTime?
+  Sales      Sales     @relation(fields: [sale_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Products   Products  @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model Categories {
-  id          Int        @id @default(autoincrement())
-  
+  id Int @id @default(autoincrement())
+
   name        String
   description String
   created_at  DateTime   @default(now())
   updated_at  DateTime   @default(now()) @updatedAt
+  deleted_at  DateTime?
   Products    Products[]
 }
 
@@ -82,6 +87,7 @@ model Products {
   expriy_date  DateTime       @default(now())
   created_at   DateTime       @default(now())
   updated_at   DateTime       @default(now()) @updatedAt
+  deleted_at   DateTime?
   Categories   Categories     @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Sale_details Sale_details[]
   Suppliers    Suppliers      @relation(fields: [supplier_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -94,6 +100,7 @@ model Suppliers {
   address        String
   created_at     DateTime   @default(now())
   updated_at     DateTime   @default(now()) @updatedAt
+  deleted_at     DateTime?
   Products       Products[]
 }
 
