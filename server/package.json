@@ -6,7 +6,8 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production ts-node-dev src/index.ts",
     "start:dev": "cross-env NODE_ENV=development ts-node-dev src/index.ts",
-    "test": "cross-env NODE_ENV=test ts-node-dev src/index.ts"
+    "test": "cross-env NODE_ENV=test ts-node-dev src/index.ts",
+    "migrate:postgres": "dotenv -e .env.development -- npx prisma migrate dev"
   },
   "author": "",
   "license": "ISC",
@@ -18,6 +19,7 @@
     "cors": "^2.8.5",
     "dayjs": "^1.11.10",
     "dotenv": "^16.4.5",
+    "dotenv-cli": "^7.4.2",
     "express": "^4.18.2",
     "install": "^0.13.0",
     "jsonwebtoken": "^9.0.2",
