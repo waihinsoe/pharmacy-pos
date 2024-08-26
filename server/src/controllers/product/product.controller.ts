@@ -25,7 +25,9 @@ export const getProducts = async (req: Request, res: Response) => {
   const isPaginateFetch = req.query.hasOwnProperty("page");
   if (!isPaginateFetch) {
     try {
-      const products = await prisma.products.findMany();
+      const products = await prisma.products.findMany({
+        where: { deleted_at: null },
+      });
 
       if (!products) {
         return res.status(200).json({ message: "Products not found." });
@@ -44,6 +46,7 @@ export const getProducts = async (req: Request, res: Response) => {
 
     const filteredProducts = await prisma.products.findMany({
       where: {
+        deleted_at: null,
         OR: [
           { name: { contains: searchTerm as string, mode: "insensitive" } },
           {
@@ -191,8 +194,9 @@ export const updateProduct = async (req: Request, res: Response) => {
     }
 
     let new_img_url: string | undefined;
-
+    //@ts-ignore
     if (req.file) {
+      //@ts-ignore
       const filePath = req.file?.path;
       await deleteImage(product.img_url);
       const result = await uploadImage(filePath);
@@ -232,15 +236,23 @@ export const deleteProduct = async (req: Request, res: Response) => {
     const product = await prisma.products.findFirst({
       where: { id: Number(id) },
     });
+
     if (!product) {
       return res
         .status(404)
         .json({ error: "product not found. Please try again" });
     }
 
-    await prisma.products.delete({ where: { id: Number(id) } });
+    await prisma.products.update({
+      where: {
+        id: Number(id),
+      },
+      data: { deleted_at: new Date() },
+    });
 
-    console.log(await deleteImage(product.img_url));
+    // await prisma.products.delete({ where: { id: Number(id) } });
+
+    // console.log(await deleteImage(product.img_url));
 
     return res.status(200).json({
       message: "deleted product successfully",
