@@ -1,13 +1,13 @@
-import { Button, Flex, Form, Input, Select, message } from "antd";
+import { Button, Flex, Input } from "antd";
 import Title from "antd/es/typography/Title";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useCreateSupplier } from "../../hooks/suppliers/useSuppliers";
 import { Supplier } from "../../types";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 import toast from "react-hot-toast";
-const { Option } = Select;
-// name description
 
 export const CreateSupplier = () => {
   const navigate = useNavigate();
@@ -23,6 +23,8 @@ export const CreateSupplier = () => {
     contact_number: "",
     address: "",
   });
+
+  console.log(supplierData.contact_number);
 
   const handleCreate = () => {
     const { name, contact_number, address } = supplierData;
@@ -79,16 +81,20 @@ export const CreateSupplier = () => {
           }}
         >
           <Title level={5}>Contact-number</Title>
-          <Input
-            onChange={(e) =>
+
+          <PhoneInput
+            enableSearch={true}
+            inputStyle={{ width: "100%", borderRadius: 3 }}
+            searchStyle={{ width: "100%", margin: 0 }}
+            disableSearchIcon
+            country={"us"}
+            value={supplierData.contact_number}
+            onChange={(value) =>
               setSupplierData({
                 ...supplierData,
-                contact_number: e.target.value,
+                contact_number: value,
               })
             }
-            placeholder="Enter supplier phone number"
-            addonBefore={prefixSelector}
-            style={{ width: "100%" }}
           />
         </div>
 
@@ -133,12 +139,3 @@ export const CreateSupplier = () => {
     </>
   );
 };
-
-const prefixSelector = (
-  <Form.Item name="prefix" noStyle>
-    <Select style={{ width: 70 }}>
-      <Option value="95">+95</Option>
-      <Option value="87">+87</Option>
-    </Select>
-  </Form.Item>
-);

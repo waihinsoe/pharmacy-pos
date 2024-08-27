@@ -39,6 +39,8 @@ export const CreateProduct = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<
     number | undefined
   >();
+  const [value, setValue] = useState<any>();
+  console.log("ph number : ", value);
   const [productData, setProductData] = useState<Product>({
     name: "",
     description: "",
