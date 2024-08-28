@@ -3,15 +3,20 @@ import { PosTopBar } from "../../../components/navbar/PosTopBar";
 import { useCategories } from "../../../hooks/categories/useCategories";
 import { useAuth } from "../../../context/AuthContext";
 import { Category } from "../../../types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ShowProducts } from "./ShowProducts";
 import { SelectedProductList } from "./SelectedProductList";
 import { CheckoutSection } from "./CheckoutSection";
 import { CustomerSelect } from "./CustomerSelect";
 
 export const NewSale = () => {
+  const selectedProductsFromCache = localStorage.getItem("selectedProducts");
+
   const { token } = useAuth();
-  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState(
+    selectedProductsFromCache && JSON.parse(selectedProductsFromCache)
+  );
+
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | string>(
     "All"
   );
@@ -27,6 +32,10 @@ export const NewSale = () => {
   const handleChange = (value: number | string) => {
     setSelectedCategoryId(value);
   };
+
+  useEffect(() => {
+    localStorage.setItem("selectedProducts", JSON.stringify(selectedProducts));
+  }, [selectedProducts]);
 
   return (
     <Flex vertical style={{ height: "100vh" }}>
