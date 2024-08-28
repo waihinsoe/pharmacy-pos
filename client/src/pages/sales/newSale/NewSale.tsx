@@ -27,6 +27,7 @@ export const NewSale = () => {
   const handleChange = (value: number | string) => {
     setSelectedCategoryId(value);
   };
+
   return (
     <Flex vertical style={{ height: "100vh" }}>
       <PosTopBar
