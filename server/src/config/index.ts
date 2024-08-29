@@ -14,6 +14,8 @@ interface Config {
   cloudinaryCloudName: string;
   cloudinaryApiKey: string;
   cloudinaryApiSecret: string;
+  emailUser: string;
+  emailPass: string;
 }
 
 export const config: Config = {
@@ -27,4 +29,6 @@ export const config: Config = {
   cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME || "",
   cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || "",
   cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || "",
+  emailUser: process.env.EMAIL_USER || "",
+  emailPass: process.env.EMAIL_PASS || "",
 };
