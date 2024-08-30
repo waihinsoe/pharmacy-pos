@@ -11,3 +11,12 @@ export const useCategoriesReport = (
     inventoryReportService.getCategoriesReport(accessToken, query)
   );
 };
+
+export const useProductsReport = (
+  accessToken: string,
+  query: ReportDateQuery
+) => {
+  return useQuery(queryKeys.productsReport(query), () =>
+    inventoryReportService.getProductsReport(accessToken, query)
+  );
+};
