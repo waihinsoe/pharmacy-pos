@@ -47,7 +47,7 @@ export const InventoryReport = () => {
       {option === "categories" && (
         <CategoriesReport chart={chart} query={query} />
       )}
-      {option === "products" && <ProductsReport />}
+      {option === "products" && <ProductsReport chart={chart} query={query} />}
     </Flex>
   );
 };
