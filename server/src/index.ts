@@ -14,6 +14,8 @@ import saleReportRouter from "./routes/saleReport/saleReport.router";
 import inventoryReportRouter from "./routes/inventoryReport/inventoryReport.router";
 import authRouter from "./routes/auth/auth.router";
 import assetRouter from "./routes/asset/asset.router";
+import cron from "node-cron";
+import { checkStock, sendLowStockEmail } from "./email/emailService";
 dotenv.config({
   path: `.env.${process.env.NODE_ENV}`,
 });
@@ -84,6 +86,12 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("Client disconnected");
   });
+});
+
+cron.schedule("*/5 * * * * *", async () => {
+  const message = await checkStock();
+  sendLowStockEmail(message);
+  console.log("task ran!");
 });
 
 server.listen(port, () => {
