@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { prisma } from "../../utils/db";
 import { calculateTotalAmount } from "../../utils";
 import { SaledProduct } from "../../types";
-import { sendStockOutEmail } from "../../services/emailService";
+import { sendStockOutEmail } from "../../email/emailService";
 export const getSales = async (req: Request, res: Response) => {
   const isPaginateFetch = req.query.hasOwnProperty("page");
   if (!isPaginateFetch) {
