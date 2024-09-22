@@ -13,27 +13,22 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const sendEmail = async (options: any) => {
+const sendEmail = async ({ from, to, subject, html }: any) => {
+  const mailOptions = {
+    from,
+    to,
+    subject,
+    html,
+  };
   try {
-    await transporter.sendMail(options);
+    await transporter.sendMail(mailOptions);
     console.log("Email sent successfully");
   } catch (error) {
     console.log("Error sending email:", error);
   }
 };
 
-export const sendStockOutEmail = (item: any) => {
-  console.log(config.emailUser, config.emailPass);
-  const mailOptions = {
-    from: config.emailUser,
-    to: "waihinwork@gmail.com",
-    subject: `Stock Alert: ${item.name}`,
-    text: `The stock for ${item.name} (ID: ${item.id}) is below the minimum threshold. Current stock: ${item.quantity}`,
-  };
-  sendEmail(mailOptions);
-};
-
-export const checkStock = async () => {
+export const sendLowStockEmail = async () => {
   const lowStockItems = await prisma.products.findMany({
     where: {
       quantity: {
@@ -45,10 +40,13 @@ export const checkStock = async () => {
   let itemsHtml = lowStockItems
     .map(
       (item) => `
-    <div class="stock-item ${item.quantity <= 10 ? "low-stock" : ""}">
+    <div class="stock-item ${item.quantity <= 10 ? "low-stock" : ""}" }>
+      <div style="width:100%;">
         <h2>${item.name}</h2>
         <p>Quantity: ${item.quantity}</p>
         <p>Minimum Required Quantity: ${10}</p>
+      </div>
+        <img src=${item.img_url} width="100" height="100" alt=${item.name}/>
     </div>
 `
     )
@@ -64,7 +62,7 @@ export const checkStock = async () => {
             body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; }
             .container { max-width: 600px; margin: auto; background: white; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
             h1 { color: #333; }
-            .stock-item { margin: 10px 0; padding: 10px; background-color: #f9f9f9; border-left: 5px solid #007BFF; }
+            .stock-item { margin: 10px 0; padding: 10px; background-color: #f9f9f9; border-left: 5px solid #007BFF; display:flex; justify-content:space-between;align-items:center;}
             .low-stock { border-left-color: #FF6347; }
             p { margin: 5px 0; }
         </style>
@@ -79,28 +77,10 @@ export const checkStock = async () => {
     </html>
 `;
 
-  // let message = "Stock check reprot: \n";
-
-  // if (lowStockItems.length > 0) {
-  //   lowStockItems.forEach((item) => {
-  //     message += `Item: ${item.name}, Quantity: ${
-  //       item.quantity
-  //     }, Min Required: ${10}\n`;
-  //   });
-  // } else {
-  //   message += "All items are in sufficient quantity.";
-  // }
-
-  return emailHtml;
-};
-
-export const sendLowStockEmail = (message: string) => {
-  console.log(config.emailUser, config.emailPass);
-  const mailOptions = {
+  sendEmail({
     from: config.emailUser,
-    to: "waihinwork@gmail.com",
-    subject: `Daily Stock Check Report`,
-    html: message,
-  };
-  sendEmail(mailOptions);
+    to: ["waihinwork@gmail.com"],
+    subject: "Daily Stock Check Report",
+    html: emailHtml,
+  });
 };

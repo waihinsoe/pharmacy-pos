@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { prisma } from "../../utils/db";
 import { calculateTotalAmount } from "../../utils";
 import { SaledProduct } from "../../types";
-import { sendStockOutEmail } from "../../email/emailService";
 export const getSales = async (req: Request, res: Response) => {
   const isPaginateFetch = req.query.hasOwnProperty("page");
   if (!isPaginateFetch) {
@@ -184,10 +183,6 @@ export const createNewSale = async (req: Request, res: Response) => {
           where: { id: product.id },
           data: { quantity: currentProduct.quantity - product.count },
         });
-
-        if (updatedProduct.quantity <= 0) {
-          sendStockOutEmail(updatedProduct);
-        }
       }
       return newSale;
     });
