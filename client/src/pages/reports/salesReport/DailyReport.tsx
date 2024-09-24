@@ -1,9 +1,7 @@
-import { Flex } from "antd";
 import { useAuth } from "../../../context/AuthContext";
 import { useDailySalesReport } from "../../../hooks/salesReport/useSaleReport";
 import { ReportDateQuery } from "../../../types";
 import { Area, Column, Rose } from "@ant-design/plots";
-import { BsAlignCenter } from "react-icons/bs";
 interface Props {
     chart: string;
     query: ReportDateQuery;
