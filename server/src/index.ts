@@ -25,7 +25,7 @@ const port = process.env.PORT || 3000;
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["*", "http://localhost:5173"], // This should match the client's origin
+        origin: ["*", "http://localhost:5173", "http://13.213.16.212:5173"], // This should match the client's origin
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allowedHeaders: ["my-custom-header"],
         credentials: true,
@@ -35,7 +35,7 @@ app.use(express.json());
 
 app.use(
     cors({
-        origin: ["*", "http://localhost:5173"],
+        origin: ["*", "http://localhost:5173", "http://13.213.16.212:5173"],
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         optionsSuccessStatus: 200,
         credentials: true,
