@@ -1,5 +1,5 @@
 import { useAuth } from "../../context/AuthContext";
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { LockOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Flex, Form, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { AUTH_STATUS } from "../../types/AuthTypes";
