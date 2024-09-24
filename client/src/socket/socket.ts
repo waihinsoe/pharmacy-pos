@@ -1,6 +1,6 @@
 import io from "socket.io-client";
+import { config } from "../config";
 
-const SOCKET_URL = "http://localhost:3000";
-const socket = io(SOCKET_URL);
+const socket = io(config.socketUrl);
 
 export default socket;
